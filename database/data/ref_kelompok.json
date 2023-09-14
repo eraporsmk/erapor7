@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "nama_kelompok": "Kelompok A (Wajib)",
+    "kurikulum": 2013,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 2,
+    "nama_kelompok": "Kelompok B (Wajib)",
+    "kurikulum": 2013,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 3,
+    "nama_kelompok": "Kelompok C1 (Dasar Bidang Keahlian)",
+    "kurikulum": 2013,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 4,
+    "nama_kelompok": "Kelompok C2 (Dasar Program Keahlian)",
+    "kurikulum": 2013,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 5,
+    "nama_kelompok": "Kelompok C3 (Paket Keahlian)",
+    "kurikulum": 2013,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 6,
+    "nama_kelompok": "Kelompok A (Muatan Nasional)",
+    "kurikulum": 2017,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 7,
+    "nama_kelompok": "Kelompok B (Muatan Kewilayahan)",
+    "kurikulum": 2017,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 8,
+    "nama_kelompok": "Kelompok C1 (Dasar Bidang Keahlian)",
+    "kurikulum": 2017,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 9,
+    "nama_kelompok": "Kelompok C2 (Dasar Program Keahlian)",
+    "kurikulum": 2017,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 10,
+    "nama_kelompok": "Kelompok C3 (Paket Keahlian)",
+    "kurikulum": 2017,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 11,
+    "nama_kelompok": "Normatif",
+    "kurikulum": 2006,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 12,
+    "nama_kelompok": "Adaptif",
+    "kurikulum": 2006,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 13,
+    "nama_kelompok": "Umum",
+    "kurikulum": 2021,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 14,
+    "nama_kelompok": "Kejuruan",
+    "kurikulum": 2021,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 15,
+    "nama_kelompok": "Produktif",
+    "kurikulum": 2006,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 16,
+    "nama_kelompok": "A. Kelompok Mata Pelajaran Umum",
+    "kurikulum": 2022,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 17,
+    "nama_kelompok": "B. Kelompok Mata Pelajaran Kejuruan",
+    "kurikulum": 2022,
+    "created_at": "2017-09-19 10:47:50",
+    "updated_at": "2017-09-19 10:47:50"
+  },
+  {
+    "id": 99,
+    "nama_kelompok": "Muatan Lokal",
+    "kurikulum": 0,
+    "created_at": "2017-09-27 00:00:00",
+    "updated_at": "2017-09-27 00:00:00"
+  }
+]

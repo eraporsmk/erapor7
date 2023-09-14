@@ -1,0 +1,12 @@
+body{font-family:Arial; font-size:12px; background-image:url('images/bg2.jpg');
+background-position:left;
+background-repeat:no-repeat;
+background-image-resize: 3;}
+h2,h3{font-family:Arial !important; padding-bottom:-20px;color:#0066FF;}
+table tr td,table tr th{padding:5px;}
+.table th{background-color:#FFFFCC !important}
+.strong {font-weight:bold;}
+.cetakan{
+	font-size:14px;
+	line-height:2em;
+}
