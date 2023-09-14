@@ -26,35 +26,6 @@ class AuthController extends Controller
     }
     public function register(Request $request)
     {
-        $npsn = [
-            '20606817', 
-            '70009413', 
-            '20613916', 
-            '10300825', 
-            '20606899', 
-            '20606247', 
-            '20607928', 
-            '20607928', 
-            '20613916', 
-            '20606247', 
-            '20606905', 
-            '20600458', 
-            '69734356',
-            '20522636',
-            '20536293',
-            '20402840',
-            '30404245',
-            '69754618',
-            '20219231',
-            '69857935',
-        ];
-        if(!in_array(request()->username, $npsn)){
-            return response()->json([
-                'errors'=> [
-                    'username' => ['NPSN tidak terdaftar untuk melakukan uji coba!'],
-                ],
-            ]);
-        }
         $request->validate(
             [
                 'username' => 'required',
