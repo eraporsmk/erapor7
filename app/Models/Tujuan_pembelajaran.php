@@ -35,4 +35,8 @@ class Tujuan_pembelajaran extends Model
         );
         return $this->hasMany(Tp_mapel::class, 'tp_id', 'tp_id');
     }
+    public function tp_pkl()
+    {
+        return $this->hasOne(Tp_pkl::class, 'tp_id', 'tp_id');
+    }
 }

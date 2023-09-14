@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Praktik_kerja_lapangan;
 use App\Models\Rombongan_belajar;
 use App\Models\Dudi;
@@ -11,6 +12,7 @@ use App\Models\Peserta_didik;
 use App\Models\Tujuan_pembelajaran;
 use App\Models\Tp_pkl;
 use App\Models\Pd_pkl;
+use App\Models\Nilai_pkl;
 use App\Models\Anggota_akt_pd;
 
 class PklController extends Controller
@@ -244,7 +246,78 @@ class PklController extends Controller
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
-                'text' => 'Rencana Penilaian PKL dihapus disimpan. Silahkan coba beberapa saat lagi!',
+                'text' => 'Rencana Penilaian PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function get_siswa(){
+        $data = [
+            'siswa' => Peserta_didik::withWhereHas('pd_pkl', function($query){
+                $query->where('pkl_id', request()->pkl_id);
+            })->with(['nilai_pkl' => function($query){
+                $query->where('pkl_id', request()->pkl_id);
+            }])->orderBy('nama')->get(),
+            'tp' => Tujuan_pembelajaran::withWhereHas('tp_pkl', function($query){
+                $query->where('pkl_id', request()->pkl_id);
+            })->orderBy('deskripsi')->get(),
+        ];
+        return response()->json($data);
+    }
+    public function get_pkl(){
+        $data = [
+            'data' => Praktik_kerja_lapangan::where('rombongan_belajar_id', request()->rombongan_belajar_id)->orderBy('created_at')->get(),
+        ];
+        return response()->json($data);
+    }
+    public function simpan_nilai(){
+        request()->validate(
+            [
+                'tingkat' => 'required',
+                'rombongan_belajar_id' => 'required',
+                'pkl_id' => 'required',
+            ],
+            [
+                'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
+                'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
+                'pkl_id.required' => 'DUDI PKL tidak boleh kosong!',
+            ]
+        );
+        $insert = 0;
+        foreach(request()->nilai as $uuid => $nilai){
+            $segments = Str::of($uuid)->split('/[\s#]+/');
+            $peserta_didik_id = $segments->last();
+            $tp_id = $segments->first();
+            Nilai_pkl::updateOrCreate(
+                [
+                    'peserta_didik_id' => $peserta_didik_id,
+                    'pkl_id' => request()->pkl_id,
+                    'tp_id' => $tp_id,
+                ],
+                [
+                    'nilai' => $nilai,
+                ]
+            );
+            $insert++;
+        }
+        foreach(request()->deskripsi as $peserta_didik_id => $deskripsi){
+            $find = Pd_pkl::where('peserta_didik_id', $peserta_didik_id)->where('pkl_id', request()->pkl_id)->first();
+            if($find){
+                $find->deskripsi = $deskripsi;
+                $find->save();
+            }
+        }
+        if($insert){
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => 'Nilai PKL berhasil disimpan',
+            ];
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Nilai PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);

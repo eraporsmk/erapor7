@@ -14,7 +14,7 @@ class Praktik_kerja_lapangan extends Model
 	protected $table = 'praktik_kerja_lapangan';
 	protected $primaryKey = 'pkl_id';
 	protected $guarded = [];
-	protected $appends = ['tanggal_mulai_str', 'tanggal_selesai_str'];
+	protected $appends = ['tanggal_mulai_str', 'tanggal_selesai_str', 'nama_dudi'];
 	public function getTanggalMulaiStrAttribute()
 	{
 		return Carbon::parse($this->attributes['tanggal_mulai'])->translatedFormat('d F Y');
@@ -38,5 +38,19 @@ class Praktik_kerja_lapangan extends Model
 	public function tp_pkl()
 	{
 		return $this->hasMany(Tp_pkl::class, 'pkl_id', 'pkl_id');
+	}
+	public function dudi(){
+		return $this->hasOneThrough(
+            Mou::class,
+            Akt_pd::class,
+            'akt_pd_id',
+            'mou_id',
+            'akt_pd_id',
+            'mou_id'
+        );
+	}
+	public function getNamaDudiAttribute()
+	{
+		return ($this->dudi) ? $this->dudi->nama_dudi : '';
 	}
 }

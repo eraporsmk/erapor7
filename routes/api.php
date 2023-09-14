@@ -226,5 +226,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-tp', [PklController::class, 'get_tp']);
     Route::post('/detil', [PklController::class, 'detil']);
     Route::post('/hapus', [PklController::class, 'hapus']);
+    Route::post('/get-pkl', [PklController::class, 'get_pkl']);
+    Route::post('/get-siswa', [PklController::class, 'get_siswa']);
+    Route::post('/simpan-nilai', [PklController::class, 'simpan_nilai']);
   });
 });
