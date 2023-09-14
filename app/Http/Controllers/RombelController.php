@@ -101,24 +101,28 @@ class RombelController extends Controller
         ]);
     }
     public function simpan_pembelajaran(){
-        $pembelajaran = Pembelajaran::find(request()->pembelajaran_id);
-        $pembelajaran->nama_mata_pelajaran = request()->nama_mata_pelajaran;
-        $pembelajaran->guru_pengajar_id = request()->guru_pengajar_id;
-        $pembelajaran->kelompok_id = request()->kelompok_id;
-        $pembelajaran->no_urut = request()->no_urut;
-        if($pembelajaran->save()){
+        $insert = 0;
+        foreach(request()->nama as $pembelajaran_id => $nama){
+            $pembelajaran = Pembelajaran::find($pembelajaran_id);
+            $pembelajaran->nama_mata_pelajaran = request()->nama[$pembelajaran_id];
+            $pembelajaran->guru_pengajar_id = request()->guru_pengajar_id[$pembelajaran_id];
+            $pembelajaran->kelompok_id = request()->kelompok_id[$pembelajaran_id];
+            $pembelajaran->no_urut = request()->no_urut[$pembelajaran_id];
+            if($pembelajaran->save()){
+                $insert++;
+            }
+        }
+        if($insert){
             $data = [
-                'icon' => 'CoffeeIcon',
-                'variant' => 'success',
+                'icon' => 'success',
                 'title' => 'Berhasil',
-                'text' => 'Pembelajaran '.request()->nama_mata_pelajaran.' berhasil disimpan',
+                'text' => 'Pembelajaran berhasil disimpan',
             ];
         } else {
             $data = [
-                'icon' => 'XOctagonIcon',
-                'variant' => 'error',
+                'icon' => 'error',
                 'title' => 'Gagal',
-                'text' => 'Pembelajaran gagal '.request()->nama_mata_pelajaran.' disimpan. Silahkan coba beberapa saat lagi!',
+                'text' => 'Pembelajaran gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);

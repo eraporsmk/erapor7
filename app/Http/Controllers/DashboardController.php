@@ -144,7 +144,7 @@ class DashboardController extends Controller
           $query->where('guru_id', request()->guru_id);
           $query->whereNotNull('kelompok_id');
           $query->whereNotNull('no_urut');
-          $query->whereNull('induk_pembelajaran_id');
+          //$query->whereNull('induk_pembelajaran_id');
           $query->orderBy('mata_pelajaran_id');
           $query->withCount([
             'anggota_rombel',
@@ -154,7 +154,7 @@ class DashboardController extends Controller
           $query->where('sekolah_id', request()->sekolah_id);
           $query->whereNotNull('kelompok_id');
           $query->whereNotNull('no_urut');
-          $query->whereNull('induk_pembelajaran_id');
+          //$query->whereNull('induk_pembelajaran_id');
           $query->orderBy('mata_pelajaran_id');
           $query->withCount([
             'anggota_rombel',
