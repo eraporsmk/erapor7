@@ -324,13 +324,13 @@ class ReferensiController extends Controller
                 $query->where('guru_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
-                $query->whereNull('induk_pembelajaran_id');
+                //$query->whereNull('induk_pembelajaran_id');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
                 $query->orWhere('guru_pengajar_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
-                $query->whereNull('induk_pembelajaran_id');
+                //$query->whereNull('induk_pembelajaran_id');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
             });
@@ -346,14 +346,14 @@ class ReferensiController extends Controller
                     $query->where('guru_id', request()->guru_id);
                     $query->whereNotNull('kelompok_id');
                     $query->whereNotNull('no_urut');
-                    $query->whereNull('induk_pembelajaran_id');
+                    //$query->whereNull('induk_pembelajaran_id');
                     $query->where('sekolah_id', request()->sekolah_id);
                     $query->where('semester_id', request()->semester_id);
                     $query->orWhere('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
                     $query->where('guru_pengajar_id', request()->guru_id);
                     $query->whereNotNull('kelompok_id');
                     $query->whereNotNull('no_urut');
-                    $query->whereNull('induk_pembelajaran_id');
+                    //$query->whereNull('induk_pembelajaran_id');
                     $query->where('sekolah_id', request()->sekolah_id);
                     $query->where('semester_id', request()->semester_id);
                 });
@@ -660,7 +660,7 @@ class ReferensiController extends Controller
             $query->where('guru_id', request()->guru_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereNull('induk_pembelajaran_id');
+            //$query->whereNull('induk_pembelajaran_id');
             if(request()->add_kd){
                 $query->whereHas('rombongan_belajar', function($query){
                     $query->whereHas('kurikulum', function($query){
@@ -681,7 +681,7 @@ class ReferensiController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereNull('induk_pembelajaran_id');
+            //$query->whereNull('induk_pembelajaran_id');
             if(request()->add_kd){
                 $query->whereHas('rombongan_belajar', function($query){
                     $query->whereHas('kurikulum', function($query){
