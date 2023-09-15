@@ -43,14 +43,14 @@ class PenilaianController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereNull('induk_pembelajaran_id');
+            //$query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', request()->guru_id);
             if(request()->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
-            $query->whereNull('induk_pembelajaran_id');
+            //$query->whereNull('induk_pembelajaran_id');
         };
     }
     public function get_rombel(){
