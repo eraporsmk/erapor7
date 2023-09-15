@@ -76,15 +76,15 @@
     </tr>
     <tr>
       <td>Sakit </td>
-      <td>: ..... hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->sakit??0 : '.....' }} hari</td>
     </tr>
     <tr>
       <td>Ijin </td>
-      <td>: ..... hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->izin??0 : '.....' }} hari</td>
     </tr>
     <tr>
       <td>Tanpa Keterangan </td>
-      <td>: ..... hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->alpa??0 : '.....' }} hari</td>
     </tr>
   </table>
   <table width="100%">

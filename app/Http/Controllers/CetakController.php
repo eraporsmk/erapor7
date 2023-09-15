@@ -571,10 +571,12 @@ class CetakController extends Controller
 				$query->with(['tp']);
 				$query->where('pkl_id', request()->route('pkl_id'));
 			},
+			'absensi_pkl' => function($query){
+				$query->where('pkl_id', request()->route('pkl_id'));
+			}
 		])->find(request()->route('peserta_didik_id'));
         $data = [
-        	'foo' => 'bar',
-			'pd' => $pd,
+        	'pd' => $pd,
         ];
 		$pdf = PDF::loadView('cetak.rapor-pkl', $data);
         $pdf->getMpdf()->defaultfooterfontsize=7;

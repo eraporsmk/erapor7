@@ -40,51 +40,48 @@
                 </b-overlay>
               </b-form-group>
             </b-col>
-            <b-col cols="12" v-if="show && data_siswa.length">
-              <b-table-simple bordered striped responsive>
-                <b-thead>
-                  <b-tr>
-                    <b-th class="text-center">No</b-th>
-                    <b-th class="text-center">Nama Peserta Didik</b-th>
-                    <b-th class="text-center">NISN</b-th>
-                    <b-th class="text-center">Tujuan Pembelajaran</b-th>
-                    <b-th class="text-center">Nilai</b-th>
-                    <b-th class="text-center">Deskripsi</b-th>
-                  </b-tr>
-                  <!--b-tr>
-                    <template v-for="(tp, index) in data_tp">
-                      <b-th class="text-center" style="font-style: normal;">
-                        <a href="javascript:void(0)" v-b-tooltip.hover.html="tp.deskripsi">{{index + 1}}</a>
-                      </b-th>
-                    </template>
-                  </b-tr-->
-                </b-thead>
-                <b-tbody>
-                  <template v-for="(siswa, index) in data_siswa">
-                    <b-tr>
-                      <b-td class="text-center" :rowspan="data_tp.length + 2" style="vertical-align: top;">{{index + 1}}</b-td>
-                      <b-td :rowspan="data_tp.length + 2" style="vertical-align: top;">{{siswa.nama}}</b-td>
-                      <b-td :rowspan="data_tp.length + 2" class="text-center" style="vertical-align: top;">{{siswa.nisn}}</b-td>
-                    </b-tr>
-                    <template v-for="(tp, i) in data_tp">
+            <b-col cols="12">
+              <b-overlay :show="loading_siswa" opacity="0.6" size="md" spinner-variant="secondary">
+                <template v-if="show && data_siswa.length">
+                  <b-table-simple bordered striped responsive>
+                    <b-thead>
                       <b-tr>
-                        <b-td>{{ tp.deskripsi }}</b-td>
-                        <b-td>
-                          <b-form-input v-model="form.nilai[`${tp.tp_id}#${siswa.peserta_didik_id}`]" />
-                        </b-td>
-                        <b-td>
-                          <b-form-input v-model="form.deskripsi[`${tp.tp_id}#${siswa.peserta_didik_id}`]" placeholder="Deskripsi ..." />
-                        </b-td>
+                        <b-th class="text-center">No</b-th>
+                        <b-th class="text-center">Nama Peserta Didik</b-th>
+                        <b-th class="text-center">NISN</b-th>
+                        <b-th class="text-center">Tujuan Pembelajaran</b-th>
+                        <b-th class="text-center">Nilai</b-th>
+                        <b-th class="text-center">Deskripsi</b-th>
                       </b-tr>
-                    </template>
-                    <b-tr>
-                      <b-td colspan="3">
-                        <b-form-textarea title="Catatan PKL..." placeholder="Catatan PKL..." v-model="form.catatan[siswa.peserta_didik_id]"></b-form-textarea>
-                      </b-td>
-                    </b-tr>
-                  </template>
-                </b-tbody>
-              </b-table-simple>
+                    </b-thead>
+                    <b-tbody>
+                      <template v-for="(siswa, index) in data_siswa">
+                        <b-tr>
+                          <b-td class="text-center" :rowspan="data_tp.length + 2" style="vertical-align: top;">{{index + 1}}</b-td>
+                          <b-td :rowspan="data_tp.length + 2" style="vertical-align: top;">{{siswa.nama}}</b-td>
+                          <b-td :rowspan="data_tp.length + 2" class="text-center" style="vertical-align: top;">{{siswa.nisn}}</b-td>
+                        </b-tr>
+                        <template v-for="(tp, i) in data_tp">
+                          <b-tr>
+                            <b-td>{{ tp.deskripsi }}</b-td>
+                            <b-td>
+                              <b-form-input v-model="form.nilai[`${tp.tp_id}#${siswa.peserta_didik_id}`]" />
+                            </b-td>
+                            <b-td>
+                              <b-form-input v-model="form.deskripsi[`${tp.tp_id}#${siswa.peserta_didik_id}`]" placeholder="Deskripsi ..." />
+                            </b-td>
+                          </b-tr>
+                        </template>
+                        <b-tr>
+                          <b-td colspan="3">
+                            <b-form-textarea title="Catatan PKL..." placeholder="Catatan PKL..." v-model="form.catatan[siswa.peserta_didik_id]"></b-form-textarea>
+                          </b-td>
+                        </b-tr>
+                      </template>
+                    </b-tbody>
+                  </b-table-simple>
+                </template>
+              </b-overlay>
             </b-col>
             <b-col cols="12" v-if="show && !data_siswa.length">
               <p class="text-center">Rencana penilaian PKL tidak ditemukan!</p>
@@ -103,12 +100,10 @@
 
 <script>
 import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, VBTooltip} from 'bootstrap-vue'
-import Formulir from './../components/Formulir.vue'
 import vSelect from 'vue-select'
 export default {
   components: {
     vSelect,
-    Formulir,
     BCard,
     BCardBody,
     BOverlay,

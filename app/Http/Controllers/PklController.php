@@ -13,6 +13,7 @@ use App\Models\Tujuan_pembelajaran;
 use App\Models\Tp_pkl;
 use App\Models\Pd_pkl;
 use App\Models\Nilai_pkl;
+use App\Models\Absensi_pkl;
 use App\Models\Anggota_akt_pd;
 
 class PklController extends Controller
@@ -255,9 +256,14 @@ class PklController extends Controller
         $data = [
             'siswa' => Peserta_didik::withWhereHas('pd_pkl', function($query){
                 $query->where('pkl_id', request()->pkl_id);
-            })->with(['nilai_pkl' => function($query){
-                $query->where('pkl_id', request()->pkl_id);
-            }])->orderBy('nama')->get(),
+            })->with([
+                'nilai_pkl' => function($query){
+                    $query->where('pkl_id', request()->pkl_id);
+                },
+                'absensi_pkl' => function($query){
+                    $query->where('pkl_id', request()->pkl_id);
+                }
+            ])->orderBy('nama')->get(),
             'tp' => Tujuan_pembelajaran::withWhereHas('tp_pkl', function($query){
                 $query->where('pkl_id', request()->pkl_id);
             })->orderBy('deskripsi')->get(),
@@ -319,6 +325,49 @@ class PklController extends Controller
                 'icon' => 'error',
                 'title' => 'Gagal!',
                 'text' => 'Nilai PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function simpan_absensi(){
+        request()->validate(
+            [
+                'tingkat' => 'required',
+                'rombongan_belajar_id' => 'required',
+                'pkl_id' => 'required',
+            ],
+            [
+                'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
+                'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
+                'pkl_id.required' => 'DUDI PKL tidak boleh kosong!',
+            ]
+        );
+        $insert = 0;
+        foreach(request()->sakit as $peserta_didik_id => $sakit){
+            Absensi_pkl::updateOrCreate(
+                [
+                    'peserta_didik_id' => $peserta_didik_id,
+                    'pkl_id' => request()->pkl_id,
+                ],
+                [
+                    'sakit' => $sakit,
+                    'izin' => request()->izin[$peserta_didik_id],
+                    'alpa' => request()->alpa[$peserta_didik_id],
+                ]
+            );
+            $insert++;
+        }
+        if($insert){
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => 'Kehadiran PKL berhasil disimpan',
+            ];
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Kehadiran PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);

@@ -229,6 +229,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-pkl', [PklController::class, 'get_pkl']);
     Route::post('/get-siswa', [PklController::class, 'get_siswa']);
     Route::post('/simpan-nilai', [PklController::class, 'simpan_nilai']);
+    Route::post('/simpan-absensi', [PklController::class, 'simpan_absensi']);
     Route::get('/rapor', [PklController::class, 'cetak_rapor']);
   });
 });
