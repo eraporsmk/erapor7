@@ -37,47 +37,57 @@
           </b-col>
           <b-col cols="12">
             <b-form-group label="Rombongan Belajar" label-for="rombongan_belajar_id" label-cols-md="3" :invalid-feedback="rombongan_belajar_id_feedback" :state="rombongan_belajar_id_state">
-              <v-select id="rombongan_belajar_id" v-model="rombongan_belajar_id" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="data_rombel" placeholder="== Pilih Rombongan Belajar ==" @input="changeRombel" :state="rombongan_belajar_id_state">
-                <template #no-options="{ search, searching, loading }">
-                  Tidak ada data untuk ditampilkan
-                </template>
-              </v-select>
+              <b-overlay :show="loading_rombel" rounded opacity="0.6" size="lg" spinner-variant="secondary">
+                <v-select id="rombongan_belajar_id" v-model="rombongan_belajar_id" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="data_rombel" placeholder="== Pilih Rombongan Belajar ==" @input="changeRombel" :state="rombongan_belajar_id_state">
+                  <template #no-options="{ search, searching, loading }">
+                    Tidak ada data untuk ditampilkan
+                  </template>
+                </v-select>
+              </b-overlay>
             </b-form-group>
           </b-col>
           <b-col cols="12">
             <b-form-group label="Mata Pelajaran" label-for="mata_pelajaran_id" label-cols-md="3" :invalid-feedback="mata_pelajaran_id_feedback" :state="mata_pelajaran_id_state">
-              <v-select id="mata_pelajaran_id" v-model="mata_pelajaran_id" :reduce="nama_mata_pelajaran => nama_mata_pelajaran.mata_pelajaran_id" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" @input="changeMapel" :state="mata_pelajaran_id_state">
-                <template #no-options="{ search, searching, loading }">
-                  Tidak ada data untuk ditampilkan
-                </template>
-              </v-select>
+              <b-overlay :show="loading_mapel" rounded opacity="0.6" size="lg" spinner-variant="secondary">
+                <v-select id="mata_pelajaran_id" v-model="mata_pelajaran_id" :reduce="nama_mata_pelajaran => nama_mata_pelajaran.mata_pelajaran_id" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" @input="changeMapel" :state="mata_pelajaran_id_state">
+                  <template #no-options="{ search, searching, loading }">
+                    Tidak ada data untuk ditampilkan
+                  </template>
+                </v-select>
+              </b-overlay>
             </b-form-group>
           </b-col>
           <b-col cols="12" v-show="show_cp">
             <b-form-group label="Capaian Pembelajaran (CP)" label-for="cp_id" label-cols-md="3" :invalid-feedback="cp_id_feedback" :state="cp_id_state">
-              <v-select id="cp_id" v-model="cp_id" :reduce="deskripsi => deskripsi.cp_id" label="deskripsi" :options="data_cp" placeholder="== Pilih Capaian Pembelajaran (CP) ==" :state="cp_id_state" @input="changeCp">
-                <template #no-options="{ search, searching, loading }">
-                  Tidak ada data untuk ditampilkan
-                </template>
-              </v-select>
+              <b-overlay :show="loading_cp" rounded opacity="0.6" size="lg" spinner-variant="secondary">
+                <v-select id="cp_id" v-model="cp_id" :reduce="deskripsi => deskripsi.cp_id" label="deskripsi" :options="data_cp" placeholder="== Pilih Capaian Pembelajaran (CP) ==" :state="cp_id_state" @input="changeCp">
+                  <template #no-options="{ search, searching, loading }">
+                    Tidak ada data untuk ditampilkan
+                  </template>
+                </v-select>
+              </b-overlay>
             </b-form-group>
           </b-col>
           <b-col cols="12" v-show="show_kd">
             <b-form-group label="Kompetensi" label-for="kompetensi_id" label-cols-md="3" :invalid-feedback="kompetensi_id_feedback" :state="kompetensi_id_state">
-              <v-select id="kompetensi_id" v-model="kompetensi_id" :reduce="nama => nama.id" label="nama" :options="data_kompetensi" placeholder="== Pilih Kompetensi ==" :searchable="false" :state="kompetensi_id_state" @input="changeKompetensi">
-                <template #no-options="{ search, searching, loading }">
-                  Tidak ada data untuk ditampilkan
-                </template>
-              </v-select>
+              <b-overlay :show="loading_kompetensi" rounded opacity="0.6" size="lg" spinner-variant="secondary">
+                <v-select id="kompetensi_id" v-model="kompetensi_id" :reduce="nama => nama.id" label="nama" :options="data_kompetensi" placeholder="== Pilih Kompetensi ==" :searchable="false" :state="kompetensi_id_state" @input="changeKompetensi">
+                  <template #no-options="{ search, searching, loading }">
+                    Tidak ada data untuk ditampilkan
+                  </template>
+                </v-select>
+              </b-overlay>
             </b-form-group>
           </b-col>
           <b-col cols="12" v-show="show_kd">
             <b-form-group label="Kompetensi Dasar (KD)" label-for="kd_id" label-cols-md="3" :invalid-feedback="kd_id_feedback" :state="kd_id_state">
-              <v-select id="kd_id" v-model="kd_id" :reduce="kompetensi_dasar => kompetensi_dasar.kompetensi_dasar_id" label="kompetensi_dasar" :options="data_kd" placeholder="== Pilih Kompetensi Dasar (KD) ==" :state="kd_id_state" @input="changeKd">
-                <template #no-options="{ search, searching, loading }">
-                  Tidak ada data untuk ditampilkan
-                </template>
-              </v-select>
+              <b-overlay :show="loading_kd" rounded opacity="0.6" size="lg" spinner-variant="secondary">
+                <v-select id="kd_id" v-model="kd_id" :reduce="kompetensi_dasar => kompetensi_dasar.kompetensi_dasar_id" label="kompetensi_dasar" :options="data_kd" placeholder="== Pilih Kompetensi Dasar (KD) ==" :state="kd_id_state" @input="changeKd">
+                  <template #no-options="{ search, searching, loading }">
+                    Tidak ada data untuk ditampilkan
+                  </template>
+                </v-select>
+              </b-overlay>
             </b-form-group>
           </b-col>
           <b-col cols="12" class="mb-5" v-show="show">
@@ -142,6 +152,10 @@ export default {
   data() {
     return {
       loading_rombel: false,
+      loading_mapel: false,
+      loading_kompetensi: false,
+      loading_cp: false,
+      loading_kd: false,
       loading: false,
       loading_modal: false,
       isBusy: true,
@@ -283,59 +297,66 @@ export default {
       this.mata_pelajaran_id = ''
       this.show_kd = false
       this.show_cp = false
-      this.loading_modal = true
-      this.$http.post('/referensi/get-rombel', {
-        tingkat: val,
-        guru_id: this.user.guru_id,
-        sekolah_id: this.user.sekolah_id,
-        semester_id: this.user.semester.semester_id,
-      }).then(response => {
-        this.loading_modal = false
-        let getData = response.data
-        this.data_rombel = getData.data
-      }).catch(error => {
-        console.log(error);
-      })
+      if(val){
+        this.loading_rombel = true
+        this.$http.post('/referensi/get-rombel', {
+          tingkat: val,
+          guru_id: this.user.guru_id,
+          sekolah_id: this.user.sekolah_id,
+          semester_id: this.user.semester.semester_id,
+        }).then(response => {
+          this.loading_rombel = false
+          let getData = response.data
+          this.data_rombel = getData.data
+        }).catch(error => {
+          console.log(error);
+        })
+      }
     },
     changeRombel(val){
       this.show = false
       this.mata_pelajaran_id = ''
-      this.loading_modal = true
-      this.$http.post('/referensi/get-mapel', {
-        rombongan_belajar_id: val,
-        guru_id: this.user.guru_id,
-        sekolah_id: this.user.sekolah_id,
-        semester_id: this.user.semester.semester_id,
-      }).then(response => {
-        this.loading_modal = false
-        let getData = response.data
-        this.data_mapel = getData.data
-        this.merdeka = getData.merdeka
-      }).catch(error => {
-        console.log(error);
-      })
+      this.loading_mapel = true
+      if(val){
+        this.$http.post('/referensi/get-mapel', {
+          rombongan_belajar_id: val,
+          guru_id: this.user.guru_id,
+          sekolah_id: this.user.sekolah_id,
+          semester_id: this.user.semester.semester_id,
+        }).then(response => {
+          this.loading_mapel = false
+          let getData = response.data
+          this.data_mapel = getData.data
+          this.merdeka = getData.merdeka
+        }).catch(error => {
+          console.log(error);
+        })
+      }
     },
     changeMapel(val){
       this.show = false
-      this.loading_modal = true
-      this.$http.post('/referensi/get-cp-tp', {
-        merdeka: this.merdeka,
-        mata_pelajaran_id: val,
-        rombongan_belajar_id: this.rombongan_belajar_id,
-        guru_id: this.user.guru_id,
-        sekolah_id: this.user.sekolah_id,
-        semester_id: this.user.semester.semester_id,
-      }).then(response => {
-        this.loading_modal = false
-        let getData = response.data
-        this.data_cp = getData.data_cp
-        this.data_kd = getData.data_kd
-        this.show_kd = getData.show_kd
-        this.show_cp = getData.show_cp
-        this.pembelajaran_id = getData.pembelajaran_id
-      }).catch(error => {
-        console.log(error);
-      })
+      if(val){
+        this.loading_modal = true
+        this.$http.post('/referensi/get-cp-tp', {
+          tingkat: this.tingkat,
+          merdeka: this.merdeka,
+          mata_pelajaran_id: val,
+          rombongan_belajar_id: this.rombongan_belajar_id,
+          guru_id: this.user.guru_id,
+          sekolah_id: this.user.sekolah_id,
+          semester_id: this.user.semester.semester_id,
+        }).then(response => {
+          this.loading_modal = false
+          let getData = response.data
+          this.data_cp = getData.data_cp
+          this.data_kd = getData.data_kd
+          this.show_kd = getData.show_kd
+          this.show_cp = getData.show_cp
+          this.pembelajaran_id = getData.pembelajaran_id
+        }).catch(error => {
+          console.log(error);
+        })
+      }
     },
     changeKompetensi(val){
       this.show = false

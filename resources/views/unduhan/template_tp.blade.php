@@ -6,11 +6,11 @@
 		@if($cp)
 		<tr>
 			<th colspan="2">Nama Mata Pelajaran</th>
-			<th>{{$cp->pembelajaran->nama_mata_pelajaran}}</th>
+			<th>{{$pembelajaran->nama_mata_pelajaran}}</th>
 		</tr>
 		<tr>
 			<th colspan="2">Kode Mata Pelajaran</th>
-			<th>{{$cp->pembelajaran->mata_pelajaran_id}}</th>
+			<th>{{$pembelajaran->mata_pelajaran_id}}</th>
 		</tr>
 		<tr>
 			<th colspan="2">Capaian Pembelajaran</th>
@@ -24,11 +24,11 @@
 		@if($kd)
 		<tr>
 			<th colspan="2">Nama Mata Pelajaran</th>
-			<th>{{$kd->pembelajaran->nama_mata_pelajaran}}</th>
+			<th>{{$pembelajaran->nama_mata_pelajaran}}</th>
 		</tr>
 		<tr>
 			<th colspan="2">Kode Mata Pelajaran</th>
-			<th>{{$kd->pembelajaran->mata_pelajaran_id}}</th>
+			<th>{{$pembelajaran->mata_pelajaran_id}}</th>
 		</tr>
 		<tr>
 			<th colspan="2">Kompetensi Dasar</th>

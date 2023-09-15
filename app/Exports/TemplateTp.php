@@ -49,9 +49,11 @@ class TemplateTp implements FromView, WithColumnWidths, WithEvents
         ];
     }
 
-    public function query($id)
+    public function query($id, $pembelajaran, $rombongan_belajar)
     {
         $this->id = $id;
+        $this->pembelajaran = $pembelajaran;
+        $this->rombongan_belajar = $rombongan_belajar;
         return $this;
     }
 	public function view(): View
@@ -59,13 +61,15 @@ class TemplateTp implements FromView, WithColumnWidths, WithEvents
         $cp = NULL;
         $kd = NULL;
         if(Str::isUuid($this->id)){
-            $kd = Kompetensi_dasar::with(['pembelajaran'])->find($this->id);
+            $kd = Kompetensi_dasar::find($this->id);
         } else {
-            $cp = Capaian_pembelajaran::with(['pembelajaran.rombongan_belajar'])->find($this->id);
+            $cp = Capaian_pembelajaran::find($this->id);
         }
         $params = [
 			'cp' => $cp,
-            'kd' => $kd
+            'kd' => $kd,
+            'pembelajaran' => $this->pembelajaran,
+            'rombongan_belajar' => $this->rombongan_belajar,
         ];
         return view('unduhan.template_tp', $params);
     }

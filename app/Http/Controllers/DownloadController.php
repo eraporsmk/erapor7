@@ -121,13 +121,13 @@ class DownloadController extends Controller
 				$nama_file = 'Template TP Mata Pelajaran ' . $pembelajaran->nama_mata_pelajaran . ' Kelas '.$rombongan_belajar->nama;
 				$nama_file = clean($nama_file);
 				$nama_file = $nama_file . '.xlsx';
-				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);
+				return (new TemplateTp)->query(request()->route('id'), $pembelajaran, $rombongan_belajar)->download($nama_file);
 			} else {
 				$cp = Capaian_pembelajaran::with(['pembelajaran'])->find(request()->route('id'));
 				$nama_file = 'Template TP Mata Pelajaran ' . $pembelajaran->nama_mata_pelajaran. ' Kelas '.$rombongan_belajar->nama;
 				$nama_file = clean($nama_file);
 				$nama_file = $nama_file . '.xlsx';
-				return (new TemplateTp)->query(request()->route('id'))->download($nama_file);
+				return (new TemplateTp)->query(request()->route('id'), $pembelajaran, $rombongan_belajar)->download($nama_file);
 			}
 		} else {
 			echo 'Akses tidak sah!';

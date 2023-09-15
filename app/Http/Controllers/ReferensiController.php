@@ -493,6 +493,10 @@ class ReferensiController extends Controller
     }
     public function get_cp_tp(){
         $pembelajaran = Pembelajaran::where(function($query){
+            $query->where('guru_id', request()->guru_id);
+            $query->where('mata_pelajaran_id', request()->mata_pelajaran_id);
+            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            $query->orWhere('guru_pengajar_id', request()->guru_id);
             $query->where('mata_pelajaran_id', request()->mata_pelajaran_id);
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->first();
