@@ -655,6 +655,23 @@ class RefCP extends Command
                 }
             }
         });
+        Mata_pelajaran::firstOrCreate(
+            [
+                'mata_pelajaran_id' => 800001000,
+            ],
+            [
+                'nama' => 'Praktik Kerja Lapangan',
+                'pilihan_sekolah' => '1',
+                'pilihan_buku' => '0',
+                'pilihan_kepengawasan' => '0',
+                'pilihan_evaluasi' => '0',
+                'jurusan_id' => NULL,
+                'created_at' => '2023-08-12 21:56:13',
+                'updated_at' => '2023-08-12 21:58:34',
+                'deleted_at' => NULL,
+                'last_sync' => '2023-07-13 21:58:34',
+            ]
+        );
         $data = (new FastExcel)->import(public_path('templates/ref_cp_pkl.xlsx'), function ($line) {
             $mapel = Mata_pelajaran::find($line['mata_pelajaran_id']);
             if($mapel){
