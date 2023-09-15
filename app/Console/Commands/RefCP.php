@@ -655,5 +655,29 @@ class RefCP extends Command
                 }
             }
         });
+        $data = (new FastExcel)->import(public_path('templates/ref_cp_pkl.xlsx'), function ($line) {
+            $mapel = Mata_pelajaran::find($line['mata_pelajaran_id']);
+            if($mapel){
+                $count = Capaian_pembelajaran::orderBy('cp_id', 'DESC')->first();
+                $id = $count->cp_id + 1;
+                Capaian_pembelajaran::updateOrCreate(
+                    [
+                        'mata_pelajaran_id' => $line['mata_pelajaran_id'],
+                        'fase' => $line['fase'],
+                        'elemen' => $line['elemen'],
+                        'deskripsi' => $line['deskripsi'],
+                    ],
+                    [
+                        'cp_id' => $id,
+                        'created_at' => Carbon::create('2022', '07', '01', '00', '00', '01'),
+                        'updated_at' => now(),
+                        'last_sync' => now(),
+                        'is_dir' => 1,
+                    ]
+                );
+            } else {
+                $this->info($line['mata_pelajaran_id'] . ' belum tersedia');
+            }
+        });
     }
 }
