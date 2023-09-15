@@ -53,4 +53,8 @@ class Praktik_kerja_lapangan extends Model
 	{
 		return ($this->dudi) ? $this->dudi->nama_dudi : '';
 	}
+	public function guru()
+	{
+		return $this->belongsTo(Guru::class, 'guru_id', 'guru_id');
+	}
 }

@@ -462,3 +462,6 @@ function get_fase($tingkat){
     }
     return $fase;
 }
+function hasRole($roles, $team){
+    return auth()->user()->hasRole($roles, $team);
+}

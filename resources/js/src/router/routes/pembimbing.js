@@ -43,4 +43,42 @@ export default [
       ],
     },
   },
+  {
+    path: '/pkl/kehadiran',
+    name: 'pkl-kehadiran',
+    component: () => import('@/views/pkl/Kehadiran.vue'),
+    meta: {
+      resource: 'Pkl',
+      action: 'read',
+      pageTitle: 'Kehadiran',
+      breadcrumb: [
+        {
+          text: 'Praktik Kerja Lapangan',
+        },
+        {
+          text: 'Kehadiran',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/pkl/cetak-rapor',
+    name: 'pkl-rapor',
+    component: () => import('@/views/pkl/CetakRapor.vue'),
+    meta: {
+      resource: 'Pkl',
+      action: 'read',
+      pageTitle: 'Cetak Rapor',
+      breadcrumb: [
+        {
+          text: 'Praktik Kerja Lapangan',
+        },
+        {
+          text: 'Cetak Rapor',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

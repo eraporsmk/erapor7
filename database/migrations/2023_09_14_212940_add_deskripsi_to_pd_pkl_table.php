@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('pd_pkl', function (Blueprint $table) {
-            $table->text('deskripsi')->nullable();
+            $table->text('catatan')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('pd_pkl', function (Blueprint $table) {
-            $table->dropColumn('deskripsi');
+            $table->dropColumn('catatan');
         });
     }
 };

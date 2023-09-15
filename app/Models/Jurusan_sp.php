@@ -23,4 +23,8 @@ class Jurusan_sp extends Model
 	public function paket_ukk(){
 		return $this->hasMany(Paket_ukk::class, 'jurusan_id', 'jurusan_id');
 	}
+	public function jurusan()
+	{
+		return $this->belongsTo(Jurusan::class, 'jurusan_id', 'jurusan_id');
+	}
 }

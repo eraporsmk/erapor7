@@ -35,6 +35,12 @@
             <b-dropdown-item href="javascript:" @click="aksi(row.item.pkl_id, 'hapus')"><font-awesome-icon icon="fa-solid fa-trash" /> Hapus Data</b-dropdown-item>
           </b-dropdown>
         </template>
+        <template v-slot:cell(rombel)="row">
+          {{row.item.kelas.nama}}
+        </template>
+        <template v-slot:cell(cetak)="row">
+          <b-button size="sm" variant="primary" @click="cetakPkl(row.item.peserta_didik_id, row.item.pd_pkl.pkl_id)">Cetak Rapor</b-button>
+        </template>
       </b-table>
     </b-overlay>
     <b-row class="mt-2">
@@ -123,6 +129,9 @@ export default {
     search: _.debounce(function (e) {
       this.$emit('search', e)
     }, 500),
+    cetakPkl(peserta_didik_id, pkl_id){
+      window.open(`/cetak/rapor-pkl/${peserta_didik_id}/${pkl_id}/${this.user.guru_id}/${this.user.semester.semester_id}`, `_blank`);
+    },
   },
 }
 </script>

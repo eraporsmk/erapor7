@@ -454,20 +454,30 @@ class ReferensiController extends Controller
         $callback = function($query){
             $query->whereHas('cp', function($query){
                 $query->whereHas('pembelajaran', function($query){
-                    $query->where('guru_id', request()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->where('sekolah_id', request()->sekolah_id);
-                    $query->where('semester_id', request()->semester_id);
-                    //if(request()->q){
-                        //$query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');                
-                    //}
-                    $query->orWhere('guru_pengajar_id', request()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->where('sekolah_id', request()->sekolah_id);
-                    $query->where('semester_id', request()->semester_id);
-                    //if(request()->q){
-                        //$query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');                
-                    //}
+                    if(hasRole('pembimbing', request()->periode_aktif)){
+                        $query->where('guru_id', request()->guru_id);
+                        $query->where('mata_pelajaran_id', '800001000');
+                        $query->orWhere('guru_id', request()->guru_id);
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', request()->sekolah_id);
+                        $query->where('semester_id', request()->semester_id);
+                        $query->orWhere('guru_pengajar_id', request()->guru_id);
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', request()->sekolah_id);
+                        $query->where('semester_id', request()->semester_id);
+                    } else {
+                        $query->where('guru_id', request()->guru_id);
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', request()->sekolah_id);
+                        $query->where('semester_id', request()->semester_id);
+                        //if(request()->q){
+                            //$query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');                
+                        //}
+                        $query->orWhere('guru_pengajar_id', request()->guru_id);
+                        $query->whereNotNull('kelompok_id');
+                        $query->where('sekolah_id', request()->sekolah_id);
+                        $query->where('semester_id', request()->semester_id);
+                    }
                 });
             });
             $query->orWhereHas('kd', function($query){
@@ -661,44 +671,88 @@ class ReferensiController extends Controller
             if(request()->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             }
-            $query->where('guru_id', request()->guru_id);
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
-            //$query->whereNull('induk_pembelajaran_id');
-            if(request()->add_kd){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->whereHas('kurikulum', function($query){
-                        $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+            if(hasRole('pembimbing', request()->periode_aktif)){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('mata_pelajaran_id', '800001000');
+                $query->orWhere('guru_id', request()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                if(request()->add_kd){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                        });
                     });
-                });
-            }
-            if(request()->add_cp){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->whereHas('kurikulum', function($query){
-                        $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                }
+                if(request()->add_cp){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                        });
                     });
-                });
-            }
-            $query->orWhere('guru_pengajar_id', request()->guru_id);
-            if(request()->rombongan_belajar_id){
-                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
-            }
-            $query->whereNotNull('kelompok_id');
-            $query->whereNotNull('no_urut');
-            //$query->whereNull('induk_pembelajaran_id');
-            if(request()->add_kd){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->whereHas('kurikulum', function($query){
-                        $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                }
+                $query->orWhere('guru_pengajar_id', request()->guru_id);
+                if(request()->rombongan_belajar_id){
+                    $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                }
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                if(request()->add_kd){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                        });
                     });
-                });
-            } 
-            if(request()->add_cp){
-                $query->whereHas('rombongan_belajar', function($query){
-                    $query->whereHas('kurikulum', function($query){
-                        $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                } 
+                if(request()->add_cp){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                        });
                     });
-                });
+                }
+            } else {
+                $query->where('guru_id', request()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                if(request()->add_kd){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                        });
+                    });
+                }
+                if(request()->add_cp){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                        });
+                    });
+                }
+                $query->orWhere('guru_pengajar_id', request()->guru_id);
+                if(request()->rombongan_belajar_id){
+                    $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                }
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                if(request()->add_kd){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%REV%');
+                        });
+                    });
+                } 
+                if(request()->add_cp){
+                    $query->whereHas('rombongan_belajar', function($query){
+                        $query->whereHas('kurikulum', function($query){
+                            $query->where('nama_kurikulum', 'ILIKE', '%Merdeka%');
+                        });
+                    });
+                }
             }
         };
     }

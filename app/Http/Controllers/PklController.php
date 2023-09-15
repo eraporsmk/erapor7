@@ -296,14 +296,15 @@ class PklController extends Controller
                 ],
                 [
                     'nilai' => $nilai,
+                    'deskripsi' => request()->deskripsi[$uuid]
                 ]
             );
             $insert++;
         }
-        foreach(request()->deskripsi as $peserta_didik_id => $deskripsi){
+        foreach(request()->catatan as $peserta_didik_id => $catatan){
             $find = Pd_pkl::where('peserta_didik_id', $peserta_didik_id)->where('pkl_id', request()->pkl_id)->first();
             if($find){
-                $find->deskripsi = $deskripsi;
+                $find->catatan = $catatan;
                 $find->save();
             }
         }
@@ -322,4 +323,24 @@ class PklController extends Controller
         }
         return response()->json($data);
     }
+    public function cetak_rapor(){
+        $data = Peserta_didik::withWhereHas('pd_pkl', function($query){
+            $query->withWhereHas('praktik_kerja_lapangan', function($query){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })->withWhereHas('nilai_pkl', function($query){
+            $query->withWhereHas('praktik_kerja_lapangan', function($query){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })->with(['kelas' => function($query){
+            $query->where('jenis_rombel', 1);
+            $query->where('rombongan_belajar.semester_id', request()->semester_id);
+        }])->orderBy(request()->sortby, request()->sortbydesc)
+        ->when(request()->q, function($query){
+            $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+        })->paginate(request()->per_page);
+        return response()->json(['status' => 'success', 'data' => $data]);
+    }    
 }

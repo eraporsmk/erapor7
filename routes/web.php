@@ -20,6 +20,15 @@ Route::group(['prefix' => 'cetak'], function () {
     Route::group(['prefix' => 'berita-acara'], function () {
         Route::get('/{jenis}/{user_id}', [CetakController::class, 'berita_acara']);
     });
+    Route::get('/contoh', [CetakController::class, 'generate_pdf'])->name('contoh');
+    Route::get('/rapor-uts/{rombongan_belajar_id}', [CetakController::class, 'rapor_uts'])->name('rapor-uts');
+    Route::get('/rapor-cover/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_cover'])->name('rapor-cover');
+    Route::get('/rapor-semester/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_semester'])->name('rapor-semester');
+    Route::get('/rapor-nilai-akhir/{anggota_rombel_id}/{sekolah_id}/{semester_id}', [CetakController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
+    Route::get('/rapor-p5/{anggota_rombel_id}/{semester_id}', [CetakController::class, 'rapor_p5'])->name('rapor-p5');
+    Route::get('/rapor-pelengkap/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_pelengkap'])->name('rapor-pelengkap');
+    Route::get('/sertifikat/{anggota_rombel_id}/{rencana_ukk_id}', [CetakController::class, 'sertifikat'])->name('sertifikat');
+    Route::get('/rapor-pkl/{peserta_didik_id}/{pkl_id}/{guru_id}/{semester_id}', [CetakController::class, 'rapor_pkl'])->name('rapor_pkl');
 });
 Route::group(['prefix' => 'downloads'], function () {
     Route::get('/template-excel/{sekolah_id}', [DownloadController::class, 'template_excel']);
@@ -33,17 +42,4 @@ Route::group(['prefix' => 'downloads'], function () {
     Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [DownloadController::class, 'template_nilai_tp'])->name('template-nilai-tp');
     Route::get('/template-tp/{id?}/{rombongan_belajar_id?}/{pembelajaran_id?}', [DownloadController::class, 'template_tp'])->name('template-tp');
 });
-Route::group(['prefix' => 'cetak'], function () {
-    //Route::group(['prefix' => 'cetak', 'middleware' => ['role:guru']], function(){
-        Route::get('/contoh', [CetakController::class, 'generate_pdf'])->name('contoh');
-        Route::get('/rapor-uts/{rombongan_belajar_id}', [CetakController::class, 'rapor_uts'])->name('rapor-uts');
-        Route::get('/rapor-cover/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_cover'])->name('rapor-cover');
-        Route::get('/rapor-semester/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_semester'])->name('rapor-semester');
-        Route::get('/rapor-nilai-akhir/{anggota_rombel_id}/{sekolah_id}/{semester_id}', [CetakController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
-        Route::get('/rapor-p5/{anggota_rombel_id}/{semester_id}', [CetakController::class, 'rapor_p5'])->name('rapor-p5');
-        Route::get('/rapor-pelengkap/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_pelengkap'])->name('rapor-pelengkap');
-        Route::get('/sertifikat/{anggota_rombel_id}/{rencana_ukk_id}', [CetakController::class, 'sertifikat'])->name('sertifikat');
-        //Route::get('/cetak/sertifikat/{anggota_rombel_id}/{rencana_ukk_id}', 'CetakController@sertifikat');
-    });
-//Route::get('/auth/sso', [AuthController::class, 'sso']);
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');

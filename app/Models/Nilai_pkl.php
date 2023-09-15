@@ -22,4 +22,8 @@ class Nilai_pkl extends Model
 	{
 		return $this->belongsTo(Tp_pkl::class, 'tp_id', 'tp_id');
 	}
+	public function tp()
+	{
+		return $this->belongsTo(Tujuan_pembelajaran::class, 'tp_id', 'tp_id');
+	}
 }

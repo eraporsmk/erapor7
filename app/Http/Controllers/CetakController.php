@@ -553,4 +553,33 @@ class CetakController extends Controller
 		$pdf->getMpdf()->WriteHTML($rapor_pendukung);
 		return $pdf->stream($general_title.'-LAMPIRAN.pdf');
 	}
+	public function rapor_pkl()
+    {
+		$pd = Peserta_didik::with([
+			'sekolah' => function($query){
+				$query->select('sekolah_id', 'nama', 'kabupaten');
+			},
+			'kelas' => function($query){
+				$query->where('rombongan_belajar.semester_id', request()->route('semester_id'));
+			},
+			'pd_pkl' => function($query){
+				$query->withWhereHas('praktik_kerja_lapangan', function($query){
+					$query->where('pkl_id', request()->route('pkl_id'));
+				});
+			},
+			'nilai_pkl' => function($query){
+				$query->with(['tp']);
+				$query->where('pkl_id', request()->route('pkl_id'));
+			},
+		])->find(request()->route('peserta_didik_id'));
+        $data = [
+        	'foo' => 'bar',
+			'pd' => $pd,
+        ];
+		$pdf = PDF::loadView('cetak.rapor-pkl', $data);
+        $pdf->getMpdf()->defaultfooterfontsize=7;
+		$pdf->getMpdf()->defaultfooterline=1;
+		$pdf->getMpdf()->SetFooter($pd->nama.' - '. $pd->kelas->nama .' |{PAGENO}|Dicetak dari '.config('app.name').' v.'.get_setting('app_version'));
+        return $pdf->stream('document.pdf');
+    }
 }

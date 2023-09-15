@@ -304,6 +304,7 @@ export default {
           guru_id: this.user.guru_id,
           sekolah_id: this.user.sekolah_id,
           semester_id: this.user.semester.semester_id,
+          periode_aktif: this.user.semester.nama,
         }).then(response => {
           this.loading_rombel = false
           let getData = response.data
@@ -323,6 +324,7 @@ export default {
           guru_id: this.user.guru_id,
           sekolah_id: this.user.sekolah_id,
           semester_id: this.user.semester.semester_id,
+          periode_aktif: this.user.semester.nama,
         }).then(response => {
           this.loading_mapel = false
           let getData = response.data
@@ -345,6 +347,7 @@ export default {
           guru_id: this.user.guru_id,
           sekolah_id: this.user.sekolah_id,
           semester_id: this.user.semester.semester_id,
+          periode_aktif: this.user.semester.nama,
         }).then(response => {
           this.loading_modal = false
           let getData = response.data
@@ -370,6 +373,7 @@ export default {
         guru_id: this.user.guru_id,
         sekolah_id: this.user.sekolah_id,
         semester_id: this.user.semester.semester_id,
+        periode_aktif: this.user.semester.nama,
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
@@ -607,6 +611,7 @@ export default {
         guru_id: this.user.guru_id,
         sekolah_id: this.user.sekolah_id,
         semester_id: this.user.semester.semester_id,
+        periode_aktif: this.user.semester.nama,
       }).then(response => {
         this.loading_rombel = false
         let getData = response.data
@@ -628,6 +633,7 @@ export default {
         guru_id: this.user.guru_id,
         sekolah_id: this.user.sekolah_id,
         semester_id: this.user.semester.semester_id,
+        periode_aktif: this.user.semester.nama,
       }).then(response => {
         this.loading_modal = false
         let getData = response.data

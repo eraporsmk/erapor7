@@ -19,6 +19,7 @@ return new class extends Migration
             $table->uuid('pkl_id');
             $table->uuid('tp_id');
             $table->smallInteger('nilai');
+            $table->text('deskripsi')->nullable();
             $table->timestamps();
             $table->timestamp('last_sync')->default('1901-01-01 00:00:00');
             $table->foreign('peserta_didik_id')->references('peserta_didik_id')->on('peserta_didik')->onUpdate('CASCADE')->onDelete('CASCADE');

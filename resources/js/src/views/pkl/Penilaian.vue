@@ -44,34 +44,42 @@
               <b-table-simple bordered striped responsive>
                 <b-thead>
                   <b-tr>
-                    <b-th class="text-center" rowspan="2">No</b-th>
-                    <b-th class="text-center" rowspan="2">Nama Peserta Didik</b-th>
-                    <b-th class="text-center" rowspan="2">NISN</b-th>
-                    <b-th class="text-center" :colspan="data_tp.length">Tujuan Pembelajaran</b-th>
+                    <b-th class="text-center">No</b-th>
+                    <b-th class="text-center">Nama Peserta Didik</b-th>
+                    <b-th class="text-center">NISN</b-th>
+                    <b-th class="text-center">Tujuan Pembelajaran</b-th>
+                    <b-th class="text-center">Nilai</b-th>
+                    <b-th class="text-center">Deskripsi</b-th>
                   </b-tr>
-                  <b-tr>
+                  <!--b-tr>
                     <template v-for="(tp, index) in data_tp">
                       <b-th class="text-center" style="font-style: normal;">
                         <a href="javascript:void(0)" v-b-tooltip.hover.html="tp.deskripsi">{{index + 1}}</a>
                       </b-th>
                     </template>
-                  </b-tr>
+                  </b-tr-->
                 </b-thead>
                 <b-tbody>
                   <template v-for="(siswa, index) in data_siswa">
                     <b-tr>
-                      <b-td class="text-center" style="vertical-align:top" rowspan="2">{{index + 1}}</b-td>
-                      <b-td rowspan="2" style="vertical-align:top">{{siswa.nama}}</b-td>
-                      <b-td rowspan="2" style="vertical-align:top">{{siswa.nisn}}</b-td>
-                      <template v-for="(tp, i) in data_tp">
+                      <b-td class="text-center" :rowspan="data_tp.length + 2" style="vertical-align: top;">{{index + 1}}</b-td>
+                      <b-td :rowspan="data_tp.length + 2" style="vertical-align: top;">{{siswa.nama}}</b-td>
+                      <b-td :rowspan="data_tp.length + 2" class="text-center" style="vertical-align: top;">{{siswa.nisn}}</b-td>
+                    </b-tr>
+                    <template v-for="(tp, i) in data_tp">
+                      <b-tr>
+                        <b-td>{{ tp.deskripsi }}</b-td>
                         <b-td>
                           <b-form-input v-model="form.nilai[`${tp.tp_id}#${siswa.peserta_didik_id}`]" />
                         </b-td>
-                      </template>
-                    </b-tr>
+                        <b-td>
+                          <b-form-input v-model="form.deskripsi[`${tp.tp_id}#${siswa.peserta_didik_id}`]" placeholder="Deskripsi ..." />
+                        </b-td>
+                      </b-tr>
+                    </template>
                     <b-tr>
-                      <b-td :colspan="data_tp.length">
-                        <b-form-textarea title="Deskripsi PKL..." placeholder="Deskripsi PKL..." v-model="form.deskripsi[siswa.peserta_didik_id]"></b-form-textarea>
+                      <b-td colspan="3">
+                        <b-form-textarea title="Catatan PKL..." placeholder="Catatan PKL..." v-model="form.catatan[siswa.peserta_didik_id]"></b-form-textarea>
                       </b-td>
                     </b-tr>
                   </template>
@@ -157,6 +165,7 @@ export default {
         pkl_id: '',
         nilai: {},
         deskripsi: {},
+        catatan: {},
       },
       feedback: {
         tingkat: '',
@@ -225,8 +234,9 @@ export default {
           this.data_siswa.forEach(siswa => {
             siswa.nilai_pkl.forEach(nilai => {
               this.form.nilai[`${nilai.tp_id}#${siswa.peserta_didik_id}`] = nilai.nilai
+              this.form.deskripsi[`${nilai.tp_id}#${siswa.peserta_didik_id}`] = nilai.deskripsi
             })
-            this.form.deskripsi[siswa.peserta_didik_id] = siswa.pd_pkl.deskripsi
+            this.form.catatan[siswa.peserta_didik_id] = siswa.pd_pkl.catatan
           });
           this.show = true
         }).catch(error => {
@@ -259,6 +269,7 @@ export default {
       this.form.pkl_id = ''
       this.form.nilai = {}
       this.form.deskripsi = {}
+      this.form.catatan = {}
       this.data_siswa = []
       this.data_tp = []
     },
