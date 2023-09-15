@@ -316,7 +316,7 @@ class EraporUpdate extends Command
                 ]
             );
         }
-        $find = Budaya_kerja::first();
+        $find = Capaian_pembelajaran::where('mata_pelajaran_id', '800001000')->first();
         if(!$find){
             $this->call('ref:cp');
         }
