@@ -82,7 +82,7 @@ php artisan db:seed
 
 - Clone Repositori ini
 ```bash
-git clone https://github.com/eraporsmk/erapor-php8.git dataweb
+git clone https://github.com/eraporsmk/erapor7.git dataweb
 cd dataweb
 ```
 
