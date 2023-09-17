@@ -1,7 +1,7 @@
 <p align="center"><img src="http://app.erapor-smk.net/logo.png" width="600"></p>
 
 ## Server Requirements
-[PHP >= 8.0.2](https://laravel.com/docs/9.x/upgrade#updating-dependencies)
+PHP >= 8.1.0
 
 Ctype PHP Extension
 
