@@ -76,7 +76,7 @@ php artisan migrate
 php artisan db:seed
 ```
 ## Untuk pengguna windows:
-- Panduan aplikasi & installer. silahkan download [disini](https://drive.google.com/file/d/1DgxFrw9ANGAE8jVvc30bsuY9j9Wl_McF/view?usp=sharing)
+- Panduan aplikasi & installer. silahkan download [disini](http://erapor.ditpsmk.net/pusat-unduhan)
 
 ## Cara Install (Untuk Pengguna Lama)
 
