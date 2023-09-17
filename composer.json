@@ -2,10 +2,13 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
+        "php": "^8.0|^8.1",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
@@ -29,9 +32,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-		"files": [
-		  "app/Helpers/functions.php"
-		]
+        "files": [
+            "app/Helpers/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -61,7 +64,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "^8.1"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
