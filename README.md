@@ -87,7 +87,7 @@ cd dataweb
 ```
 
 ## Copy file .env
-Copy file .env dari root folder aplikasi versi 5xx ke root folder aplikasi versi 6xx
+Copy file .env dari root folder aplikasi versi 6xx ke root folder aplikasi versi 7xx
 
 - Install Dependencies
 ```bash
