@@ -52,9 +52,9 @@
         </template>
         <template v-slot:cell(actions)="row">
           <b-dropdown id="dropdown-dropleft" dropleft text="Aksi" variant="success" size="sm">
-            <b-dropdown-item href="javascript:" @click="copy(row.item)"><font-awesome-icon icon="fa-solid fa-copy" /> Mapping Rombel</b-dropdown-item>
-            <b-dropdown-item href="javascript:" @click="edit(row.item)"><font-awesome-icon icon="fa-solid fa-pencil" /> Ubah Data</b-dropdown-item>
-            <b-dropdown-item href="javascript:" @click="hapus(row.item.tp_id)"><font-awesome-icon icon="fa-solid fa-trash" /> Hapus Data</b-dropdown-item>
+            <b-dropdown-item href="javascript:" @click="aksi('copy', row.item)"><font-awesome-icon icon="fa-solid fa-copy" /> Mapping Rombel</b-dropdown-item>
+            <b-dropdown-item href="javascript:" @click="aksi('edit', row.item)"><font-awesome-icon icon="fa-solid fa-pencil" /> Ubah Data</b-dropdown-item>
+            <b-dropdown-item href="javascript:" @click="aksi('hapus', row.item)"><font-awesome-icon icon="fa-solid fa-trash" /> Hapus Data</b-dropdown-item>
           </b-dropdown>
         </template>
       </b-table>
@@ -128,14 +128,11 @@ export default {
     }
   },
   methods: {
-    edit(val) {
-      this.$emit('edit', val)
-    },
-    hapus(val) {
-      this.$emit('hapus', val)
-    },
-    copy(val){
-      this.$emit('copy', val)
+    aksi(aksi, val){
+      this.$emit('aksi', {
+        aksi: aksi,
+        item: val,
+      })
     },
     loadPerPage(val) {
       this.$emit('per_page', this.meta.per_page)

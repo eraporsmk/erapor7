@@ -49,7 +49,8 @@ export default {
       this.$emit('setRerata', {
         anggota_rombel_id: anggota_rombel_id,
         jenis: jenis,
-        nilai: this.form.nilai_sumatif[anggota_rombel_id+jenis],
+        non_tes: this.form.nilai_sumatif[`${anggota_rombel_id}#non-tes`],
+        tes: this.form.nilai_sumatif[`${anggota_rombel_id}#tes`],
       })
     }
   },

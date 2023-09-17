@@ -203,9 +203,16 @@ export default {
   },
   methods: {
     setRerata(val){
-      var nilai_nontes = this.form.nilai_sumatif[`${val.anggota_rombel_id}#non-tes`]
-      var nilai_tes = this.form.nilai_sumatif[`${val.anggota_rombel_id}#tes`]
-      var calculateAverage = this.calculateAverage([parseInt(nilai_nontes), parseInt(nilai_tes)])
+      var nilai_nontes = val.non_tes
+      var nilai_tes = val.tes
+      var calculateAverage = 0;
+      if(nilai_nontes && nilai_tes){
+        calculateAverage = this.calculateAverage([parseInt(nilai_nontes), parseInt(nilai_tes)])
+      } else if(nilai_nontes && !nilai_tes){
+        calculateAverage = nilai_nontes
+      } else if(!nilai_nontes && nilai_tes){
+        calculateAverage = nilai_tes
+      }
       this.form.nilai_sumatif[`${val.anggota_rombel_id}#na`] = calculateAverage
     },
     calculateAverage(array) {
@@ -265,6 +272,7 @@ export default {
         this.data_siswa = getData.data.data_siswa
         if(opsi == 'nilai-tp'){
           this.data_tp = getData.data.data_tp
+          this.show_sumatif = false
         }
         if(opsi == 'nilai-akhir-sumatif'){
           this.show_sumatif = true

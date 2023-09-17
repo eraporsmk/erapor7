@@ -61,7 +61,7 @@ export default [
         },
       ],
       tombol_add: {
-        action: 'add-modal',
+        action: 'add-cp',
         link: '',
         variant: 'success',
         text: 'Tambah Data'
@@ -212,7 +212,7 @@ export default [
         },
       ],
       tombol_add: {
-        action: 'add-modal',
+        action: 'add-sikap',
         link: '',
         variant: 'success',
         text: 'Tambah Data'
@@ -276,7 +276,7 @@ export default [
         },
       ],
       tombol_add: {
-        action: 'add-modal',
+        action: 'add-projek',
         link: '',
         variant: 'success',
         text: 'Tambah Data'

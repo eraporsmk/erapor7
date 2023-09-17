@@ -1,5 +1,6 @@
 <template>
   <div>
+    <filter-table :meta="meta" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel"></filter-table>
     <b-row>
       <b-col md="4" class="mb-2">
         <b-form-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage"></b-form-select>
@@ -43,9 +44,12 @@
 <script>
 import _ from 'lodash' //IMPORT LODASH, DIMANA AKAN DIGUNAKAN UNTUK MEMBUAT DELAY KETIKA KOLOM PENCARIAN DIISI
 import { BRow, BCol, BFormInput, BFormSelect, BTable, BSpinner, BPagination, BButton, BOverlay, BBadge } from 'bootstrap-vue'
-
+import vSelect from 'vue-select'
+import FilterTable from '@/views/components/FilterTable.vue'
 export default {
   components: {
+    vSelect,
+    FilterTable,
     BRow,
     BCol,
     BFormInput, BFormSelect,
@@ -113,6 +117,15 @@ export default {
     search: _.debounce(function (e) {
       this.$emit('search', e)
     }, 500),
+    handleTingkat(val){
+      this.$emit('tingkat', val)
+    },
+    handleRombel(val){
+      this.$emit('rombel', val)
+    },
+    handleMapel(val){
+      this.$emit('mapel', val)
+    },
   },
 }
 </script>

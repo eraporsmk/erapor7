@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card>
-      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @edit="handleEdit" @hapus="handleHapus" @nonAktifkan="handleNonAktifkan" @aktifkan="handleAktifkan" @hapusGanda="handleHapusGanda" />
+      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @edit="handleEdit" @hapus="handleHapus" @nonAktifkan="handleNonAktifkan" @aktifkan="handleAktifkan" @hapusGanda="handleHapusGanda" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel"/>
     </b-card>
     <edit-kd @reload="handleReload"></edit-kd>
     <add-kd @reload="handleReload"></add-kd>
@@ -85,6 +85,9 @@ export default {
       search: '',
       sortBy: 'updated_at', //DEFAULT SORTNYA ADALAH CREATED_AT
       sortByDesc: false, //ASCEDING
+      tingkat: '',
+      rombongan_belajar_id: '',
+      pembelajaran_id: '',
     }
   },
   created() {
@@ -99,7 +102,7 @@ export default {
       this.loadPostsData()
     },
     loadPostsData() {
-      this.isBusy = true
+      this.loading = true
       let current_page = this.current_page//this.search == '' ? this.current_page : 1
       this.$http.get('/referensi/kompetensi-dasar', {
         params: {
@@ -108,6 +111,9 @@ export default {
           sekolah_id: this.user.sekolah_id,
           semester_id: this.user.semester.semester_id,
           periode_aktif: this.user.semester.nama,
+          tingkat: this.tingkat,
+          rombongan_belajar_id: this.rombongan_belajar_id,
+          pembelajaran_id: this.pembelajaran_id,
           page: current_page,
           per_page: this.per_page,
           q: this.search,
@@ -117,6 +123,7 @@ export default {
       }).then(response => {
         let getData = response.data.data
         this.isBusy = false
+        this.loading = false
         this.items = getData.data
         this.meta = {
           total: getData.total,
@@ -124,6 +131,15 @@ export default {
           per_page: getData.per_page,
           from: getData.from,
           to: getData.to,
+          user_id: this.user.user_id,
+          sekolah_id: this.user.sekolah_id,
+          semester_id: this.user.semester.semester_id,
+          periode_aktif: this.user.semester.nama,
+          guru_id: this.user.guru_id,
+          tingkat: this.tingkat,
+          rombongan_belajar_id: this.rombongan_belajar_id,
+          pembelajaran_id: this.pembelajaran_id,
+          add_kd: true,
         }
       })
     },
@@ -217,6 +233,21 @@ export default {
           });
         }
       })
+    },
+    handleTingkat(val){
+      this.tingkat = val
+      this.rombongan_belajar_id = ''
+      this.pembelajaran_id = ''
+      this.loadPostsData()
+    },
+    handleRombel(val){
+      this.rombongan_belajar_id = val
+      this.pembelajaran_id = ''
+      this.loadPostsData()
+    },
+    handleMapel(val){
+      this.pembelajaran_id = val
+      this.loadPostsData()
     },
   },
 }

@@ -163,7 +163,7 @@ class ReferensiController extends Controller
     }
     public function kompetensi_dasar(){
         $data = Kompetensi_dasar::withWhereHas('mata_pelajaran')->where(function($query){
-            $query->whereHas('pembelajaran', function($query){
+            /*$query->whereHas('pembelajaran', function($query){
                 $query->where('guru_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
                 $query->where('sekolah_id', request()->sekolah_id);
@@ -172,18 +172,43 @@ class ReferensiController extends Controller
                 $query->whereNotNull('kelompok_id');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
-            });
+            });*/
+            $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
             $query->whereNotIn('kurikulum', [2006, 2013, 2022]);
-        })->orderBy(request()->sortby, request()->sortbydesc)
-            ->when(request()->q, function($query) {
-                $query->where('id_kompetensi', 'ilike', '%'.request()->q.'%');
-                $query->orWhere('kompetensi_dasar', 'ilike', '%'.request()->q.'%');
-                $query->orWhere('kurikulum', 'ilike', '%'.request()->q.'%');
-                $query->orWhereHas('mata_pelajaran', function($query){ 
-                    $query->where('mata_pelajaran_id', 'ilike', '%'.request()->q.'%');
-                    $query->orWhere('nama', 'ilike', '%'.request()->q.'%');
-                });
-        })->paginate(request()->per_page);
+        })
+        ->orderBy(request()->sortby, request()->sortbydesc)
+        ->when(request()->q, function($query) {
+            $query->where('id_kompetensi', 'ilike', '%'.request()->q.'%');
+            $query->orWhere('kompetensi_dasar', 'ilike', '%'.request()->q.'%');
+            $query->orWhere('kurikulum', 'ilike', '%'.request()->q.'%');
+            $query->orWhereHas('mata_pelajaran', function($query){ 
+                $query->where('mata_pelajaran_id', 'ilike', '%'.request()->q.'%');
+                $query->orWhere('nama', 'ilike', '%'.request()->q.'%');
+            });
+        })
+        ->when(request()->tingkat, function($query) {
+            $query->where('kelas_'.request()->tingkat, '1');
+        })
+        ->when(request()->rombongan_belajar_id, function($query) {
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+                $query->orWhere('guru_pengajar_id', request()->guru_id);
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })
+        ->when(request()->pembelajaran_id, function($query) {
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('pembelajaran_id', request()->pembelajaran_id);
+            });
+        })
+        ->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     public function add_kd(){
@@ -334,30 +359,58 @@ class ReferensiController extends Controller
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
             });
-        })->orderBy(request()->sortby, request()->sortbydesc)
+        })
         ->orderBy(request()->sortby, request()->sortbydesc)
-            ->when(request()->q, function($query) {
-                $query->where('elemen', 'ILIKE', '%' . request()->q . '%');
-                $query->whereHas('mata_pelajaran', function($query){
-                    $query->where('nama', 'ILIKE', '%' . request()->q . '%');
-                });
-                $query->whereHas('pembelajaran', function($query){
-                    $query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
-                    $query->where('guru_id', request()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->whereNotNull('no_urut');
-                    //$query->whereNull('induk_pembelajaran_id');
-                    $query->where('sekolah_id', request()->sekolah_id);
-                    $query->where('semester_id', request()->semester_id);
-                    $query->orWhere('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
-                    $query->where('guru_pengajar_id', request()->guru_id);
-                    $query->whereNotNull('kelompok_id');
-                    $query->whereNotNull('no_urut');
-                    //$query->whereNull('induk_pembelajaran_id');
-                    $query->where('sekolah_id', request()->sekolah_id);
-                    $query->where('semester_id', request()->semester_id);
-                });
-        })->paginate(request()->per_page);
+        ->orderBy(request()->sortby, request()->sortbydesc)
+        ->when(request()->q, function($query) {
+            $query->where('elemen', 'ILIKE', '%' . request()->q . '%');
+            $query->orWhereHas('mata_pelajaran', function($query){
+                $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+            });
+            $query->orWhereHas('pembelajaran', function($query){
+                $query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
+                $query->where('guru_id', request()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+                $query->orWhere('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
+                $query->where('guru_pengajar_id', request()->guru_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                //$query->whereNull('induk_pembelajaran_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })
+        ->when(request()->tingkat, function($query) {
+            if(request()->tingkat == 10){
+                $query->where('fase', 'E');
+            } else {
+                $query->where('fase', 'F');
+            }
+        })
+        ->when(request()->rombongan_belajar_id, function($query) {
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+                $query->orWhere('guru_pengajar_id', request()->guru_id);
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })
+        ->when(request()->pembelajaran_id, function($query) {
+            $query->whereHas('pembelajaran', function($query){
+                $query->where('pembelajaran_id', request()->pembelajaran_id);
+            });
+        })
+        ->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     public function add_cp(){
