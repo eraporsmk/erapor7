@@ -76,7 +76,7 @@ php artisan migrate
 php artisan db:seed
 ```
 ## Untuk pengguna windows:
-- Panduan aplikasi & installer. silahkan download [disini](https://drive.google.com/file/d/1DgxFrw9ANGAE8jVvc30bsuY9j9Wl_McF/view?usp=sharing)
+- Panduan aplikasi & installer. silahkan download [disini](http://erapor.ditpsmk.net/pusat-unduhan)
 
 ## Cara Install (Untuk Pengguna Lama)
 
@@ -87,7 +87,7 @@ cd dataweb
 ```
 
 ## Copy file .env
-Copy file .env dari root folder aplikasi versi 5xx ke root folder aplikasi versi 6xx
+Copy file .env dari root folder aplikasi versi 6xx ke root folder aplikasi versi 7xx
 
 - Install Dependencies
 ```bash
