@@ -86,7 +86,7 @@
               </b-button>
             </b-form>
           </validation-observer>
-          <b-card-text class="text-center mt-2">
+          <b-card-text class="text-center mt-2" v-if="allowRegister">
             <span>Penggguna Baru? </span>
             <b-link :to="{name:'auth-register'}">
               <span>&nbsp;Register Disini</span>
@@ -163,6 +163,7 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
+      allowRegister: false,
       busy: true,
       show: true,
       status: '',
@@ -202,6 +203,7 @@ export default {
       let getData = response.data
       this.semester_id = getData.semester_id
       this.data_semester = getData.semester
+      this.allowRegister = getData.allowRegister
     })
   },
   methods: {

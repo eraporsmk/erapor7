@@ -297,12 +297,19 @@ class AuthController extends Controller
         $user->semester = $semester;
         return $user;
     }
+    public function allow_register(){
+        $data = [
+            'allowRegister' => config('app.registration'),
+        ];
+        return response()->json($data);
+    }
     public function semester(){
         $data = [
             'semester' => Semester::whereHas('tahun_ajaran', function($query){
                 $query->where('periode_aktif', 1);
               })->orderBy('semester_id', 'DESC')->get(),
               'semester_id' => Semester::where('periode_aktif', 1)->first()->semester_id,
+              'allowRegister' => config('app.registration'),
         ];
         return response()->json($data);
     }

@@ -31,6 +31,7 @@ Route::get('sekolah', [DashboardController::class, 'hitung_sekolah']);
 Route::get('no-access', [DashboardController::class, 'no_access'])->name('login');
 Route::group(['prefix' => 'auth'], function () {
   Route::get('/semester', [AuthController::class, 'semester']);
+  Route::get('/allow-register', [AuthController::class, 'allow_register']);
   Route::post('login', [AuthController::class, 'login']);
   Route::post('register', [AuthController::class, 'register']);
   Route::group(['middleware' => 'auth:sanctum'], function() {

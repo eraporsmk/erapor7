@@ -79,7 +79,7 @@ export default [
     component: () => import('@/views/error/NotAuthorized.vue'),
     meta: {
       layout: 'full',
-      resource: 'Auth',
+      resource: 'Web',
       action: 'read',
       pageTitle: 'Akses Terbatas! 🔐',
     },

@@ -50,6 +50,7 @@
                   <b-td>NPSN</b-td>
                   <b-td>: {{sekolah.npsn}}</b-td>
                 </b-tr>
+                <b-tr>
                   <b-td>Alamat</b-td>
                   <b-td>: {{sekolah.alamat}}</b-td>
                 </b-tr>
@@ -129,12 +130,12 @@
                   <b-td>Tim Helpdesk</b-td>
                   <b-td>
                     <div class="btn-group-vertical">
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=628156441864&text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Wahyudin [08156441864]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6281229997730&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Ahmad Aripin [081229997730]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282113057512&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Iman [082113057512]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282174508706&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Ikhsan [082174508706]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282134924288&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Toni [082134924288]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285624669298&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></i> Deetha [085624669298]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=628156441864&text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Wahyudin [08156441864]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6281229997730&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Ahmad Aripin [081229997730]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282113057512&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Iman [082113057512]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282174508706&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Ikhsan [082174508706]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285643935009&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Adhi Prasetya [085643935009]</a>
+                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285624669298&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Deetha [085624669298]</a>
                     </div>
                   </b-td>
                 </b-tr>
@@ -217,7 +218,7 @@ export default {
       }).then(result => {
         if (result.value) {
           this.$http.post('/dashboard/status-penilaian', {
-            status: status,
+            status: val,
             sekolah_id: this.user.sekolah_id,
             semester_id: this.user.semester.semester_id,
           }).then(response => {

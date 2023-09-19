@@ -1,6 +1,14 @@
 <template>
   <div class="auth-wrapper auth-v2">
-    <b-row class="auth-inner m-0">
+    <b-row class="auth-inner m-0" v-if="isBusy">
+      <b-col cols="12">
+        <b-card-text class="text-center text-danger my-2">
+          <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+        </b-card-text>
+      </b-col>
+    </b-row>
+    <b-row class="auth-inner m-0" v-else>
 
       <!-- Brand logo-->
       <b-link class="brand-logo">
@@ -105,6 +113,7 @@ import {
   BInputGroup,
   BInputGroupAppend,
   BImg,
+  BSpinner,
   BCardTitle,
   BCardSubTitle,
   BCardText,
@@ -114,7 +123,6 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import useJwt from '@/auth/jwt/useJwt'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 export default {
   components: {
@@ -125,6 +133,7 @@ export default {
     BLink,
     BButton,
     BForm,
+    BSpinner,
     BCardText,
     BCardTitle,
     BCardSubTitle,
@@ -142,6 +151,7 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
+      isBusy: true,
       loading: false,
       status: '',
       username: '',
@@ -183,13 +193,21 @@ export default {
       let getData = response.data
       if(getData.data >= 10){
         console.log('redirect');
-        this.$router.replace({name: 'misc-not-authorized'})
+        this.$router.replace({name: 'error-404'})
       }
       console.log(response.data);
     }).catch(error => {
       console.log(error);
     })
     */
+    this.$http.get('/auth/allow-register').then(response => {
+      let getData = response.data
+      if(!getData.allowRegister){
+        this.$router.replace({name: 'error-404'})
+      } else {
+        this.isBusy = false
+      }
+    })
   },
   methods: {
     register() {
