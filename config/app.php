@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'e-Rapor SMK'),
+    'name' => 'e-Rapor SMK',
     'version' => env('APP_VERSION', '7.0.0'),
     'registration' => env('REGISTRATION', FALSE),
 

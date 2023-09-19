@@ -787,8 +787,6 @@ class SinkronDapodik extends Command
         $sekolah->guru_id = ($kepala_sekolah) ? $kepala_sekolah->guru_id : NULL;
 		$sekolah->sinkron = 1;
 		$sekolah->save();
-        dd($sekolah);
-        //$this->call('sinkron:referensi');
         $this->simpan_jurusan_sp($data->jurusan_sp, $user, $semester);
     }
     private function insert_jurusan_sp($data, $user, $semester){
