@@ -98,7 +98,6 @@ export default {
           this.loading_mapel = false
           let getData = response.data
           this.data_mapel = getData.data
-          console.log(this.data_mapel);
         }).catch(error => {
           console.log(error);
         })

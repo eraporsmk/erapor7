@@ -1,7 +1,8 @@
 <template>
   <div>
     <b-card>
-      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @nonAktifkan="handleNonAktifkan" @aktifkan="handleAktifkan" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel" />
+      <!--@nonAktifkan="handleNonAktifkan" @aktifkan="handleAktifkan"-->
+      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handleAksi" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel" />
     </b-card>
     <add-cp @reload="handleReload"></add-cp>
   </div>
@@ -216,6 +217,15 @@ export default {
           });
         }
       })
+    },
+    handleAksi(val){
+      console.log(val);
+      if(val.aksi){
+        this.handleAktifkan(val.id)
+        //eventBus.$emit('open-modal-edit-tp', val.item);
+      } else {
+        this.handleNonAktifkan(val.id)
+      }
     },
     handleTingkat(val){
       this.tingkat = val

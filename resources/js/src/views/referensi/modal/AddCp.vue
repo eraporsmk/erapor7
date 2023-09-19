@@ -202,6 +202,7 @@ export default {
     this.form.guru_id = this.user.guru_id
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
+    this.form.periode_aktif = this.tahun_pelajaran
     eventBus.$on('open-modal-cp', this.handleEvent);
   },
   methods: {

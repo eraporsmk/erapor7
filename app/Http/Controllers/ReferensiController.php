@@ -345,20 +345,36 @@ class ReferensiController extends Controller
     }
     public function capaian_pembelajaran(){
         $data = Capaian_pembelajaran::with(['mata_pelajaran'])->withCount('tp')->where(function($query){
-            $query->whereHas('pembelajaran', function($query){
-                $query->where('guru_id', request()->guru_id);
-                $query->whereNotNull('kelompok_id');
-                $query->whereNotNull('no_urut');
-                //$query->whereNull('induk_pembelajaran_id');
-                $query->where('sekolah_id', request()->sekolah_id);
-                $query->where('semester_id', request()->semester_id);
-                $query->orWhere('guru_pengajar_id', request()->guru_id);
-                $query->whereNotNull('kelompok_id');
-                $query->whereNotNull('no_urut');
-                //$query->whereNull('induk_pembelajaran_id');
-                $query->where('sekolah_id', request()->sekolah_id);
-                $query->where('semester_id', request()->semester_id);
-            });
+            $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
+            /*$query->whereHas('pembelajaran', function($query){
+                if(hasRole('pembimbing', request()->periode_aktif)){
+                    $query->where('guru_id', request()->guru_id);
+                    $query->where('mata_pelajaran_id', '800001000');
+                    $query->orWhere('guru_id', request()->guru_id);
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->where('sekolah_id', request()->sekolah_id);
+                    $query->where('semester_id', request()->semester_id);
+                    $query->orWhere('guru_pengajar_id', request()->guru_id);
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    $query->where('sekolah_id', request()->sekolah_id);
+                    $query->where('semester_id', request()->semester_id);
+                } else {
+                    $query->where('guru_id', request()->guru_id);
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    //$query->whereNull('induk_pembelajaran_id');
+                    $query->where('sekolah_id', request()->sekolah_id);
+                    $query->where('semester_id', request()->semester_id);
+                    $query->orWhere('guru_pengajar_id', request()->guru_id);
+                    $query->whereNotNull('kelompok_id');
+                    $query->whereNotNull('no_urut');
+                    //$query->whereNull('induk_pembelajaran_id');
+                    $query->where('sekolah_id', request()->sekolah_id);
+                    $query->where('semester_id', request()->semester_id);
+                }
+            });*/
         })
         ->orderBy(request()->sortby, request()->sortbydesc)
         ->orderBy(request()->sortby, request()->sortbydesc)
@@ -367,7 +383,8 @@ class ReferensiController extends Controller
             $query->orWhereHas('mata_pelajaran', function($query){
                 $query->where('nama', 'ILIKE', '%' . request()->q . '%');
             });
-            $query->orWhereHas('pembelajaran', function($query){
+            $query->orWhereHas('pembelajaran', $this->kondisiPembelajaran());
+            /*$query->orWhereHas('pembelajaran', function($query){
                 $query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
                 $query->where('guru_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
@@ -382,7 +399,7 @@ class ReferensiController extends Controller
                 //$query->whereNull('induk_pembelajaran_id');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
-            });
+            });*/
         })
         ->when(request()->tingkat, function($query) {
             if(request()->tingkat == 10){
@@ -390,9 +407,11 @@ class ReferensiController extends Controller
             } else {
                 $query->where('fase', 'F');
             }
+            $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
         })
         ->when(request()->rombongan_belajar_id, function($query) {
-            $query->whereHas('pembelajaran', function($query){
+            $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
+            /*$query->whereHas('pembelajaran', function($query){
                 $query->where('guru_id', request()->guru_id);
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                 $query->whereNotNull('kelompok_id');
@@ -403,7 +422,7 @@ class ReferensiController extends Controller
                 $query->whereNotNull('kelompok_id');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
-            });
+            });*/
         })
         ->when(request()->pembelajaran_id, function($query) {
             $query->whereHas('pembelajaran', function($query){
@@ -496,17 +515,38 @@ class ReferensiController extends Controller
         return response()->json($data);
     }
     public function tujuan_pembelajaran(){
-        $data = Tujuan_pembelajaran::with(['cp.mata_pelajaran', 'kd.mata_pelajaran', 'tp_mapel.rombongan_belajar'])->where($this->kondisiTp())->orderBy(request()->sortby, request()->sortbydesc)
+        $data = Tujuan_pembelajaran::with(['cp.mata_pelajaran', 'kd.mata_pelajaran', 'tp_mapel.rombongan_belajar'])
+        ->where($this->kondisiTp())
+        ->orderBy(request()->sortby, request()->sortbydesc)
         ->orderBy('updated_at', request()->sortbydesc)
         ->when(request()->q, function($query){
             $query->where('deskripsi', 'ILIKE', '%' . request()->q . '%');
-        })->paginate(request()->per_page);
+        })
+        ->when(request()->tingkat, function($query) {
+            $query->where($this->kondisiTp());
+            
+        })
+        ->when(request()->rombongan_belajar_id, function($query) {
+            $query->where($this->kondisiTp());
+        })
+        ->when(request()->pembelajaran_id, function($query) {
+            $query->where($this->kondisiTp());
+        })
+        ->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     private function kondisiTp(){
         $callback = function($query){
             $query->whereHas('cp', function($query){
-                $query->whereHas('pembelajaran', function($query){
+                if(request()->tingkat){
+                    if(request()->tingkat == 10){
+                        $query->where('fase', 'E');
+                    } else {
+                        $query->where('fase', 'F');
+                    }
+                }
+                $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
+                /*$query->whereHas('pembelajaran', function($query){
                     if(hasRole('pembimbing', request()->periode_aktif)){
                         $query->where('guru_id', request()->guru_id);
                         $query->where('mata_pelajaran_id', '800001000');
@@ -531,10 +571,14 @@ class ReferensiController extends Controller
                         $query->where('sekolah_id', request()->sekolah_id);
                         $query->where('semester_id', request()->semester_id);
                     }
-                });
+                });*/
             });
             $query->orWhereHas('kd', function($query){
-                $query->whereHas('pembelajaran', function($query){
+                if(request()->tingkat){
+                    $query->where('kelas_'.request()->tingkat, '1');
+                }
+                $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
+                /*$query->whereHas('pembelajaran', function($query){
                     $query->where('guru_id', request()->guru_id);
                     $query->whereNotNull('kelompok_id');
                     $query->where('sekolah_id', request()->sekolah_id);
@@ -549,7 +593,7 @@ class ReferensiController extends Controller
                     //if(request()->q){
                         //$query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');                
                     //}
-                });
+                });*/
             });
         };
         return $callback;
@@ -716,11 +760,14 @@ class ReferensiController extends Controller
                 $query->where('jenis_rombel', request()->jenis_rombel);
             }
             $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
-        })->get();
+        })->orderBy('nama')->get();
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     private function kondisiPembelajaran(){
         return function($query){
+            if(request()->pembelajaran_id){
+                $query->where('pembelajaran_id', request()->pembelajaran_id);
+            }
             if(request()->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             }

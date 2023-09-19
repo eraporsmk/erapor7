@@ -3,7 +3,7 @@
     <filter-table :meta="meta" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel"></filter-table>
     <b-row>
       <b-col md="4" class="mb-2">
-        <b-form-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage"></b-form-select>
+        <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage" :clearable="false"></v-select>
       </b-col>
       <b-col md="4" offset-md="4">
         <b-form-input @input="search" placeholder="Cari data..."></b-form-input>
@@ -25,8 +25,8 @@
           <b-badge variant="danger" v-else>Non Aktif</b-badge>
         </template>
         <template v-slot:cell(actions)="row">
-          <b-button variant="danger" size="sm" @click="nonAktifkan(row.item.cp_id)" v-if="row.item.aktif">Non Aktifkan</b-button>
-          <b-button variant="success" size="sm" @click="aktifkan(row.item.cp_id)" v-else>Aktifkan</b-button>
+          <b-button variant="danger" size="sm" @click="aksi(false, row.item.cp_id)" v-if="row.item.aktif">Non Aktifkan</b-button>
+          <b-button variant="success" size="sm" @click="aksi(true, row.item.cp_id)" v-else>Aktifkan</b-button>
         </template>
       </b-table>
     </b-overlay>
@@ -102,11 +102,11 @@ export default {
     }
   },
   methods: {
-    nonAktifkan(val) {
-      this.$emit('nonAktifkan', val)
-    },
-    aktifkan(val) {
-      this.$emit('aktifkan', val)
+    aksi(aksi, val) {
+      this.$emit('aksi', {
+        aksi: aksi,
+        id: val,
+      })
     },
     loadPerPage(val) {
       this.$emit('per_page', this.meta.per_page)

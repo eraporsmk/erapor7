@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card>
-      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handleAksi" />
+      <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handleAksi" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel" />
     </b-card>
     <add-tp @reload="handleReload"></add-tp>
     <edit-tp @reload="handleReload"></edit-tp>
@@ -80,6 +80,9 @@ export default {
       search: '',
       sortBy: 'updated_at', //DEFAULT SORTNYA ADALAH CREATED_AT
       sortByDesc: true, //ASCEDING
+      tingkat: '',
+      rombongan_belajar_id: '',
+      pembelajaran_id: '',
     }
   },
   created() {
@@ -105,6 +108,9 @@ export default {
           sekolah_id: this.user.sekolah_id,
           semester_id: this.user.semester.semester_id,
           periode_aktif: this.user.semester.nama,
+          tingkat: this.tingkat,
+          rombongan_belajar_id: this.rombongan_belajar_id,
+          pembelajaran_id: this.pembelajaran_id,
           page: current_page,
           per_page: this.per_page,
           q: this.search,
@@ -121,6 +127,14 @@ export default {
           per_page: getData.per_page,
           from: getData.from,
           to: getData.to,
+          user_id: this.user.user_id,
+          sekolah_id: this.user.sekolah_id,
+          semester_id: this.user.semester.semester_id,
+          periode_aktif: this.user.semester.nama,
+          guru_id: this.user.guru_id,
+          tingkat: this.tingkat,
+          rombongan_belajar_id: this.rombongan_belajar_id,
+          pembelajaran_id: this.pembelajaran_id,
         }
       })
     },
@@ -276,6 +290,21 @@ export default {
       }).catch(error => {
         console.log(error);
       })
+    },
+    handleTingkat(val){
+      this.tingkat = val
+      this.rombongan_belajar_id = ''
+      this.pembelajaran_id = ''
+      this.loadPostsData()
+    },
+    handleRombel(val){
+      this.rombongan_belajar_id = val
+      this.pembelajaran_id = ''
+      this.loadPostsData()
+    },
+    handleMapel(val){
+      this.pembelajaran_id = val
+      this.loadPostsData()
     },
   },
 }
