@@ -124,12 +124,9 @@ import {
   //BFormSelect,
   BOverlay,
 } from 'bootstrap-vue'
-import useJwt from '@/auth/jwt/useJwt'
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import { getHomeRouteForLoggedInUser } from '@/auth/utils'
-import { $themeConfig } from '@themeConfig'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import vSelect from 'vue-select'
 export default {
@@ -203,7 +200,11 @@ export default {
       let getData = response.data
       this.semester_id = getData.semester_id
       this.data_semester = getData.semester
-      this.allowRegister = getData.allowRegister
+      if(getData.sekolah){
+        this.allowRegister = getData.allowRegister
+      } else {
+        this.allowRegister = true
+      }
     })
   },
   methods: {

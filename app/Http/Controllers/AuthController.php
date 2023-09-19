@@ -300,6 +300,7 @@ class AuthController extends Controller
     public function allow_register(){
         $data = [
             'allowRegister' => config('app.registration'),
+            'sekolah' => Sekolah::count(),
         ];
         return response()->json($data);
     }
@@ -310,6 +311,7 @@ class AuthController extends Controller
               })->orderBy('semester_id', 'DESC')->get(),
               'semester_id' => Semester::where('periode_aktif', 1)->first()->semester_id,
               'allowRegister' => config('app.registration'),
+              'sekolah' => Sekolah::count(),
         ];
         return response()->json($data);
     }

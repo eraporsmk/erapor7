@@ -202,10 +202,12 @@ export default {
     */
     this.$http.get('/auth/allow-register').then(response => {
       let getData = response.data
-      if(!getData.allowRegister){
-        this.$router.replace({name: 'error-404'})
-      } else {
-        this.isBusy = false
+      if(getData.sekolah){
+        if(!getData.allowRegister){
+          this.$router.replace({name: 'error-404'})
+        } else {
+          this.isBusy = false
+        }
       }
     })
   },
