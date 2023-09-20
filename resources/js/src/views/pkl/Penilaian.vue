@@ -84,7 +84,12 @@
               </b-overlay>
             </b-col>
             <b-col cols="12" v-if="show && !data_siswa.length || show && !data_tp.length">
-              <p class="text-center">Rencana penilaian PKL tidak ditemukan!</p>
+              <b-alert show variant="danger">
+                <div class="alert-body text-center">
+                  <h2>Rencana penilaian PKL tidak ditemukan!</h2>
+                  <p>Silahkan tambah Rencana penilaian PKL terlebih dahulu <b-link to="/pkl/perencanaan">disini</b-link></p>
+                </div>
+              </b-alert>
             </b-col>
             <b-col cols="12" v-if="data_siswa.length && data_tp.length">
               <b-form-group label-cols-md="3">
@@ -99,7 +104,7 @@
 </template>
 
 <script>
-import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, VBTooltip} from 'bootstrap-vue'
+import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, VBTooltip, BAlert, BLink} from 'bootstrap-vue'
 import vSelect from 'vue-select'
 export default {
   components: {
@@ -121,6 +126,8 @@ export default {
     BTr,
     BTd,
     VBTooltip,
+    BAlert, 
+    BLink,
   },
   directives: {
     'b-tooltip': VBTooltip,
