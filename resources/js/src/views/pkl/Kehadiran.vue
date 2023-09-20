@@ -61,13 +61,13 @@
                           <b-td>{{siswa.nama}}</b-td>
                           <b-td>{{siswa.nisn}}</b-td>
                           <b-td>
-                            <b-form-input v-model="form.sakit[siswa.peserta_didik_id]" :state="state.sakit[siswa.peserta_didik_id]" :title="feedback.sakit[siswa.peserta_didik_id]" />
+                            <b-form-input v-model="form.sakit[siswa.peserta_didik_id]" :state="state.sakit[siswa.peserta_didik_id]" :title="feedback.sakit[siswa.peserta_didik_id]" @keypress="isNumber($event)" />
                           </b-td>
                           <b-td>
-                            <b-form-input v-model="form.izin[siswa.peserta_didik_id]" :state="state.izin[siswa.peserta_didik_id]" :title="feedback.izin[siswa.peserta_didik_id]" />
+                            <b-form-input v-model="form.izin[siswa.peserta_didik_id]" :state="state.izin[siswa.peserta_didik_id]" :title="feedback.izin[siswa.peserta_didik_id]" @keypress="isNumber($event)" />
                           </b-td>
                           <b-td>
-                            <b-form-input v-model="form.alpa[siswa.peserta_didik_id]" :state="state.alpa[siswa.peserta_didik_id]" :title="feedback.alpa[siswa.peserta_didik_id]" />
+                            <b-form-input v-model="form.alpa[siswa.peserta_didik_id]" :state="state.alpa[siswa.peserta_didik_id]" :title="feedback.alpa[siswa.peserta_didik_id]" @keypress="isNumber($event)" />
                           </b-td>
                         </b-tr>
                       </template>
@@ -234,7 +234,7 @@ export default {
     onSubmit(event) {
       event.preventDefault()
       this.isBusy = true
-      var error = 0;
+      /*var error = 0;
       Object.keys(this.form.sakit).forEach(peserta_didik_id => {
         if(this.form.sakit[peserta_didik_id] > 0 && !Number.isInteger(this.form.sakit[peserta_didik_id])){
           this.state.sakit[peserta_didik_id] = false
@@ -260,7 +260,7 @@ export default {
       if(error){
         this.isBusy = false
         return false
-      }
+      }*/
       this.$http.post('/praktik-kerja-lapangan/simpan-absensi', this.form).then(response => {
         this.isBusy = false
         let getData = response.data
