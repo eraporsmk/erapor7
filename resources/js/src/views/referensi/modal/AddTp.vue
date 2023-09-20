@@ -363,6 +363,9 @@ export default {
       this.resetModal()
     },
     resetModal(){
+      this.show = false
+      this.show_kd = false
+      this.show_cp = false
       this.form.tingkat = ''
       this.form.rombongan_belajar_id = ''
       this.form.mata_pelajaran_id = ''
@@ -470,7 +473,7 @@ export default {
       this.template_excel = e.target.files[0];
       const data = new FormData();
       data.append('template_excel', (this.template_excel) ? this.template_excel : '');
-      data.append('mata_pelajaran_id', (this.mata_pelajaran_id) ? this.mata_pelajaran_id : '')
+      data.append('mata_pelajaran_id', (this.form.mata_pelajaran_id) ? this.form.mata_pelajaran_id : '')
       data.append('pembelajaran_id', (this.form.pembelajaran_id) ? this.form.pembelajaran_id : '')
       data.append('cp_id', (this.form.cp_id) ? this.form.cp_id : '')
       data.append('kd_id', (this.form.kd_id) ? this.form.kd_id : '')
