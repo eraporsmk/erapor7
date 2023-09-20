@@ -42,7 +42,7 @@
             </b-col>
             <b-col cols="12">
               <b-overlay :show="loading_siswa" opacity="0.6" size="md" spinner-variant="secondary">
-                <template v-if="show && data_siswa.length">
+                <template v-if="show && data_siswa.length  && data_tp.length">
                   <b-table-simple bordered striped responsive>
                     <b-thead>
                       <b-tr>
@@ -83,10 +83,10 @@
                 </template>
               </b-overlay>
             </b-col>
-            <b-col cols="12" v-if="show && !data_siswa.length">
+            <b-col cols="12" v-if="show && !data_siswa.length && !data_tp.length">
               <p class="text-center">Rencana penilaian PKL tidak ditemukan!</p>
             </b-col>
-            <b-col cols="12" v-if="data_siswa.length">
+            <b-col cols="12" v-if="data_siswa.length && data_tp.length">
               <b-form-group label-cols-md="3">
                 <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
               </b-form-group>
