@@ -83,7 +83,7 @@
                 </template>
               </b-overlay>
             </b-col>
-            <b-col cols="12" v-if="show && !data_siswa.length && !data_tp.length">
+            <b-col cols="12" v-if="show && !data_siswa.length || show && !data_tp.length">
               <p class="text-center">Rencana penilaian PKL tidak ditemukan!</p>
             </b-col>
             <b-col cols="12" v-if="data_siswa.length && data_tp.length">
