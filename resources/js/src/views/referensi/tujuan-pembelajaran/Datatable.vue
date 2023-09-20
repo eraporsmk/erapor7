@@ -148,8 +148,9 @@ export default {
       this.$emit('search', e)
     }, 500),
     getRombel(tp_mapel){
-      let rombel = tp_mapel.map(x => x.rombongan_belajar.nama).join(", ");
-      return rombel
+      let rombel = tp_mapel.map(x => x.rombongan_belajar.nama);//.join(", ");
+      let uniqueChars = [...new Set(rombel)];
+      return uniqueChars.join(", ");
     },
     handleTingkat(val){
       this.$emit('tingkat', val)

@@ -1,6 +1,27 @@
 <template>
   <b-modal v-model="TpMapel" size="xl" title="Petakan TP ke Rombongan Belajar" @hidden="resetModal" @ok="handleOk" ok-title="Simpan" ok-variant="primary">
     <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="danger">
+      <template v-if="tp_mapel.length">
+        <p>TP <b-badge variant="info">{{ deskripsi }}</b-badge> telah di Mapping ke Rombongan Belajar berikut:</p>
+        <b-table-simple bordered striped>
+          <b-thead>
+            <b-tr>
+              <b-th class="text-center">No</b-th>
+              <b-th class="text-center">Rombongan Belajar</b-th>
+              <b-th class="text-center">Mata Pelajaran</b-th>
+              <b-th class="text-center">Aksi</b-th>
+            </b-tr>
+          </b-thead>
+          <b-tbody>
+            <b-tr v-for="(item, index) in tp_mapel" :key="item.tp_mapel_id">
+              <b-td class="text-center">{{ index + 1 }}</b-td>
+              <b-td class="text-center">{{ item.rombongan_belajar.nama }}</b-td>
+              <b-td>{{ item.nama_mata_pelajaran }}</b-td>
+              <b-td class="text-center"><b-button variant="danger" size="sm" @click="hapus(form.tp_id, item.pembelajaran_id)">Hapus</b-button></b-td>
+            </b-tr>
+          </b-tbody>
+        </b-table-simple>
+      </template>
       <b-row>
         <b-col cols="12">
           <b-form-group label="Tingkat Kelas" label-for="tingkat" label-cols-md="3" :invalid-feedback="feedback.tingkat" :state="state.tingkat">
@@ -36,7 +57,7 @@
 </template>
 
 <script>
-import { BOverlay, BRow, BCol, BFormGroup, BButton} from 'bootstrap-vue'
+import { BOverlay, BRow, BCol, BFormGroup, BButton, BTableSimple, BThead, BTbody, BTr, BTh, BTd, BBadge} from 'bootstrap-vue'
 import eventBus from '@core/utils/eventBus'
 import vSelect from 'vue-select'
 export default {
@@ -47,6 +68,8 @@ export default {
     BCol, 
     BFormGroup, 
     BButton,
+    BTableSimple, BThead, BTbody, BTr, BTh, BTd,
+    BBadge
   },
   data() {
     return {
@@ -66,25 +89,10 @@ export default {
         tingkat: '',
         rombongan_belajar_id: '',
       },
-      data_tingkat: [
-        {
-          id: 10,
-          nama: 'Kelas 10',
-        },
-        {
-          id: 11,
-          nama: 'Kelas 11',
-        },
-        {
-          id: 12,
-          nama: 'Kelas 12',
-        },
-        {
-          id: 13,
-          nama: 'Kelas 13',
-        },
-      ],
+      data_tingkat: [],
       data_rombel: [],
+      tp_mapel: [],
+      deskripsi: '',
     }
   },
   created() {
@@ -92,27 +100,85 @@ export default {
   },
   methods: {
     handleEvent(val){
-      this.TpMapel = true
+      //this.tp_mapel = val.tp_mapel
       this.form.tp_id = val.tp_id
+      this.getTpMapel(this.form.tp_id)
     },
-    getTpMapel(arr){
-      var tingkat = []
-      var rombongan_belajar_id = []
-      var data_rombel = []
-      arr.forEach(element => {
-        tingkat.push(element.rombongan_belajar.tingkat);
-        rombongan_belajar_id.push(element.rombongan_belajar_id);
-        data_rombel.push({
-          rombongan_belajar_id: element.rombongan_belajar_id,
-          nama: element.rombongan_belajar.nama
-        });
-      });
-      console.log(tingkat);
-      console.log(rombongan_belajar_id);
-      console.log(data_rombel);
-    },
-    uniqueChars(arr){
-      return [...new Set(arr)];
+    getTpMapel(tp_id){
+      this.loading_form = true
+      this.$http.post('/referensi/get-tp-mapel', {
+        tp_id: tp_id,
+        semester_id: this.user.semester.semester_id,
+        sekolah_id: this.user.sekolah_id,
+        periode_aktif: this.user.semester.nama,
+        guru_id: this.user.guru_id,
+      }).then(response => {
+        eventBus.$emit('loading-table', false);
+        this.loading_form = false
+        let getData = response.data
+        this.tp_mapel = getData.tp.tp_mapel
+        this.deskripsi = getData.tp.deskripsi
+        this.TpMapel = true
+        if(getData.tp.cp_id){
+          if(getData.tp.cp.fase == 'E'){
+            this.data_tingkat = [
+              {
+                id: 10,
+                nama: 'Kelas 10',
+              },
+            ];
+          } else {
+            this.data_tingkat = [
+              {
+                id: 11,
+                nama: 'Kelas 11',
+              },
+              {
+                id: 12,
+                nama: 'Kelas 12',
+              },
+              {
+                id: 13,
+                nama: 'Kelas 13',
+              },
+            ];
+          }
+        } else {
+          var tingkat_10 = {
+            id: 10,
+            nama: 'Kelas 10',
+          };
+          var tingkat_11 = {
+            id: 11,
+            nama: 'Kelas 11',
+          };
+          var tingkat_12 = {
+            id: 12,
+            nama: 'Kelas 12',
+          };
+          var tingkat_13 = {
+            id: 13,
+            nama: 'Kelas 13',
+          };
+          var data_tingkat = []
+          if(getData.tp.kd.kelas_10){
+            data_tingkat.push(tingkat_10);
+          }
+          if(getData.tp.kd.kelas_11){
+            data_tingkat.push(tingkat_11);
+          }
+          if(getData.tp.kd.kelas_12){
+            data_tingkat.push(tingkat_12);
+          }
+          if(getData.tp.kd.kelas_13){
+            data_tingkat.push(tingkat_13);
+          }
+          this.data_tingkat = data_tingkat
+          console.log(this.data_tingkat);
+        }
+      }).catch(error => {
+        console.log(error);
+      })
     },
     changeTingkat(val){
       this.form.rombongan_belajar_id = []
@@ -138,7 +204,7 @@ export default {
       this.resetModal()
     },
     resetModal(){
-      this.form.tp_id = ''
+      //this.form.tp_id = ''
       this.form.tingkat = ''
       this.form.rombongan_belajar_id = []
       this.state.tingkat = null
@@ -179,7 +245,8 @@ export default {
               confirmButton: 'btn btn-success',
             },
           }).then(result => {
-            this.hideModal()
+            this.getTpMapel(this.form.tp_id)
+            this.resetModal()
             this.$emit('reload')
           })
         }
@@ -187,6 +254,41 @@ export default {
         console.log(error);
       })
     },
+    hapus(tp_id, pembelajaran_id){
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: 'Tindakan ini tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => false,
+      }).then(result => {
+        if (result.value) {
+          this.loading_modal = true
+          this.$http.post('/referensi/hapus-tp-mapel', {
+            tp_id: tp_id,
+            pembelajaran_id: pembelajaran_id,
+          }).then(response => {
+            let getData = response.data
+            this.$swal({
+              icon: getData.icon,
+              title: getData.title,
+              text: getData.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            }).then(result => {
+              this.getTpMapel(tp_id)
+            })
+          });
+        }
+      })
+    }
   },
 }
 </script>

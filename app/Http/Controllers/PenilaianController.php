@@ -136,14 +136,22 @@ class PenilaianController extends Controller
         //bobot * rata2_sumatif_semester / total_bobot
         //=IFERROR(ROUND(($H$42*H43/$L$42)+($K$42*K43/$L$42);0);"")
         foreach($get_siswa as $siswa){
-            $nilai_sumatif_materi = $bobot_sumatif_materi * number_format($siswa->anggota_rombel->nilai_tp_avg_nilai,0) / $total_bobot;
-            $nilai_sumatif_semester = ($siswa->anggota_rombel->nilai_sumatif_semester) ? $bobot_sumatif_akhir * number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai) / $total_bobot : 0;
+            //$nilai_sumatif_materi = $bobot_sumatif_materi * number_format($siswa->anggota_rombel->nilai_tp_avg_nilai,0) / $total_bobot;
+            //$nilai_sumatif_semester = ($siswa->anggota_rombel->nilai_sumatif_semester) ? $bobot_sumatif_akhir * number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai) / $total_bobot : 0;
+            $nilai_sumatif_materi = number_format($siswa->anggota_rombel->nilai_tp_avg_nilai, 2);
+            $nilai_sumatif_semester = ($siswa->anggota_rombel->nilai_sumatif_semester) ? number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai, 2) : 0;
             $nilai_akhir = collect([$nilai_sumatif_materi, $nilai_sumatif_semester]);
+            //=IFERROR(ROUND(($H$42*H43/$L$42)+($K$42*K43/$L$42);0);"")
+            $nilai_asesmen = NULL;
+            if($nilai_akhir->avg()){
+                $nilai_asesmen = number_format(($bobot_sumatif_materi * $nilai_sumatif_materi / $total_bobot) + ($bobot_sumatif_akhir * $nilai_sumatif_semester / $total_bobot) , 0);
+            }
             $data_siswa[] = [
                 'nama' => $siswa->nama,
                 'anggota_rombel_id' => $siswa->anggota_rombel->anggota_rombel_id,
                 'nilai_akhir' => ($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL,
-                'nilai_asesmen' => ($nilai_akhir->avg()) ? number_format($nilai_akhir->avg(),0) : NULL,
+                //'nilai_asesmen' => ($nilai_akhir->avg()) ? number_format($nilai_akhir->avg(),0) : NULL,
+                'nilai_asesmen' => $nilai_asesmen,
                 //'nilai_sumatif_materi' => number_format($siswa->anggota_rombel->nilai_tp_avg_nilai,0),
                 //'nilai_sumatif_semester' => ($siswa->anggota_rombel->nilai_sumatif_semester) ? number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai) : 0,
                 'tp_kompeten' => $siswa->anggota_rombel->tp_kompeten,
@@ -154,6 +162,7 @@ class PenilaianController extends Controller
         }
         $data = [
             'data_siswa' => $data_siswa,
+            'get_siswa' => $get_siswa,
             'data_tp' => Tujuan_pembelajaran::where(function($query){
                 $query->whereHas('tp_mapel', function($query){
                     $query->where('tp_mapel.pembelajaran_id', request()->pembelajaran_id);

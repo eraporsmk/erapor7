@@ -89,6 +89,9 @@ export default {
     this.loadPostsData()
     this.tahun_pelajaran = this.user.semester.nama
     eventBus.$on('add-tp', this.handleEvent);
+    eventBus.$on('loading-table', (val) => {
+      this.loading = val
+    })
   },
   methods: {
     handleEvent(){
@@ -99,7 +102,7 @@ export default {
       this.loadPostsData()
     },
     loadPostsData() {
-      this.isBusy = true
+      this.loading = true
       let current_page = this.current_page//this.search == '' ? this.current_page : 1
       this.$http.get('/referensi/tujuan-pembelajaran', {
         params: {
@@ -120,6 +123,7 @@ export default {
       }).then(response => {
         let getData = response.data.data
         this.isBusy = false
+        this.loading = false
         this.items = getData.data
         this.meta = {
           total: getData.total,
@@ -163,6 +167,7 @@ export default {
         eventBus.$emit('open-modal-edit-tp', val.item);
       }
       if(val.aksi == 'copy'){
+        this.loading = true
         eventBus.$emit('open-modal-tp-mapel', val.item);
       }
       if(val.aksi == 'hapus'){

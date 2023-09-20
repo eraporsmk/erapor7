@@ -124,6 +124,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/hapus-tp', [ReferensiController::class, 'hapus_tp']);
     Route::post('/rombel-tp', [ReferensiController::class, 'rombel_tp']);
     Route::post('/add-rombel-tp', [ReferensiController::class, 'add_rombel_tp']);
+    Route::post('/get-tp-mapel', [ReferensiController::class, 'get_tp_mapel']);
+    Route::post('/hapus-tp-mapel', [ReferensiController::class, 'hapus_tp_mapel']);
     //select option
     Route::post('/get-rombel', [ReferensiController::class, 'get_rombel']);
     Route::post('/get-mapel', [ReferensiController::class, 'get_mapel']);

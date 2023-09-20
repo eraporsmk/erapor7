@@ -251,18 +251,28 @@ export default {
           this.password_confirmation_State = (data.errors.password_confirmation) ? false : null
           this.feedback_password_confirmation = (data.errors.password_confirmation) ? data.errors.password_confirmation[0] : ''
         } else {
+          var buttonText = 'Ok'
+          var buttonLabel = 'Logout!'
+          var buttonClass = 'btn btn-success'
+          if(data.success){
+            buttonText = '<font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Logout!'
+            buttonLabel = 'Logout!'
+            buttonClass = 'btn btn-danger'
+          }
           this.$swal({
             icon: data.icon,
             title: data.title,
             text: data.text,
             customClass: {
-              confirmButton: 'btn btn-danger',
+              confirmButton: buttonClass,
             },
             allowOutsideClick: false,
-            confirmButtonText: '<font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" /> Logout!',
-            confirmButtonAriaLabel: 'Logout!',
+            confirmButtonText: buttonText,
+            confirmButtonAriaLabel: buttonLabel,
           }).then(result => {
-            this.logout();
+            if(data.success){
+              this.logout();
+            }
           })
           /*this.dismissCountDown = this.dismissSecs
           this.alert_variant = data.icon

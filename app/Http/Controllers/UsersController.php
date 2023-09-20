@@ -13,7 +13,8 @@ use App\Models\Peserta_didik;
 use App\Models\Rombongan_belajar;
 use App\Models\Ekstrakurikuler;
 use App\Models\Pembelajaran;
-
+use Validator;
+use Hash;
 class UsersController extends Controller
 {
     public function index()
@@ -360,114 +361,15 @@ class UsersController extends Controller
             $validator = Validator::make(request()->all(), $rules, $message)->validated();
             $user->password = Hash::make(request()->password);
             if($user->save()){
-                if(request()->password == $user->username){
-                    $ability = [
-                        [
-                            'action' => 'read',
-                            'subject' => 'Web'
-                        ]
-                    ];
-                } else {
-                    if($user->hasRole('administrator')){
-                        $ability = [
-                            [
-                                'action' => 'read',
-                                'subject' => 'Web'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Administrator'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Referensi'
-                            ]
-                        ];
-                    } elseif($user->hasRole('disprov')){
-                        $ability = [
-                            [
-                                'action' => 'read',
-                                'subject' => 'Web'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Disprov'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Blangko'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Referensi'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Fire'
-                            ],
-                        ];
-                    }
-                    if($user->hasRole('diskab')){
-                        $ability = [
-                            [
-                                'action' => 'read',
-                                'subject' => 'Web'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Diskab'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Blangko'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Referensi'
-                            ]
-                        ];
-                    }
-                    if($user->hasRole('sekolah')){
-                        $ability = [
-                            [
-                                'action' => 'read',
-                                'subject' => 'Web'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Sekolah'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Blangko'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => ($user->fire) ? 'Fire' : 'NotFire',
-                            ],
-                        ];
-                    }
-                    if($user->hasRole('verifikator')){ //alumni_aktif
-                        $ability = [
-                            [
-                                'action' => 'read',
-                                'subject' => 'Web'
-                            ],
-                            [
-                                'action' => 'read',
-                                'subject' => 'Verifikator'
-                            ]
-                        ];
-                    }
-                }
                 $data = [
+                    'success' => TRUE,
                     'icon' => 'success',
                     'title' => 'Berhasil!',
                     'text' => 'Password Pengguna berhasil diperbaharui',
-                    'ability' => $ability,
                 ];
             } else {
                 $data = [
+                    'success' => FALSE,
                     'icon' => 'danger',
                     'title' => 'Gagal!',
                     'text' => 'Password Pengguna gagal diperbaharui. Silahkan coba beberapa saat lagi!',

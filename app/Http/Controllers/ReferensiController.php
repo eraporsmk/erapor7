@@ -515,7 +515,13 @@ class ReferensiController extends Controller
         return response()->json($data);
     }
     public function tujuan_pembelajaran(){
-        $data = Tujuan_pembelajaran::with(['cp.mata_pelajaran', 'kd.mata_pelajaran', 'tp_mapel.rombongan_belajar'])
+        $data = Tujuan_pembelajaran::with(['cp.mata_pelajaran', 'kd.mata_pelajaran', 'tp_mapel' => function($query){
+            $query->where($this->kondisiPembelajaran());
+            $query->withWhereHas('rombongan_belajar', function($query){
+                $query->where('semester_id', request()->semester_id);
+                $query->where('sekolah_id', request()->sekolah_id);
+            });
+        }])
         ->where($this->kondisiTp())
         ->orderBy(request()->sortby, request()->sortbydesc)
         ->orderBy('updated_at', request()->sortbydesc)
@@ -641,7 +647,7 @@ class ReferensiController extends Controller
                 ];
             }
         }
-        $data['pembelajaran_id'] = $pembelajaran->pembelajaran_id;
+        $data['pembelajaran_id'] = ($pembelajaran) ? $pembelajaran->pembelajaran_id : request()->pembelajaran_id;
         return response()->json($data);
     }
     public function upload_tp(){
@@ -766,7 +772,7 @@ class ReferensiController extends Controller
     private function kondisiPembelajaran(){
         return function($query){
             if(request()->pembelajaran_id){
-                $query->where('pembelajaran_id', request()->pembelajaran_id);
+                $query->where('pembelajaran.pembelajaran_id', request()->pembelajaran_id);
             }
             if(request()->rombongan_belajar_id){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
@@ -774,6 +780,8 @@ class ReferensiController extends Controller
             if(hasRole('pembimbing', request()->periode_aktif)){
                 $query->where('guru_id', request()->guru_id);
                 $query->where('mata_pelajaran_id', '800001000');
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
                 $query->orWhere('guru_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
@@ -792,6 +800,8 @@ class ReferensiController extends Controller
                         });
                     });
                 }
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
                 $query->orWhere('guru_pengajar_id', request()->guru_id);
                 if(request()->rombongan_belajar_id){
                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
@@ -813,6 +823,8 @@ class ReferensiController extends Controller
                         });
                     });
                 }
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
             } else {
                 $query->where('guru_id', request()->guru_id);
                 $query->whereNotNull('kelompok_id');
@@ -832,6 +844,8 @@ class ReferensiController extends Controller
                         });
                     });
                 }
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
                 $query->orWhere('guru_pengajar_id', request()->guru_id);
                 if(request()->rombongan_belajar_id){
                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
@@ -853,6 +867,8 @@ class ReferensiController extends Controller
                         });
                     });
                 }
+                $query->where('sekolah_id', request()->sekolah_id);
+                $query->where('semester_id', request()->semester_id);
             }
         };
     }
@@ -991,6 +1007,35 @@ class ReferensiController extends Controller
                 'icon' => 'error',
                 'title' => 'Gagal!',
                 'text' => 'Bobot Penilaian gagal di simpan. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function get_tp_mapel(){
+        $data = [
+            'tp' => Tujuan_pembelajaran::with(['cp.mata_pelajaran', 'kd.mata_pelajaran', 'tp_mapel' => function($query){
+                $query->where($this->kondisiPembelajaran());
+                $query->withWhereHas('rombongan_belajar', function($query){
+                    $query->where('semester_id', request()->semester_id);
+                    $query->where('sekolah_id', request()->sekolah_id);
+                });
+            }])->find(request()->tp_id),
+        ];
+        return response()->json($data);
+    }
+    public function hapus_tp_mapel(){
+        $find = Tp_mapel::where('tp_id', request()->tp_id)->where('pembelajaran_id', request()->pembelajaran_id)->first();
+        if($find && $find->delete()){
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => 'Data Mapping Tujuan Pembelajaran berhasil di hapus',
+            ];
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Data Mapping Tujuan Pembelajaran gagal di hapus. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);
