@@ -14,4 +14,8 @@ class Tp_mapel extends Model
 	protected $table = 'tp_mapel';
 	protected $primaryKey = 'tp_mapel_id';
 	protected $guarded = [];
+	public function tp()
+	{
+		return $this->belongsTo(Tujuan_pembelajaran::class, 'tp_id', 'tp_id');
+	}
 }

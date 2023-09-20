@@ -472,8 +472,8 @@ export default {
       data.append('template_excel', (this.template_excel) ? this.template_excel : '');
       data.append('mata_pelajaran_id', (this.mata_pelajaran_id) ? this.mata_pelajaran_id : '')
       data.append('pembelajaran_id', (this.form.pembelajaran_id) ? this.form.pembelajaran_id : '')
-      data.append('cp_id', (this.cp_id) ? this.cp_id : '')
-      data.append('kd_id', (this.kd_id) ? this.kd_id : '')
+      data.append('cp_id', (this.form.cp_id) ? this.form.cp_id : '')
+      data.append('kd_id', (this.form.kd_id) ? this.form.kd_id : '')
       this.$http.post('/referensi/upload-tp', data).then(response => {
         this.loading_form = false
         let data = response.data

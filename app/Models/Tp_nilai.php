@@ -32,4 +32,8 @@ class Tp_nilai extends Model
 	{
 		return $this->hasMany(Nilai::class, 'tp_nilai_id', 'tp_nilai_id');
 	}
+	public function tp_mapel()
+	{
+		return $this->hasOne(Tp_mapel::class, 'tp_id', 'tp_id');
+	}
 }
