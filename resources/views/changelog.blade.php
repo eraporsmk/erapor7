@@ -1,5 +1,11 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.0</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Rilis Aplikasi baru menggunakan Framework Laravel 9 dan VueJS 2</li>
+    </ol>
+    <legend>
         <h3>Versi 6.0.5</h3>
     </legend>
     <ol>

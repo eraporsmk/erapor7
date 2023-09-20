@@ -165,12 +165,13 @@ class ApiController extends Controller
     }
     public function changelog(){
         $data = [
-            'data' => File::get(base_path('changelog.txt'))
+            'data' => view('changelog')->render(),
+            //File::get(base_path('changelog.txt'))
         ];
         return response()->json($data);
     }
     public function check_update(){
-        $response = Http::post('http://app.erapor-smk.net/api/version');
+        $response = Http::post('sync.erapor-smk.net/api/v7/version');
         $tersedia = FALSE;
         $now = get_setting('app_version');
         if($response->successful()){
