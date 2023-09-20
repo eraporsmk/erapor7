@@ -91,10 +91,13 @@ class AuthController extends Controller
             ],422);
         }
 
-        $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
+        $pengguna = $request->user();
+        $pengguna->last_login_at = date('Y-m-d H:i:s');
+        $pengguna->last_login_ip = $request->ip();
+        $pengguna->save();
+        $tokenResult = $pengguna->createToken('Personal Access Token');
         $token = $tokenResult->plainTextToken;
-        $user = $this->loggedUser($user);
+        $user = $this->loggedUser($pengguna);
         return response()->json([
             'accessToken' =>$token,
             'user' => $user,
