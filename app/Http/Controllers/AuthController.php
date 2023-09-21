@@ -19,10 +19,9 @@ class AuthController extends Controller
     public function username()
     {
         $login = request()->input('username');
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';        
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nuptk';        
         request()->merge([$field => $login]);
         return $field;
-        //return 'username';
     }
     public function register(Request $request)
     {
@@ -33,7 +32,7 @@ class AuthController extends Controller
                 'password'=>'required|string',
             ],
             [
-                'name.required' => 'Nama tidak boleh kosong',
+                'username.required' => 'NPSN tidak boleh kosong',
                 'email.required' => 'Email tidak boleh kosong',
                 'email.unique' => 'Email telah terdaftar',
                 'password.required' => 'Password tidak boleh kosong'
@@ -65,7 +64,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $login = request()->input('email');
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nuptk';
         $namaField = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'Email' : 'NPSN';
         request()->merge([$field => $login]);
         $request->validate(
