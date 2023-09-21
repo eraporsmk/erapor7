@@ -46,7 +46,7 @@
                         <b-td class="text-center" style="vertical-align:top" :rowspan="data_tp.length + 1">{{index + 1}}</b-td>
                         <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">{{siswa.nama}}</b-td>
                         <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">
-                          <b-form-input v-model="form.nilai[siswa.anggota_rombel_id]" />
+                          <b-form-input v-model="form.nilai[siswa.anggota_rombel_id]" :disabled="disabled" />
                         </b-td>
                       </b-tr>
                       <template v-for="(tp, i) in data_tp">
@@ -165,6 +165,7 @@ export default {
           nama: 'Nilai Akhir',
         }
       ],
+      disabled: false,
     }
   },
   created() {
@@ -227,6 +228,11 @@ export default {
           let getData = response.data
           this.data_siswa = getData.data.data_siswa
           this.data_tp = getData.data.data_tp
+          if(this.form.bentuk_penilaian == 'asesmen'){
+            this.disabled = true
+          } else {
+            this.disabled = false
+          }
           var nilai = {}
           var kompeten = {}
           var inkompeten = {}

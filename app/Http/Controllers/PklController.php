@@ -50,6 +50,7 @@ class PklController extends Controller
                 'akt_pd_id' => 'required',
                 'tanggal_mulai' => 'required',
                 'tanggal_selesai' => 'required',
+                'instruktur' => 'required',
             ],
             [
                 'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
@@ -58,6 +59,7 @@ class PklController extends Controller
                 'akt_pd_id.required' => 'Perjanjian Kerja Sama (PKS) tidak boleh kosong!',
                 'tanggal_mulai.required' => 'Tanggal Mulai tidak boleh kosong!',
                 'tanggal_selesai.required' => 'Tanggal Selesai tidak boleh kosong!',
+                'instruktur.required' => 'Nama Lengkap Instruktur tidak boleh kosong!',
             ]
         );
         $insert = 0;
@@ -70,6 +72,7 @@ class PklController extends Controller
                 'tanggal_mulai' => request()->tanggal_mulai,
                 'tanggal_selesai' => request()->tanggal_selesai,
                 'semester_id' => request()->semester_id,
+                'instruktur' => request()->instruktur,
             ]);
             foreach(request()->tp_id as $tp_id){
                 Tp_pkl::create([
@@ -116,6 +119,7 @@ class PklController extends Controller
                 'akt_pd_id' => 'required',
                 'tanggal_mulai' => 'required',
                 'tanggal_selesai' => 'required',
+                'instruktur' => 'required',
             ],
             [
                 'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
@@ -124,6 +128,7 @@ class PklController extends Controller
                 'akt_pd_id.required' => 'Perjanjian Kerja Sama (PKS) tidak boleh kosong!',
                 'tanggal_mulai.required' => 'Tanggal Mulai tidak boleh kosong!',
                 'tanggal_selesai.required' => 'Tanggal Selesai tidak boleh kosong!',
+                'instruktur.required' => 'Nama Lengkap Instruktur tidak boleh kosong!',
             ]
         );
         $insert = 0;
@@ -134,6 +139,7 @@ class PklController extends Controller
             $pkl->tanggal_mulai = request()->tanggal_mulai;
             $pkl->tanggal_selesai = request()->tanggal_selesai;
             $pkl->semester_id = request()->semester_id;
+            $pkl->instruktur = request()->instruktur;
             $pkl->save();
             foreach(request()->tp_id as $tp_id){
                 Tp_pkl::updateOrCreate([

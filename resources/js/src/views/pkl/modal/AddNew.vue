@@ -58,6 +58,11 @@
           <b-form-datepicker v-model="form.tanggal_selesai" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal_selesai" @context="onContext" placeholder="== Pilih Tanggal Selesai ==" />
         </b-form-group>
       </b-col>
+      <b-col cols="12">
+        <b-form-group label="Instruktur" label-for="instruktur" label-cols-md="3" :invalid-feedback="feedback.instruktur" :state="state.instruktur">
+          <b-form-input id="instruktur" v-model="form.instruktur" placeholder="Nama Lengkap Instruktur" :state="state.instruktur" />
+        </b-form-group>
+      </b-col>
       <b-col cols="12" v-if="show_tp">
         <b-form-group label="Tujuan Pembelajaran" label-cols-md="3" v-slot="{ ariaDescribedby }">
           <template v-if="data_tp.length">
@@ -114,6 +119,7 @@ export default {
         akt_pd_id: '',
         tanggal_mulai: '',
         tanggal_selesai: '',
+        instruktur: '',
         tp_id: [],
       },
       state: {
@@ -123,6 +129,7 @@ export default {
         akt_pd_id: null,
         tanggal_mulai: null,
         tanggal_selesai: null,
+        instruktur: null,
       },
       feedback: {
         tingkat: '',
@@ -131,6 +138,7 @@ export default {
         akt_pd_id: '',
         tanggal_mulai: '',
         tanggal_selesai: '',
+        instruktur: '',
       },
       data_tingkat: [
         {
@@ -178,18 +186,21 @@ export default {
       this.form.akt_pd_id = ''
       this.form.tanggal_mulai = ''
       this.form.tanggal_selesai = ''
+      this.form.instruktur = ''
       this.state.tingkat = null
       this.state.rombongan_belajar_id = null
       this.state.dudi_id = null
       this.state.akt_pd_id = null
       this.state.tanggal_mulai = null
       this.state.tanggal_selesai = null
+      this.state.instruktur = null
       this.feedback.tingkat = ''
       this.feedback.rombongan_belajar_id = ''
       this.feedback.dudi_id = ''
       this.feedback.akt_pd_id = ''
       this.feedback.tanggal_mulai = ''
       this.feedback.tanggal_selesai = ''
+      this.feedback.instruktur = ''
     },
     handleOk(bvModalEvent) {
       bvModalEvent.preventDefault()
@@ -208,12 +219,14 @@ export default {
           this.state.akt_pd_id = (data.errors.akt_pd_id) ? false : null
           this.state.tanggal_mulai = (data.errors.tanggal_mulai) ? false : null
           this.state.tanggal_selesai = (data.errors.tanggal_selesai) ? false : null
+          this.state.instruktur = (data.errors.instruktur) ? false : null
           this.feedback.tingkat = (data.errors.tingkat) ? data.errors.tingkat.join(', ') : ''
           this.feedback.rombongan_belajar_id = (data.errors.rombongan_belajar_id) ? data.errors.rombongan_belajar_id.join(', ') : ''
           this.feedback.dudi_id = (data.errors.dudi_id) ? data.errors.dudi_id.join(', ') : ''
           this.feedback.akt_pd_id = (data.errors.akt_pd_id) ? data.errors.akt_pd_id.join(', ') : ''
           this.feedback.tanggal_mulai = (data.errors.tanggal_mulai) ? data.errors.tanggal_mulai.join(', ') : ''
           this.feedback.tanggal_selesai = (data.errors.tanggal_selesai) ? data.errors.tanggal_selesai.join(', ') : ''
+          this.feedback.instruktur = (data.errors.instruktur) ? data.errors.instruktur.join(', ') : ''
         } else {
           this.$swal({
             icon: data.icon,
@@ -240,6 +253,7 @@ export default {
       this.form.akt_pd_id = ''
       this.form.tanggal_mulai = ''
       this.form.tanggal_selesai = ''
+      this.form.instruktur = ''
       if(val){
         this.state.tingkat = null
         this.loading_rombel = true
@@ -260,6 +274,7 @@ export default {
       this.form.akt_pd_id = ''
       this.form.tanggal_mulai = ''
       this.form.tanggal_selesai = ''
+      this.form.instruktur = ''
       if(val){
         this.state.rombongan_belajar_id = null
         this.loading_dudi = true
@@ -279,6 +294,7 @@ export default {
       this.form.akt_pd_id = ''
       this.form.tanggal_mulai = ''
       this.form.tanggal_selesai = ''
+      this.form.instruktur = ''
       if(val){
         this.state.dudi_id = null
         this.loading_akt_pd = true
@@ -297,6 +313,7 @@ export default {
       this.form.tp_id = []
       this.form.tanggal_mulai = ''
       this.form.tanggal_selesai = ''
+      this.form.instruktur = ''
       if(val){
         this.state.akt_pd_id = null
         this.loading_tp = true

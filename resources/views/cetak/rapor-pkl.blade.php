@@ -36,7 +36,7 @@
       </tr>
       <tr>
         <td>Nama Instruktur</td>
-        <td>:	{{ $pd->pd_pkl->praktik_kerja_lapangan->dudi->contact_person }}</td>
+        <td>:	{{ $pd->pd_pkl->praktik_kerja_lapangan->instruktur }}</td>
       </tr>
       <tr>
         <td>Nama Pembimbing</td>
