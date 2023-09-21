@@ -322,7 +322,6 @@ class EraporUpdate extends Command
             $this->call('ref:cp');
         }
         $this->call('generate:akses');
-        Pembelajaran::whereNotNull('induk_pembelajaran_id')->update(['kelompok_id' => NULL, 'no_urut' => NULL]);
         $this->info('Berhasil memperbaharui aplikasi e-Rapor SMK ke versi '.$version);
     }
 }
