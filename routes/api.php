@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/projek', [DashboardController::class, 'projek']);
     Route::post('/detil-projek', [DashboardController::class, 'detil_projek']);
     Route::post('/detil-rencana', [DashboardController::class, 'detil_rencana']);
+    Route::post('/generate-nilai', [DashboardController::class, 'generate_nilai']);
   });
   Route::group(['prefix' => 'sinkronisasi'], function () {
     Route::post('/', [SinkronisasiController::class, 'index']);

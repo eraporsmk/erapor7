@@ -946,13 +946,15 @@ class ReferensiController extends Controller
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('mata_pelajaran_id', $mata_pelajaran_id);
                 $query->where('rombongan_belajar_id', $rombongan_belajar_id);
-            })->first();
-            if($pembelajaran){
-                $insert++;
-                Tp_mapel::updateOrCreate([
-                    'tp_id' => request()->tp_id,
-                    'pembelajaran_id' => $pembelajaran->pembelajaran_id,
-                ]);
+            })->get();
+            if($pembelajaran->count()){
+                foreach($pembelajaran as $mapel){
+                    $insert++;
+                    Tp_mapel::updateOrCreate([
+                        'tp_id' => request()->tp_id,
+                        'pembelajaran_id' => $mapel->pembelajaran_id,
+                    ]);
+                }
             }
         }
         if($insert){

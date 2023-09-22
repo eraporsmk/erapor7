@@ -235,8 +235,6 @@ export default {
           }
           var nilai = {}
           var kompeten = {}
-          var inkompeten = {}
-          var ini = this
           this.data_siswa.forEach(function(value, key) {
             if(val === 'akhir'){
               nilai[value.anggota_rombel_id] = value.nilai_akhir

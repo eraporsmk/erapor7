@@ -465,3 +465,21 @@ function get_fase($tingkat){
 function hasRole($roles, $team){
     return auth()->user()->hasRole($roles, $team);
 }
+function array_filter_recursive($array, $callback = null, $remove_empty_arrays = false){
+    foreach ($array as $key => & $value) { // mind the reference
+        if (is_array($value)) {
+            $value = array_filter_recursive($value, $callback, $remove_empty_arrays);
+            if ($remove_empty_arrays && !(bool) $value) {
+                unset($array[$key]);
+            }
+        } else {
+            if (!is_null($callback) && !$callback($value, $key)) {
+                unset($array[$key]);
+            } elseif (!(bool) $value) {
+                unset($array[$key]);
+            }
+        }
+    }
+    unset($value); // kill the reference
+    return $array;
+}

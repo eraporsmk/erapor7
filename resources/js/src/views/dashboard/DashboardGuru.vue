@@ -45,7 +45,7 @@
           </b-table-simple>
         </div>
       </b-card-body>
-      <b-modal ref="detil-modal" size="xl" scrollable :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
+      <b-modal ref="detil-modal" size="xl" scrollable :title="title" cancel-title="Tutup" @ok="handleOk" ok-variant="primary">
         <b-table-simple bordered responsive>
             <b-thead>
               <b-tr>
@@ -90,6 +90,14 @@
               </template>
             </b-tbody>
           </b-table-simple>
+          <template #modal-footer="{ ok, cancel }">
+            <b-overlay :show="loading_modal" rounded opacity="0.6" spinner-small spinner-variant="secondary" class="d-inline-block">
+              <b-button @click="cancel()">Tutup</b-button>
+            </b-overlay>
+            <b-overlay :show="loading_modal" rounded opacity="0.6" spinner-small spinner-variant="primary" class="d-inline-block">
+              <b-button variant="primary" @click="ok()" v-if="sub_mapel">Generate Nilai</b-button>
+            </b-overlay>
+        </template>
       </b-modal>
     </b-card>
     <dashboard-walas v-if="hasRole('wali')" @detil="HandleDetil"></dashboard-walas>
@@ -97,7 +105,7 @@
 </template>
 
 <script>
-import { BCard, BCardBody, BSpinner, BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton } from 'bootstrap-vue'
+import { BCard, BCardBody, BSpinner, BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton, BOverlay } from 'bootstrap-vue'
 import DashboardWalas from './DashboardWalas.vue'
 export default {
   components: {
@@ -111,6 +119,7 @@ export default {
     BTd,
     BTh,
     BButton,
+    BOverlay,
     DashboardWalas,
   },
   computed: {
@@ -126,6 +135,9 @@ export default {
       loading_modal: false,
       data_siswa: [],
       merdeka: false,
+      sub_mapel: 0,
+      pembelajaran_id: null,
+      rombongan_belajar_id: null,
     }
   },
   created() {
@@ -147,26 +159,59 @@ export default {
       })
     },
     detil(pembelajaran_id){
+      this.pembelajaran_id = pembelajaran_id
       this.loading_modal = true
       this.$http.post('/dashboard/detil-penilaian', {
         pembelajaran_id: pembelajaran_id,
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
+        this.sub_mapel = getData.pembelajaran.tema_count
+        this.rombongan_belajar_id = getData.pembelajaran.rombongan_belajar_id
         this.title = getData.title
         this.data_siswa = getData.data_siswa
         this.merdeka = getData.merdeka
         this.$refs['detil-modal'].show()
-        console.log(getData);
       }).catch(error => {
         console.log(error)
       })
     },
     HandleDetil(pembelajaran_id){
-      console.log('HandleDetil');
-      console.log(pembelajaran_id);
       this.detil(pembelajaran_id)
+    },
+    handleOk(bvModalEvent) {
+      // Prevent modal from closing
+      bvModalEvent.preventDefault()
+      // Trigger submit handler
+      this.handleSubmit()
+    },
+    handleSubmit() {
+      this.loading_modal = true
+      this.$http.post('/dashboard/generate-nilai', {
+        pembelajaran_id: this.pembelajaran_id,
+        rombongan_belajar_id: this.rombongan_belajar_id,
+      }).then(response => {
+        this.loading_modal = false
+        let getData = response.data
+        console.log(getData);
+        this.$swal({
+          icon: getData.icon,
+          title: getData.title,
+          text: getData.text,
+          customClass: {
+            confirmButton: 'btn btn-success',
+          },
+          allowOutsideClick: false,
+        }).then(result => {
+          this.detil(this.pembelajaran_id)
+        })
+      }).catch(error => {
+        console.log(error)
+      })
     },
   },
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+</style>

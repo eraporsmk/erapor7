@@ -13,6 +13,8 @@ use App\Models\Pembelajaran;
 use App\Models\Rencana_budaya_kerja;
 use App\Models\Peserta_didik;
 use App\Models\Opsi_budaya_kerja;
+use App\Models\Nilai_akhir;
+use App\Models\Deskripsi_mata_pelajaran;
 
 class DashboardController extends Controller
 {
@@ -178,8 +180,9 @@ class DashboardController extends Controller
                  'agama',
              ]);
          }]);
-      }])->find(request()->pembelajaran_id);
+      }])->withCount('tema')->find(request()->pembelajaran_id);
       return response()->json([
+         'pembelajaran' => $pembelajaran,
          'data_siswa' => $pembelajaran->rombongan_belajar->pd,
          'merdeka' => Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka'),
          'title' => 'Detil Penilaian Mata Pelajaran '.$pembelajaran->nama_mata_pelajaran,
@@ -463,5 +466,135 @@ class DashboardController extends Controller
          })->orderBy('nama')->get(),
       ];
       return response()->json($data);
+   }
+   public function generate_nilai(){
+      $pembelajaran = Pembelajaran::with(['rombongan_belajar' => function($query){
+         $query->with(['pd' => function($query){
+            $query->orderBy('nama');
+            $query->with([
+               'nilai_akhir_kurmer' => function($query){
+                  $query->where('pembelajaran_id', request()->pembelajaran_id);
+               },
+               'nilai_akhir_pengetahuan' => function($query){
+                  $query->where('pembelajaran_id', request()->pembelajaran_id);
+               },
+               'deskripsi_mapel' => function($query){
+                  $query->where('pembelajaran_id', request()->pembelajaran_id);
+               },
+            ]);
+         }]);
+      }])->find(request()->pembelajaran_id);
+      $sub_mapel = Pembelajaran::where('induk_pembelajaran_id', request()->pembelajaran_id)->get();
+      $nilai_akhir_induk = [];
+      $deskripsi_induk = [];
+      foreach($pembelajaran->rombongan_belajar->pd as $pd){
+         $nilai_akhir = [];
+         $deskripsi = [];
+         $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_kurmer) ? $pd->nilai_akhir_kurmer->nilai : 0;
+         $deskripsi_induk[$pd->peserta_didik_id] = [];
+         if($pd->deskripsi_mapel){
+            $deskripsi_induk[$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
+         }
+         //$nilai_akhir_induk[] = $nilai_akhir;
+         //$deskripsi_induk[] = $deskripsi;
+      }
+      $nilai_akhir_sub = [];
+      $deskripsi_sub = [];
+      foreach($sub_mapel as $sub){
+         $nilai_akhir_sub = [];
+         $deskripsi_sub = [];
+         $data_pd = Peserta_didik::withWhereHas('anggota_rombel', function($query){
+            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+         })->with([
+            'nilai_akhir_kurmer' => function($query) use ($sub){
+                $query->where('pembelajaran_id', $sub->pembelajaran_id);
+            },
+            'nilai_akhir_pengetahuan' => function($query) use ($sub){
+                $query->where('pembelajaran_id', $sub->pembelajaran_id);
+            },
+            'deskripsi_mapel' => function($query) use ($sub){
+                $query->where('pembelajaran_id', $sub->pembelajaran_id);
+            },
+        ])->orderBy('nama')->get();
+         foreach($data_pd as $pd){
+            $nilai_akhir = [];
+            $deskripsi = [];
+            $nilai_akhir[$sub->pembelajaran_id][$pd->peserta_didik_id] = ($pd->nilai_akhir_kurmer) ? $pd->nilai_akhir_kurmer->nilai : 0;
+            $deskripsi[$sub->pembelajaran_id][$pd->peserta_didik_id] = [];
+            if($pd->deskripsi_mapel){
+               $deskripsi[$sub->pembelajaran_id][$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
+            }
+            $nilai_akhir_sub[] = $nilai_akhir;
+            $deskripsi_sub[] = $deskripsi;
+         }
+      }
+      $nilai_akhir_all = [];
+      $deskripsi_akhir_all = [];
+      foreach($nilai_akhir_sub as $kunci => $nilai_akhir){
+         foreach($nilai_akhir as $pembelajaran_id => $siswa){
+            foreach($siswa as $key => $value){
+               $nilai_akhir = [];
+               $deskripsi_akhir = [];
+               $nilai_akhir[$key] = [$value, $nilai_akhir_induk[$key]];
+               $deskripsi_akhir[$key] = [$deskripsi_induk[$key], $deskripsi_sub[$kunci][$pembelajaran_id][$key]];
+               $nilai_akhir_all[] = $nilai_akhir;
+               $deskripsi_akhir_all[] = $deskripsi_akhir;
+            }
+         }
+      }
+      $average = [];
+      $desc_p = [];
+      $desc_k = [];
+      foreach($nilai_akhir_all as $key => $all){
+         foreach($all as $peserta_didik_id => $nilai){
+            $deskripsi = collect(array_filter_recursive($deskripsi_akhir_all[$key][$peserta_didik_id]));
+            $pengetahuan = collect($deskripsi->first());
+            $keterampilan = collect($deskripsi->last());
+            if($pengetahuan->count() || $keterampilan->count()){
+               $desc_p[$peserta_didik_id] = $pengetahuan->implode(', ');
+               $desc_k[$peserta_didik_id] = $keterampilan->implode(', ');
+            }
+            $average[$peserta_didik_id] = collect(array_filter($nilai))->avg();
+         }
+      }
+      foreach($average as $peserta_didik_id => $nilai_jadi){
+         $anggota = Anggota_rombel::with(['nilai_akhir_mapel' => function($query){
+            $query->where('pembelajaran_id', request()->pembelajaran_id);
+         }])->where('peserta_didik_id', $peserta_didik_id)->where('rombongan_belajar_id', request()->rombongan_belajar_id)->first();
+         if($anggota){
+            if(isset($desc_p[$peserta_didik_id])){
+               Deskripsi_mata_pelajaran::updateOrCreate(
+                  [
+                     'sekolah_id' => $anggota->sekolah_id,
+                     'anggota_rombel_id' => $anggota->anggota_rombel_id,
+                     'pembelajaran_id' => request()->pembelajaran_id,
+                  ],
+                  [
+                     'deskripsi_pengetahuan' => $desc_p[$peserta_didik_id],
+                     'deskripsi_keterampilan' => $desc_k[$peserta_didik_id],
+                     'last_sync' => now()->subDays(30),
+                  ]
+               );
+            }
+            Nilai_akhir::updateOrCreate(
+               [
+                  'sekolah_id' => $anggota->sekolah_id,
+                  'pembelajaran_id' => request()->pembelajaran_id,
+                  'anggota_rombel_id' => $anggota->anggota_rombel_id,
+                  'kompetensi_id' => 4,
+               ],
+               [
+                  'nilai' => number_format($nilai_jadi, 0),
+                  'last_sync' => now()->subDays(30),
+               ]
+            );
+         }
+      }
+      $data = [
+         'icon' => 'success',
+         'title' => 'Berhasil!',
+         'text' => 'Nilai Sub Mapel berhasil digenerate',
+     ];
+     return response()->json($data);
    }
 }
