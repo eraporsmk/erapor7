@@ -14,7 +14,7 @@ export default [
           icon: 'hand-point-right',
           title: 'Praktik Kerja Lapangan',
           route: 'walas-pkl',
-          resource: 'Wali_pkl',
+          resource: 'Wali',
           action: 'read',
         },
         {
