@@ -882,7 +882,7 @@ class SinkronDapodik extends Command
                     if($wilayah->parrent_recursive->parrent_recursive){
                         $provinsi = $this->update_wilayah($wilayah->parrent_recursive->parrent_recursive);
                         $kabupaten = $this->update_wilayah($wilayah->parrent_recursive);
-                        $kecamatan = $this->update_wilayah($wilayah->parrent_recursive);
+                        $kecamatan = $this->update_wilayah($wilayah);
                     }
                 }
             }
