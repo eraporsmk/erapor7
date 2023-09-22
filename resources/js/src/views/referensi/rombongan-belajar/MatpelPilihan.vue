@@ -227,26 +227,19 @@ export default {
     },
     handleSubmit() {
       this.loading_modal = true
-      Object.keys(this.form.nama).forEach(key => {
-        this.$http.post('/rombongan-belajar/simpan-pembelajaran', {
-          pembelajaran_id: key,
-          nama_mata_pelajaran: this.form.nama[key],
-          guru_pengajar_id: this.form.guru_pengajar_id[key],
-          kelompok_id: this.form.kelompok_id[key],
-          no_urut: this.form.no_urut[key],
-        }).then(response => {
-          this.hitung('start')
-          let data = response.data
-          this.$toast({
-            component: ToastificationContent,
-            position: 'bottom-right',
-            props: {
-              title: data.title,
-              icon: data.icon,
-              variant: data.variant,
-              text: data.text,
-            },
-          })
+      this.$http.post('/rombongan-belajar/simpan-pembelajaran', this.form).then(response => {
+        this.loading_modal = false
+        let getData = response.data
+        this.$swal({
+          icon: getData.icon,
+          title: getData.title,
+          text: getData.text,
+          customClass: {
+            confirmButton: 'btn btn-success',
+          },
+        }).then(result => {
+          this.loading_modal = true
+          this.handlePembelajaran(this.rombongan_belajar_id)
         })
       });
     },
