@@ -43,6 +43,7 @@
               <b-th class="text-center">No</b-th>
               <b-th class="text-center">Nama</b-th>
               <b-th class="text-center">NISN</b-th>
+              <b-th class="text-center">Kelas</b-th>
               <b-th class="text-center">L/P</b-th>
               <b-th class="text-center">Tempat, Tanggal Lahir</b-th>
               <b-th class="text-center">Agama</b-th>
@@ -54,6 +55,7 @@
               <b-td class="text-center">{{index + 1}}</b-td>
               <b-td>{{anggota.nama}}</b-td>
               <b-td class="text-center">{{anggota.nisn}}</b-td>
+              <b-td class="text-center">{{(anggota.kelas) ? anggota.kelas.nama : '-'}}</b-td>
               <b-td class="text-center">{{anggota.jenis_kelamin}}</b-td>
               <b-td>{{anggota.tempat_lahir}}, {{anggota.tanggal_lahir_indo}}</b-td>
               <b-td>{{(anggota.agama) ? anggota.agama.nama : ''}}</b-td>

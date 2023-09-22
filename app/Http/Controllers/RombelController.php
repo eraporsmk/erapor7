@@ -47,7 +47,10 @@ class RombelController extends Controller
     }
     public function anggota_rombel(){
         $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
-        $data = Peserta_didik::with(['agama'])->withWhereHas('anggota_rombel', function($query){
+        $data = Peserta_didik::with(['agama', 'kelas' => function($query) use ($rombel){
+            $query->where('jenis_rombel', 1);
+            $query->where('anggota_rombel.semester_id', $rombel->semester_id);
+        }])->withWhereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->orderBy('nama')->get();
         return response()->json(['data' => $data, 'rombel' => $rombel]);

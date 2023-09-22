@@ -109,7 +109,7 @@
     <br>
     <br>
     <br>
-      <p>...................................................................</p>
+      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->dudi->contact_person}}</u></p>
     </td>
     </tr>
     </table>
