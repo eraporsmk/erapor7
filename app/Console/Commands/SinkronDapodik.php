@@ -392,7 +392,7 @@ class SinkronDapodik extends Command
                 'offset' => $data['offset'],
                 'satuan' => $data['satuan'],
             ];
-            $response = http_client($satuan, $data_sync, 'http://app.erapor-smk.net/api/dapodik');
+            $response = http_client($satuan, $data_sync);
             if($response->status() == 200){
                 return $response->object();
             } else {
