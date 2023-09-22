@@ -487,10 +487,14 @@ class SinkronDapodik extends Command
                 'alamat_wali' 		=> ($data->alamat_jalan) ?? 0,
                 'telp_wali' 		=> ($data->nomor_telepon_seluler) ?? 0,
                 'kerja_wali' 		=> ($data->pekerjaan_id_wali) ? $data->pekerjaan_id_wali : 1,
+                'deleted_at'        => $deleted_at,
                 'active' 			=> 1,
                 'last_sync' => Carbon::now()->subDays(30),
             ]
         );
+        if(!$deleted_at){
+            Pd_keluar::where('peserta_didik_id', $data->peserta_didik_id)->where('semester_id', $semester->semester_id)->delete();
+        }
         if(isset($data->anggota_rombel)){
             $find = Rombongan_belajar::find($data->anggota_rombel->rombongan_belajar_id);
             if($find){
