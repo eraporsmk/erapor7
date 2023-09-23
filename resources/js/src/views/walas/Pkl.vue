@@ -71,7 +71,7 @@
               <b-alert variant="danger" show>
                 <div class="alert-body text-center">
                   <p><font-awesome-icon icon="fa-solid fa-ban" /> <strong>Akses Ditutup!</strong></p>
-                  <p>{{ notif }}</p>
+                  <p v-html="notif"></p>
                   <!--p v-if="semester_allowed">Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong>, Semester Genap</p>
                   <p v-else>Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong></p-->
                 </div>
