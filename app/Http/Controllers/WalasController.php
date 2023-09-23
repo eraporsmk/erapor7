@@ -117,15 +117,22 @@ class WalasController extends Controller
         $allowed = FALSE;
         $nama_kurikulum = '';
         $data_dudi = [];
+        $merdeka = FALSE;
         if($rombel){
+            $merdeka = Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka');
             $tingkat = $rombel->tingkat;
             if(Str::contains($rombel->kurikulum->nama_kurikulum, '2013')){
                 $tingkat_allowed = 11;
-            } elseif(Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')){
+            } elseif($merdeka){
                 $tingkat_allowed = 12;
+                if(request()->semester_id >= 20222){
+                    $semester_allowed = FALSE;
+                }
+                /*
                 if(Str::substr(request()->semester_id, 4, 1) == 2){
                     $semester_allowed = FALSE;
                 }
+                */
             }
             $tingkat = $tingkat_allowed;
             if($rombel->tingkat >= $tingkat_allowed && $semester_allowed){
