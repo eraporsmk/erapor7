@@ -154,6 +154,7 @@ class WalasController extends Controller
             'tingkat' => $tingkat,
             'nama_kurikulum' => $nama_kurikulum,
             'data_dudi' => $data_dudi,
+            'merdeka' => $merdeka,
         ];
         return response()->json($data);
     }
