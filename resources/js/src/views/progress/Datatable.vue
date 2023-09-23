@@ -16,8 +16,20 @@
             <strong>Loading...</strong>
           </div>
         </template>
+        <template v-slot:cell(kelas)="row">
+          {{row.item.rombongan_belajar.nama}}
+        </template>
+        <template v-slot:cell(dudi)="row">
+          {{row.item.akt_pd.dudi.nama}}
+        </template>
+        <template v-slot:cell(pks)="row">
+          {{row.item.akt_pd.judul_akt_pd}}
+        </template>
         <template v-slot:cell(detil)="row">
           <b-button variant="success" size="sm" @click="getDetil(row.item.pembelajaran_id)">Detil</b-button>
+        </template>
+        <template v-slot:cell(detil_pkl)="row">
+          <b-button variant="success" size="sm" @click="detilPkl(row.item.pkl_id)">Detil</b-button>
         </template>
         <template v-slot:cell(detil_p5)="row">
           <b-button variant="success" size="sm" @click="getDetil(row.item.projek.pembelajaran_id)">Detil</b-button>
@@ -116,6 +128,9 @@ export default {
         rombongan_belajar_id: rombongan_belajar_id,
         ekstrakurikuler_id: ekstrakurikuler_id,
       })
+    },
+    detilPkl(pkl_id){
+      this.$emit('detil', pkl_id)
     },
     loadPerPage(val) {
       this.$emit('per_page', this.meta.per_page)

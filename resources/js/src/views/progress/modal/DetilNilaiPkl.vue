@@ -1,138 +1,66 @@
 <template>
   <div>
-    <b-row>
-      <b-col md="4" class="mb-2">
-        <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" :searchable="false" :clearable="false" @input="loadPerPage" />
-      </b-col>
-      <b-col md="4" offset-md="4">
-        <b-form-input @input="search" placeholder="Cari data..."></b-form-input>
-      </b-col>
-    </b-row>
-    <b-overlay :show="loading" rounded opacity="0.6" size="lg" spinner-variant="warning">
-      <b-table responsive bordered striped :items="data_siswa" :fields="fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" show-empty :loading="loading">
-        <template #table-busy>
-          <div class="text-center text-danger my-2">
-            <b-spinner class="align-middle"></b-spinner>
-            <strong>Loading...</strong>
-          </div>
+    <b-table-simple bordered striped>
+      <b-thead>
+        <b-tr>
+          <b-th class="text-center">NO</b-th>
+          <b-th class="text-center">Nama Peserta Didik</b-th>
+          <b-th class="text-center">NISN</b-th>
+          <b-th class="text-center">Catatan</b-th>
+          <b-th class="text-center">Tujuan Pembelajaran</b-th>
+          <b-th class="text-center">Nilai</b-th>
+          <b-th class="text-center">Deskripsi</b-th>
+        </b-tr>
+      </b-thead>
+      <b-tbody>
+        <template v-for="(siswa, index) in data_siswa">
+          <b-tr>
+            <b-td class="text-center" :rowspan="siswa.pd.nilai_pkl.length + 1">{{ index+1 }}</b-td>
+            <b-td :rowspan="siswa.pd.nilai_pkl.length + 1">{{ siswa.pd.nama }}</b-td>
+            <b-td class="text-center" :rowspan="siswa.pd.nilai_pkl.length + 1">{{ siswa.pd.nisn }}</b-td>
+            <template v-if="!siswa.pd.nilai_pkl.length">
+              <td class="text-center">-</td>
+              <td class="text-center">-</td>
+              <td class="text-center">-</td>
+              <td class="text-center">-</td>
+            </template>
+            <template v-else>
+              <td :rowspan="siswa.pd.nilai_pkl.length + 1">{{ siswa.catatan }}</td>
+            </template>
+          </b-tr>
+          <template v-if="siswa.pd.nilai_pkl.length">
+            <template v-for="(item) in siswa.pd.nilai_pkl">
+              <b-tr>
+                  <td>{{ item.tp.deskripsi }}</td>
+                  <td class="text-center">{{ item.nilai }}</td>
+                  <td>{{item.deskripsi}}</td>
+              </b-tr>
+            </template>
+          </template>
         </template>
-        <template v-slot:cell(no)="row">
-          {{meta.from + row.index}}
-        </template>
-        <template v-slot:cell(kelas)="row">
-          {{row.item.kelas.nama}}
-        </template>
-        <template v-slot:cell(predikat)="row">
-          {{(row.item.anggota_ekskul.single_nilai_ekstrakurikuler) ? predikat(row.item.anggota_ekskul.single_nilai_ekstrakurikuler.nilai) : ''}}
-        </template>
-        <template v-slot:cell(deskripsi)="row">
-          {{(row.item.anggota_ekskul.single_nilai_ekstrakurikuler) ? row.item.anggota_ekskul.single_nilai_ekstrakurikuler.deskripsi_ekskul : ''}}
-        </template>
-      </b-table>
-      <b-row class="mt-2">
-        <b-col md="6">
-          <p>Menampilkan {{ (meta.from) ? meta.from : 0 }} sampai {{ meta.to }} dari {{ meta.total }} entri</p>
-        </b-col>
-        <b-col md="6">
-          <b-pagination v-model="meta.current_page" :total-rows="meta.total" :per-page="meta.per_page" align="right" @change="changePage" aria-controls="dw-datatable"></b-pagination>
-        </b-col>
-      </b-row>
-    </b-overlay>
+      </b-tbody>
+    </b-table-simple>
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
-import { BRow, BCol, BFormInput, BTable, BSpinner, BPagination, BOverlay } from 'bootstrap-vue'
-import vSelect from 'vue-select'
+import { BTableSimple, BThead, BTbody, BTr, BTh, BTd } from 'bootstrap-vue'
 export default {
   components: {
-    BRow, BCol, BFormInput, BTable, BSpinner, BPagination, BOverlay, vSelect
+    BTableSimple, BThead, BTbody, BTr, BTh, BTd
   },
   props: {
     data_siswa: {
       type: Array,
       required: true
     },
-    loading: {
-      type: Boolean,
-      default: () => false,
-    },
-    meta: {
-      required: true
-    },
   },
   data() {
     return {
       sortBy: null,
-      sortDesc: false,
-      fields: [
-        {
-          key: 'no',
-          label: 'NO',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          key: 'nama',
-          label: 'Nama',
-          sortable: false,
-          thClass: 'text-center',
-        },
-        {
-          key: 'nisn',
-          label: 'NISN',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          key: 'kelas',
-          label: 'Kelas',
-          sortable: false,
-          thClass: 'text-center',
-        },
-        {
-          key: 'predikat',
-          label: 'Predikat',
-          sortable: false,
-          thClass: 'text-center',
-          tdClass: 'text-center',
-        },
-        {
-          key: 'deskripsi',
-          label: 'Deskripsi',
-          sortable: false,
-          thClass: 'text-center',
-        },
-      ],
-    }
-  },
-  watch: {
-    sortBy(val) {
-      this.$emit('sort', {
-        sortBy: this.sortBy,
-        sortDesc: this.sortDesc
-      })
-    },
-    sortDesc(val) {
-      this.$emit('sort', {
-        sortBy: this.sortBy,
-        sortDesc: this.sortDesc
-      })
     }
   },
   methods: {
-    loadPerPage(val) {
-      this.$emit('per_page_nilai', this.meta.per_page)
-    },
-    changePage(val) {
-      this.$emit('pagination_nilai', val)
-    },
-    search: _.debounce(function (e) {
-      this.$emit('search_nilai', e)
-    }, 500),
     predikat(val){
       var template_desk = {
         1: 'Sangat Baik',

@@ -11,6 +11,7 @@ use App\Models\Rencana_budaya_kerja;
 use App\Models\Opsi_budaya_kerja;
 use App\Models\Peserta_didik;
 use App\Models\Rencana_ukk;
+use App\Models\Praktik_kerja_lapangan;
 
 class ProgressController extends Controller
 {
@@ -174,6 +175,20 @@ class ProgressController extends Controller
                $query->where('nama', 'ILIKE', '%' . request()->q . '%');
             })->paginate(request()->per_page),
          ];
+      } elseif(request()->aksi == 'pkl'){
+         $pkl = Praktik_kerja_lapangan::with([
+            'rombongan_belajar',
+            'akt_pd.dudi',
+            'pd_pkl.pd.nilai_pkl' => function($query){
+               $query->where('pkl_id', request()->pkl_id);
+               $query->with(['tp']);
+            }
+        ])->find(request()->pkl_id);
+         $data = [
+            'title' => 'Detil Penilaian PKL '.$pkl->akt_pd->judul_akt_pd,
+            'pkl' => $pkl,
+            'data_siswa' => $pkl->pd_pkl,
+         ];
       } else {
          $data = [
             'title' => 'Belum di definisikan',
@@ -264,25 +279,25 @@ class ProgressController extends Controller
      return response()->json(['status' => 'success', 'data' => $data]);
    }
    public function nilai_pkl(){
-      $data = Rencana_ukk::where(function($query){
-         $query->where('sekolah_id', request()->sekolah_id);
+      $data = Praktik_kerja_lapangan::where(function($query){
          $query->where('semester_id', request()->semester_id);
+         $query->where('sekolah_id', request()->sekolah_id);
      })->with([
-         'paket_ukk',
-         'guru_internal' => function($query){
-             $query->select('guru_id', 'nama');
-         },
-         'guru_eksternal' => function($query){
-             $query->select('guru_id', 'nama');
-         },
-     ])->withCount('pd')
-     ->orderBy(request()->sortby, request()->sortbydesc)
-     ->when(request()->q, function($query) {
-         $query->whereHas('paket_ukk', function($query){
-             $query->where('nama_paket_id', 'ILIKE', '%' . request()->q . '%');
-             $query->orWhere('nama_paket_en', 'ILIKE', '%' . request()->q . '%');
+         'rombongan_belajar',
+         'akt_pd.dudi'
+     ])->withCount('pd_pkl')->orderBy(request()->sortby, request()->sortbydesc)
+     ->when(request()->q, function($query){
+         $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+         $query->orWhereHas('wali_kelas', function($query){
+             $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+         });
+         $query->orWhereHas('jurusan_sp', function($query){
+             $query->where('nama_jurusan_sp', 'ILIKE', '%' . request()->q . '%');
+         });
+         $query->orWhereHas('kurikulum', function($query){
+             $query->where('nama_kurikulum', 'ILIKE', '%' . request()->q . '%');
          });
      })->paginate(request()->per_page);
-      return response()->json(['status' => 'success', 'data' => $data]);
+     return response()->json(['status' => 'success', 'data' => $data]);
    }
 }

@@ -10,7 +10,7 @@
       </div>
     </b-card-body>
     <b-modal ref="detil-modal" size="xl" scrollable :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
-        <detil-modal :isBusy="isBusy" :data_siswa="data_siswa" :meta="meta_nilai" @per_page_nilai="handlePerPageNilai" @pagination_nilai="handlePaginationNilai" @search_nilai="handleSearchNilai" @sort_nilai="handleSortNilai"></detil-modal>
+        <detil-modal :isBusy="isBusy" :data_siswa="data_siswa"></detil-modal>
     </b-modal>
   </b-card>
 </template>
@@ -31,73 +31,72 @@ export default {
     return {
       isBusy: true,
       loading: false,
-      periode_aktif: '',
+      title: '',
       fields: [
         {
-          key: 'jurusan',
-          label: 'Program/Kompetensi Keahlian',
+          key: 'kelas',
+          label: 'Kelas',
           sortable: false,
           thClass: 'text-center',
         },
         {
-          key: 'rombel',
-          label: 'Rombongan Belajar',
+          key: 'dudi',
+          label: 'DUDI',
           sortable: false,
           thClass: 'text-center',
         },
         {
-          key: 'kode',
-          label: 'Kode Paket',
+          key: 'pks',
+          label: 'PKS',
           sortable: false,
           thClass: 'text-center',
         },
         {
-          key: 'nama',
-          label: 'Nama Paket',
-          sortable: false,
+          key: 'tanggal_mulai_str',
+          label: 'Tanggal Mulai',
+          sortable: true,
           thClass: 'text-center',
+          tdClass: 'text-center'
         },
         {
-          key: 'jumlah_pd',
-          label: 'Jumlah PD',
+          key: 'tanggal_selesai_str',
+          label: 'Tanggal Selesai',
           sortable: false,
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'text-center'
         },
         {
-          key: 'detil_ukk',
-          label: 'Detil',
+          key: 'pd_pkl_count',
+          label: 'JML Peserta',
           sortable: false,
           thClass: 'text-center',
-          tdClass: 'text-center',
+          tdClass: 'text-center'
+        },
+        {
+          key: 'detil_pkl',
+          label: 'Aksi',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center'
         },
       ],
       items: [],
       meta: {},
-      meta_nilai: {},
       current_page: 1,
-      current_page_nilai: 1, 
       per_page: 10,
-      per_page_nilai: 25,
       search: '',
-      search_nilai: '',
-      sortBy: 'nama',
-      sortBy_nilai: 'nama',
-      sortByDesc: false,
-      sortByDesc_nilai: false,
+      sortBy: 'created_at',
+      sortByDesc: true,
+      pkl_id: '',
       data_siswa: [],
-      title: '',
-      rombongan_belajar_id: '',
-      ekstrakurikuler_id: '',
     }
   },
   created() {
-    this.periode_aktif = this.user.semester.nama
     this.loadPostsData()
   },
   methods: {
     loadPostsData(){
-      this.isBusy = true
+      this.loading = true
       let current_page = this.current_page
       this.$http.get('/progress/nilai-pkl', {
         params: {
@@ -114,6 +113,7 @@ export default {
       }).then(response => {
         let getData = response.data.data
         this.isBusy = false
+        this.loading = false
         this.items = getData.data//MAKA ASSIGN DATA POSTINGAN KE DALAM VARIABLE ITEMS
         //DAN ASSIGN INFORMASI LAINNYA KE DALAM VARIABLE META
         this.meta = {
@@ -146,44 +146,19 @@ export default {
         this.loadPostsData()
       }
     },
-    handlePerPageNilai(val) {
-      this.per_page_nilai = val 
-      this.detil()
-    },
-    handlePaginationNilai(val) {
-      this.current_page_nilai = val 
-      this.detil()
-    },
-    handleSearchNilai(val) {
-      this.search_nilai = val
-      this.detil()
-    },
-    handleSortNilai(val) {
-      if (val.sortBy) {
-        this.sortBy_nilai = val.sortBy
-        this.sortByDesc_nilai = val.sortDesc
-        this.detil()
-      }
-    },
     detil(){
       this.loading = true
-      let current_page = this.current_page_nilai
       this.$http.post('/progress/detil', {
-        aksi: 'ekskul',
-        rombongan_belajar_id: this.rombongan_belajar_id,
-        ekstrakurikuler_id: this.ekstrakurikuler_id,
-        sekolah_id: this.user.sekolah_id,
-        semester_id: this.user.semester.semester_id,
-        page: current_page,
-        per_page: this.per_page_nilai,
-        q: this.search_nilai,
-        sortby: this.sortBy_nilai,
-        sortbydesc: this.sortByDesc_nilai ? 'DESC' : 'ASC'
+        aksi: 'pkl',
+        pkl_id: this.pkl_id,
       }).then(response => {
         this.loading = false
         let getData = response.data
         this.title = getData.title
-        this.data_siswa = getData.data_siswa.data
+        this.data_siswa = getData.data_siswa
+        this.$refs['detil-modal'].show()
+        console.log(getData);
+        /*
         this.meta_nilai = {
           total: getData.data_siswa.total,
           current_page: getData.data_siswa.current_page,
@@ -191,15 +166,13 @@ export default {
           from: getData.data_siswa.from,
           to: getData.data_siswa.to,
         }
-        this.$refs['detil-modal'].show()
-        console.log(getData);
+        */
       }).catch(error => {
         console.log(error)
       })
     },
     HandleDetil(val){
-      this.rombongan_belajar_id = val.rombongan_belajar_id
-      this.ekstrakurikuler_id = val.ekstrakurikuler_id
+      this.pkl_id = val
       this.detil()
     },
   },
