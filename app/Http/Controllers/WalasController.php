@@ -118,6 +118,7 @@ class WalasController extends Controller
         $nama_kurikulum = '';
         $data_dudi = [];
         $merdeka = FALSE;
+        $notif = NULL;
         if($rombel){
             $merdeka = Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka');
             $tingkat = $rombel->tingkat;
@@ -144,6 +145,12 @@ class WalasController extends Controller
                         });
                     });
                 })->orderBy('nama')->get();
+            } else {
+                if($merdeka){
+                    $notif = 'Kurikulum <strong>'.$rombel->kurikulum->nama_kurikulum.'</strong>, Praktik Kerja Lapangan hanya dapat di entri oleh Pembimbing PKL di menu <strong>Praktik Kerja Lapangan</strong>';
+                } else {
+                    $notif = 'Kurikulum <strong>'.$rombel->kurikulum->nama_kurikulum.'</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>11, 12 dan 13</strong>';
+                }
             }
             $nama_kurikulum = $rombel->kurikulum->nama_kurikulum;
         }
@@ -155,6 +162,7 @@ class WalasController extends Controller
             'nama_kurikulum' => $nama_kurikulum,
             'data_dudi' => $data_dudi,
             'merdeka' => $merdeka,
+            'notif' => $notif,
         ];
         return response()->json($data);
     }

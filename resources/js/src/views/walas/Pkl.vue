@@ -71,8 +71,9 @@
               <b-alert variant="danger" show>
                 <div class="alert-body text-center">
                   <p><font-awesome-icon icon="fa-solid fa-ban" /> <strong>Akses Ditutup!</strong></p>
-                  <p v-if="semester_allowed">Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong>, Semester Genap</p>
-                  <p v-else>Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong></p>
+                  <p>{{ notif }}</p>
+                  <!--p v-if="semester_allowed">Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong>, Semester Genap</p>
+                  <p v-else>Kurikulum <strong>{{nama_kurikulum}}</strong>, Praktik Kerja Lapangan hanya untuk kelas <strong>{{tingkat}}</strong></p-->
                 </div>
               </b-alert>
             </template>
@@ -103,6 +104,8 @@ export default {
     return {
       loadingForm: false,
       isBusy: true,
+      notif: null,
+      merdeka: false,
       form: {
         aksi: 'pkl',
         user_id: '',
@@ -159,6 +162,8 @@ export default {
         this.nama_kurikulum = getData.nama_kurikulum
         this.tingkat = getData.tingkat
         this.data_dudi = getData.data_dudi
+        this.merdeka = getData.merdeka
+        this.notif = getData.notif
       })
     },
     onSubmit(event) {
