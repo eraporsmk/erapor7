@@ -204,6 +204,7 @@ export default {
   created() {
     this.form.tahun_pelajaran = this.user.semester.nama
     this.form.jenis_gtk = this.jenis_gtk
+    this.form.sekolah_id = this.user.sekolah_id
     eventBus.$on('open-modal-ptk', this.handleEvent);
   },
   methods: {
