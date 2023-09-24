@@ -3,12 +3,12 @@
     <b-nav-item-dropdown v-if="userData" right toggle-class="d-flex align-items-center dropdown-user-link"
       class="dropdown-user">
       <template #button-content>
-        <div class="d-sm-flex d-none user-nav">
+        <!--div class="d-sm-flex d-none user-nav">
           <p class="user-name font-weight-bolder mb-0">
             {{ userData.name || userData.username }}
           </p>
           <span class="user-status">{{ userData.role }}</span>
-        </div>
+        </div-->
         <template v-if="userData.profile_photo_path">
           <b-img v-bind="mainProps" rounded="circle" :src="`/storage/${userData.profile_photo_path}`"></b-img>
         </template>
@@ -19,7 +19,28 @@
           </b-avatar>
         </template>
       </template>
-
+      <b-dropdown-item :to="{ name: 'profile' }" link-class="d-flex align-items-center">
+        <div class="d-flex">
+          <div class="flex-shrink-0 mr-1">
+            <div class="avatar avatar-online">
+              <template v-if="userData.profile_photo_path">
+                <b-img v-bind="mainProps" rounded="circle" :src="`/storage/${userData.profile_photo_path}`"></b-img>
+              </template>
+              <template v-else>
+                <b-avatar size="40" :src="userData.avatar" variant="light-primary" badge class="badge-minimal"
+                  badge-variant="success">
+                  <feather-icon v-if="!userData.name" icon="UserIcon" size="22" />
+                </b-avatar>
+              </template>
+            </div>
+          </div>
+          <div class="flex-grow-1">
+            <span class="fw-medium d-block">{{ userData.name || userData.username }}</span>
+            <small class="text-muted" style="white-space: normal;">{{ userData.role }}</small>
+          </div>
+        </div>
+      </b-dropdown-item>
+      <b-dropdown-divider></b-dropdown-divider>
       <b-dropdown-item :to="{ name: 'profile' }" link-class="d-flex align-items-center">
         <feather-icon size="16" icon="UserIcon" class="mr-50" />
         <span>Profile</span>

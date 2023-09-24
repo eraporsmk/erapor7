@@ -128,12 +128,113 @@ class AuthController extends Controller
                 $user->attachRole('admin', $team);
             }
         }
-        if($user->hasRole('admin', $semester->nama)){
-            $user->ability = [
+        $general  = [
+            [
+                'action' => 'read',
+                'subject' => 'Web'
+            ]
+        ];
+        $admin = [];
+        $waka = [];
+        $wali = [];
+        $kaprog = [];
+        $projek = [];
+        $internal = [];
+        $pembina_ekskul = [];
+        $pembimbing = [];
+        $guru = [];
+        $siswa = [];
+        if($user->hasRole('waka', $semester->nama)){ 
+            $waka = [
                 [
                     'action' => 'read',
-                    'subject' => 'Web'
+                    'subject' => 'Wali'
                 ],
+                [
+                    'action' => 'read',
+                    'subject' => 'Rombel'
+                ],
+            ];
+        }
+        if($user->hasRole('wali', $semester->nama)){
+            if($semester->semester == 1){
+                $wali = [
+                    [
+                        'action' => 'read',
+                        'subject' => 'Password_pd',
+                    ],
+                    [
+                        'action' => 'read',
+                        'subject' => 'Wali'
+                    ],
+                ];
+            } else {
+                $wali = [
+                    [
+                        'action' => 'read',
+                        'subject' => 'Password_pd',
+                    ],
+                    [
+                        'action' => 'read',
+                        'subject' => 'Wali'
+                    ],
+                    [
+                        'action' => 'read',
+                        'subject' => 'Kenaikan'
+                    ],
+                ];
+            }
+            if($semester->tahun_ajaran_id < '2023'){
+                $wali = array_merge($wali, [
+                    [
+                        'action' => 'read',
+                        'subject' => 'Wali_pkl',
+                    ],
+                ]);
+            }
+        }
+        if($user->hasRole('kaprog', $semester->nama)){ 
+            $kaprog = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Kaprog'
+                ],
+            ];
+        }
+        if($user->hasRole('guru-p5', $semester->nama)){ 
+            $projek = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Projek'
+                ],
+            ];
+        }
+        if($user->hasRole('internal', $semester->nama)){ 
+            $internal = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Internal'
+                ],
+            ];
+        }
+        if($user->hasRole('pembina_ekskul', $semester->nama)){ 
+            $internal = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Ekskul'
+                ],
+            ];
+        }
+        if($user->hasRole('pembimbing', $semester->nama) && $semester->tahun_ajaran_id >= '2023'){ 
+            $pembimbing = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Pkl'
+                ],
+            ];
+        }
+        if($user->hasRole('admin', $semester->nama)){
+            $admin = [
                 [
                     'action' => 'read',
                     'subject' => 'Administrator'
@@ -147,112 +248,9 @@ class AuthController extends Controller
                     'subject' => 'Akses'
                 ]
             ];
-        } elseif($user->hasRole('guru', $semester->nama)){
-            $waka = [];
-            $wali = [];
-            $kaprog = [];
-            $projek = [];
-            $internal = [];
-            $pembina_ekskul = [];
-            $pembimbing = [];
-            if($user->hasRole('waka', $semester->nama)){ 
-                $waka = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Waka'
-                    ],
-                    [
-                        'action' => 'read',
-                        'subject' => 'Wali'
-                    ],
-                    [
-                        'action' => 'read',
-                        'subject' => 'Rombel'
-                    ],
-                ];
-            }
-            if($user->hasRole('wali', $semester->nama)){
-                if($semester->semester == 1){
-                    $wali = [
-                        [
-                            'action' => 'read',
-                            'subject' => 'Password_pd',
-                        ],
-                        [
-                            'action' => 'read',
-                            'subject' => 'Wali'
-                        ],
-                    ];
-                } else {
-                    $wali = [
-                        [
-                            'action' => 'read',
-                            'subject' => 'Password_pd',
-                        ],
-                        [
-                            'action' => 'read',
-                            'subject' => 'Wali'
-                        ],
-                        [
-                            'action' => 'read',
-                            'subject' => 'Kenaikan'
-                        ],
-                    ];
-                }
-                if($semester->tahun_ajaran_id < '2023'){
-                    $wali = array_merge($wali, [
-                        [
-                            'action' => 'read',
-                            'subject' => 'Wali_pkl',
-                        ],
-                    ]);
-                }
-            }
-            if($user->hasRole('kaprog', $semester->nama)){ 
-                $kaprog = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Kaprog'
-                    ],
-                ];
-            }
-            if($user->hasRole('guru-p5', $semester->nama)){ 
-                $projek = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Projek'
-                    ],
-                ];
-            }
-            if($user->hasRole('internal', $semester->nama)){ 
-                $internal = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Internal'
-                    ],
-                ];
-            }
-            if($user->hasRole('pembina_ekskul', $semester->nama)){ 
-                $internal = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Ekskul'
-                    ],
-                ];
-            }
-            if($user->hasRole('pembimbing', $semester->nama) && $semester->tahun_ajaran_id >= '2023'){ 
-                $pembimbing = [
-                    [
-                        'action' => 'read',
-                        'subject' => 'Pkl'
-                    ],
-                ];
-            }
+        } 
+        if($user->hasRole('guru', $semester->nama)){
             $guru = [
-                [
-                    'action' => 'read',
-                    'subject' => 'Web'
-                ],
                 [
                     'action' => 'read',
                     'subject' => 'Guru'
@@ -262,13 +260,9 @@ class AuthController extends Controller
                     'subject' => 'Akses'
                 ]
             ];
-            $user->ability = array_filter(array_merge($guru, $waka, $wali, $kaprog, $projek, $internal, $pembimbing));
-        } elseif($user->hasRole('siswa', $semester->nama)){ 
-            $user->ability = [
-                [
-                    'action' => 'read',
-                    'subject' => 'Web'
-                ],
+        } 
+        if($user->hasRole('siswa', $semester->nama)){ 
+            $siswa = [
                 [
                     'action' => 'read',
                     'subject' => 'Siswa'
@@ -278,14 +272,8 @@ class AuthController extends Controller
                     'subject' => 'Akses'
                 ],
             ];
-        } else { 
-            $user->ability = [
-                [
-                    'action' => 'read',
-                    'subject' => 'Web'
-                ]
-            ];
         }
+        $user->ability = array_filter(array_merge($general, $admin, $guru, $waka, $wali, $kaprog, $projek, $internal, $pembimbing, $siswa));
         if($user->allPermissions('display_name', $semester->nama)->count()){
             $user->role = $user->allPermissions('display_name', $semester->nama)->implode('display_name', ', ');
             $user->roles = $user->allPermissions('name', $semester->nama)->pluck('name')->toArray();
