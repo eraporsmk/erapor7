@@ -14,11 +14,7 @@ use App\Models\Guru;
 class RombelController extends Controller
 {
     public function index(){
-        $data = Rombongan_belajar::where(function($query){
-            $query->where('jenis_rombel', request()->jenis_rombel);
-            $query->where('semester_id', request()->semester_id);
-            $query->where('sekolah_id', request()->sekolah_id);
-        })->with([
+        $data = Rombongan_belajar::where($this->kondisi())->with([
             'wali_kelas' => function($query){
                 $query->select('guru_id', 'nama');
             },
@@ -33,17 +29,28 @@ class RombelController extends Controller
         ->orderBy('nama')
         ->when(request()->q, function($query){
             $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+            $query->where($this->kondisi());
             $query->orWhereHas('wali_kelas', function($query){
                 $query->where('nama', 'ILIKE', '%' . request()->q . '%');
             });
+            $query->where($this->kondisi());
             $query->orWhereHas('jurusan_sp', function($query){
                 $query->where('nama_jurusan_sp', 'ILIKE', '%' . request()->q . '%');
             });
+            $query->where($this->kondisi());
             $query->orWhereHas('kurikulum', function($query){
                 $query->where('nama_kurikulum', 'ILIKE', '%' . request()->q . '%');
             });
+            $query->where($this->kondisi());
         })->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
+    }
+    private function kondisi(){
+        return function($query){
+            $query->where('jenis_rombel', request()->jenis_rombel);
+            $query->where('semester_id', request()->semester_id);
+            $query->where('sekolah_id', request()->sekolah_id);
+        };
     }
     public function anggota_rombel(){
         $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
