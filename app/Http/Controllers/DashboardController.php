@@ -492,6 +492,7 @@ class DashboardController extends Controller
          $deskripsi = [];
          $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_kurmer) ? $pd->nilai_akhir_kurmer->nilai : 0;
          $deskripsi_induk[$pd->peserta_didik_id] = [];
+         //dump($pd->deskripsi_mapel);
          if($pd->deskripsi_mapel){
             $deskripsi_induk[$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
          }
@@ -547,13 +548,15 @@ class DashboardController extends Controller
       $desc_k = [];
       foreach($nilai_akhir_all as $key => $all){
          foreach($all as $peserta_didik_id => $nilai){
-            $deskripsi = collect(array_filter_recursive($deskripsi_akhir_all[$key][$peserta_didik_id]));
-            $pengetahuan = collect($deskripsi->first());
-            $keterampilan = collect($deskripsi->last());
-            if($pengetahuan->count() || $keterampilan->count()){
-               $desc_p[$peserta_didik_id] = $pengetahuan->implode(', ');
-               $desc_k[$peserta_didik_id] = $keterampilan->implode(', ');
+            $deskripsi = collect($deskripsi_akhir_all[$key][$peserta_didik_id]);
+            $pengetahuan = [];
+            $keterampilan = [];
+            foreach($deskripsi as $desk){
+               $pengetahuan[] = collect($desk)->first();
+               $keterampilan[] = collect($desk)->last();
             }
+            $desc_p[$peserta_didik_id] = collect(array_unique(array_filter($pengetahuan)))->implode(', ');
+            $desc_k[$peserta_didik_id] = collect(array_unique(array_filter($keterampilan)))->implode(', ');
             $average[$peserta_didik_id] = collect(array_filter($nilai))->avg();
          }
       }
@@ -562,7 +565,7 @@ class DashboardController extends Controller
             $query->where('pembelajaran_id', request()->pembelajaran_id);
          }])->where('peserta_didik_id', $peserta_didik_id)->where('rombongan_belajar_id', request()->rombongan_belajar_id)->first();
          if($anggota){
-            if(isset($desc_p[$peserta_didik_id])){
+            if($desc_p[$peserta_didik_id] || $desc_k[$peserta_didik_id]){
                Deskripsi_mata_pelajaran::updateOrCreate(
                   [
                      'sekolah_id' => $anggota->sekolah_id,
