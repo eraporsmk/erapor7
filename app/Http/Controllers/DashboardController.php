@@ -197,7 +197,7 @@ class DashboardController extends Controller
    public function index()
    {
       $user = auth()->user();
-      if($user->hasRole('admin', request()->periode_aktif)){
+      if($user->hasRole(['admin', 'tu'], request()->periode_aktif)){
          $data = $this->dashboard_admin();
       } elseif($user->hasRole('guru', request()->periode_aktif)){
          $data = $this->dashboard_guru();
