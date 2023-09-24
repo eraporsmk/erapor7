@@ -9,31 +9,9 @@
         <datatable :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @detil="handleDetil" @edit="handleEdit" @hapus="handleHapus" />
       </div>
     </b-card-body>
-    <b-modal ref="add-modal" :title="title" scrollable size="xl">
-      <add-modal :loading_form="loading_form" :form="form" :state="state" :feedback="feedback"></add-modal>
-      <template #modal-footer="{ ok, cancel }">
-        <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="primary">
-          <b-button variant="primary" @click="handleSubmit">Simpan</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="secondary">
-          <b-button @click="cancel()">Tutup</b-button>
-        </b-overlay>
-      </template>
-    </b-modal>
-    <b-modal ref="detil-modal" title="Detil Perencanaan Projek Pancasila" scrollable ok-only ok-variant="secondary" size="xl">
-      <detil-modal :data="data"></detil-modal>
-    </b-modal>
-    <b-modal ref="edit-modal" title="Edit Perencanaan Projek Pancasila" scrollable size="xl">
-      <edit-modal :data="data" :form="form" :state="state" :feedback="feedback"></edit-modal>
-      <template #modal-footer="{ ok, cancel }">
-        <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="primary">
-          <b-button variant="primary" @click="handleUpdate">Perbaharui</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="secondary">
-          <b-button @click="cancel()">Tutup</b-button>
-        </b-overlay>
-      </template>
-    </b-modal>
+    <add-modal :title="title" :loading_form="loading_form" :form="form" :state="state" :feedback="feedback" @reload="handlePerPage"></add-modal>
+    <detil-modal></detil-modal>
+    <edit-modal :data="data" :form="form" :state="state" :feedback="feedback" @reload="handlePerPage"></edit-modal>
   </b-card>
 </template>
 
@@ -171,14 +149,13 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.periode_aktif = this.user.semester.nama
-    eventBus.$on('add-modal', (val) => {
-      this.resetForm()
-      this.$refs['add-modal'].show()
-      //this.$router.push({ name: 'penilaian-input-sikap' })
-    })
+    eventBus.$on('add-projek', this.handleEvent);
     this.loadPostsData()
   },
   methods: {
+    handleEvent(){
+      eventBus.$emit('open-modal-add-projek');
+    },
     loadPostsData() {
       this.isBusy = true
       //let current_page = this.search == '' ? this.current_page : this.current_page != 1 ? 1 : this.current_page
@@ -234,58 +211,25 @@ export default {
       this.loadPostsData() //REQUEST DATA BARU
     },
     handleDetil(val){
-      //console.log('handleDetil');
-      //this.data = val
       this.$http.post('/penilaian/detil-projek', {
         rencana_budaya_kerja_id: val.rencana_budaya_kerja_id
       }).then(response => {
-        this.data = response.data
-        this.$refs['detil-modal'].show()
+        eventBus.$emit('open-modal-detil-projek', response.data)
       }).catch(error => {
         console.log(error);
       })
-      //console.log(val);
     },
     handleEdit(val){
       this.$http.post('/penilaian/detil-projek', {
         rencana_budaya_kerja_id: val.rencana_budaya_kerja_id
       }).then(response => {
-        this.data = response.data
+        /*this.data = response.data
         this.form.rencana_budaya_kerja_id = this.data.rencana_budaya_kerja_id
         this.form.nama_projek = this.data.nama
         this.form.deskripsi = this.data.deskripsi
         this.form.no_urut = this.data.no_urut
-        this.$refs['edit-modal'].show()
-      }).catch(error => {
-        console.log(error);
-      })
-    },
-    handleUpdate(){
-      this.loading_form = true
-      this.$http.post('/penilaian/update-projek', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        if(getData.errors){
-          this.feedback.nama_projek = (getData.errors.nama_projek) ? getData.errors.nama_projek.join(', ') : ''
-          this.state.nama_projek = (getData.errors.nama_projek) ? false : null
-          this.feedback.deskripsi = (getData.errors.deskripsi) ? getData.errors.deskripsi.join(', ') : ''
-          this.state.deskripsi = (getData.errors.deskripsi) ? false : null
-          this.feedback.no_urut = (getData.errors.no_urut) ? getData.errors.no_urut.join(', ') : ''
-          this.state.no_urut = (getData.errors.no_urut) ? false : null
-        } else {
-          this.$swal({
-            icon: getData.icon,
-            title: getData.title,
-            text: getData.text,
-            customClass: {
-              confirmButton: 'btn btn-success',
-            },
-          }).then(result => {
-            this.$refs['edit-modal'].hide()
-            this.resetForm()
-            this.loadPostsData()
-          })
-        }
+        this.$refs['edit-modal'].show()*/
+        eventBus.$emit('open-modal-edit-projek', response.data)
       }).catch(error => {
         console.log(error);
       })
@@ -324,50 +268,6 @@ export default {
           });
         }
       })
-    },
-    handleSubmit(){
-      this.loading_form = true
-      this.$http.post('/penilaian/simpan-projek', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        if(getData.errors){
-          this.feedback.tingkat = (getData.errors.tingkat) ? getData.errors.tingkat.join(', ') : ''
-          this.state.tingkat = (getData.errors.tingkat) ? false : null
-          this.feedback.rombongan_belajar_id = (getData.errors.rombongan_belajar_id) ? getData.errors.rombongan_belajar_id.join(', ') : ''
-          this.state.rombongan_belajar_id = (getData.errors.rombongan_belajar_id) ? false : null
-          this.feedback.pembelajaran_id = (getData.errors.pembelajaran_id) ? getData.errors.pembelajaran_id.join(', ') : ''
-          this.state.pembelajaran_id = (getData.errors.pembelajaran_id) ? false : null
-          this.feedback.nama_projek = (getData.errors.nama_projek) ? getData.errors.nama_projek.join(', ') : ''
-          this.state.nama_projek = (getData.errors.nama_projek) ? false : null
-          this.feedback.deskripsi = (getData.errors.deskripsi) ? getData.errors.deskripsi.join(', ') : ''
-          this.state.deskripsi = (getData.errors.deskripsi) ? false : null
-          this.feedback.no_urut = (getData.errors.no_urut) ? getData.errors.no_urut.join(', ') : ''
-          this.state.no_urut = (getData.errors.no_urut) ? false : null
-        } else {
-          this.$swal({
-            icon: getData.icon,
-            title: getData.title,
-            text: getData.text,
-            customClass: {
-              confirmButton: 'btn btn-success',
-            },
-          }).then(result => {
-            this.$refs['add-modal'].hide()
-            this.resetForm()
-            this.loadPostsData()
-          })
-        }
-      }).catch(error => {
-        console.log(error);
-      })
-    },
-    resetForm(){
-      this.form.tingkat = ''
-      this.form.rombongan_belajar_id = ''
-      this.form.pembelajaran_id = ''
-      this.form.nama_projek = ''
-      this.form.deskripsi = ''
-      this.form.sub_elemen = {}
     },
   },
 }
