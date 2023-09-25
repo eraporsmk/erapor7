@@ -139,7 +139,7 @@ export default {
         this.last_sync = getData.last_sync
         this.table_sync = getData.table_sync
         this.jumlah = getData.jumlah
-        //this.aktif = (this.jumlah) ? false : true
+        this.aktif = (this.jumlah) ? false : true
       })
     },
     kirimData(){
