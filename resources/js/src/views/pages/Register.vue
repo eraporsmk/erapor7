@@ -208,6 +208,8 @@ export default {
         } else {
           this.isBusy = false
         }
+      } else {
+        this.isBusy = false
       }
     })
   },
