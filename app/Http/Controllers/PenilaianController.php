@@ -737,10 +737,10 @@ class PenilaianController extends Controller
             $query->where('semester_id', request()->semester_id);
             $query->where('jenis_rombel', 1);
         })->orderBy('tingkat', 'ASC')->orderBy('kurikulum_id', 'ASC')->get();
-        $data_siswa = $this->getPd();
+        //$data_siswa = $this->getPd();
         return response()->json([
             'data_rombel' => $data_rombel,
-            'data_siswa' => $data_siswa,
+            //'data_siswa' => $data_siswa,
             'ekstrakurikuler' => $ekstrakurikuler,
         ]);
     }

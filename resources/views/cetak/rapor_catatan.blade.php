@@ -33,7 +33,22 @@
 <br />
 <?php
 if($get_siswa->rombongan_belajar->tingkat == 10){
-	if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
+	if(merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum)){
+		$huruf_ekskul = 'B';
+		$huruf_absen = 'C';
+		$huruf_kenaikan = 'D';
+	} else {
+		if($get_siswa->all_prakerin->count()){
+			$huruf_ekskul = 'C';
+			$huruf_absen = 'D';
+			$huruf_kenaikan = 'E';
+		} else {
+			$huruf_ekskul = 'B';
+			$huruf_absen = 'C';
+			$huruf_kenaikan = 'D';
+		}
+	}
+	/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
 		$huruf_ekskul = 'C';
 		$huruf_absen = 'D';
 		$huruf_kenaikan = 'E';
@@ -41,9 +56,36 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 		$huruf_ekskul = 'B';
 		$huruf_absen = 'C';
 		$huruf_kenaikan = 'D';
-	}
+	}*/
 } else {
-	if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
+	if(merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum)){
+		if($get_siswa->all_prakerin->count()){
+			$huruf_ekskul = 'C';
+			$huruf_absen = 'D';
+			$huruf_kenaikan = 'E';
+		} else {
+			$huruf_ekskul = 'B';
+			$huruf_absen = 'C';
+			$huruf_kenaikan = 'D';
+		}
+	} else {
+		if($get_siswa->all_prakerin->count()){
+			/*$huruf_ekskul = 'D';
+			$huruf_absen = 'E';
+			$huruf_kenaikan = 'F';*/
+			$huruf_ekskul = 'C';
+			$huruf_absen = 'D';
+			$huruf_kenaikan = 'E';
+		} else {
+			/*$huruf_ekskul = 'D';
+			$huruf_absen = 'E';
+			$huruf_kenaikan = 'F';*/
+			$huruf_ekskul = 'B';
+			$huruf_absen = 'C';
+			$huruf_kenaikan = 'D';
+		}
+	}
+	/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
 		$huruf_ekskul = 'D';
 		$huruf_absen = 'E';
 		$huruf_kenaikan = 'F';
@@ -51,11 +93,11 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 		$huruf_ekskul = 'C';
 		$huruf_absen = 'D';
 		$huruf_kenaikan = 'E';
-	}
+	}*/
 }
 ?>
-@if($get_siswa->rombongan_belajar->tingkat != 10)
-@if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false)
+@if($get_siswa->rombongan_belajar->tingkat != 10 && $get_siswa->all_prakerin->count())
+@if(!merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
 <div class="strong"><strong>C.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
 @else
 <div class="strong"><strong>B.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>

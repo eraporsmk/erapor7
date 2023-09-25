@@ -27,7 +27,7 @@
               </b-col>
               <b-col cols="12" v-if="rombel_reguler.length">
                 <b-form-group label="Filter Kelas" label-for="rombongan_belajar_id_reguler" label-cols-md="3" :invalid-feedback="meta.rombongan_belajar_id_reguler_feedback" :state="meta.rombongan_belajar_id_reguler_state">
-                  <v-select id="rombongan_belajar_id" v-model="form.rombongan_belajar_id_reguler" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="rombel_reguler" placeholder="== Semua Kelas ==" @input="changeRombelReguler" :state="meta.rombongan_belajar_id_reguler_state">
+                  <v-select id="rombongan_belajar_id" v-model="form.rombongan_belajar_id_reguler" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="rombel_reguler" placeholder="== Filter Kelas ==" @input="changeRombelReguler" :state="meta.rombongan_belajar_id_reguler_state">
                     <template #no-options="{ search, searching, loading }">
                       Tidak ada data untuk ditampilkan
                     </template>
@@ -143,6 +143,8 @@ export default {
     changeRombel(val){
       this.show_table = false
       this.rombel_reguler = []
+      this.form.rombongan_belajar_id_reguler = '';
+      this.is_reset = false
       if(val){
         this.loading_form = true
         this.$http.post('/penilaian/get-rombel-reguler', this.form).then(response => {
@@ -151,7 +153,7 @@ export default {
           this.form.ekstrakurikuler_id = getData.ekstrakurikuler.ekstrakurikuler_id
           this.nama_ekskul = getData.ekstrakurikuler.nama_ekskul
           this.rombel_reguler = getData.data_rombel
-          this.data_siswa = getData.data_siswa
+          /*this.data_siswa = getData.data_siswa
           this.show_table = true
           var nilai_ekskul = {}
           var deskripsi_ekskul = {}
@@ -161,7 +163,7 @@ export default {
           })
           this.form.nilai_ekskul = nilai_ekskul
           this.form.deskripsi_ekskul = deskripsi_ekskul
-          this.is_reset = Object.keys(this.removeEmptyValues(nilai_ekskul)).length
+          this.is_reset = Object.keys(this.removeEmptyValues(nilai_ekskul)).length*/
           
         }).catch(error => {
           console.log(error);
@@ -183,6 +185,7 @@ export default {
     },
     changeRombelReguler(val){
       this.show_table = false
+      this.is_reset = false
       if(val){
         this.loading_form = true
         this.$http.post('/penilaian/get-kelas', this.form).then(response => {
