@@ -47,13 +47,7 @@ class DashboardController extends Controller
              $query->whereNotNull('rencana_budaya_kerja_id');
          }
       ])->find(request()->sekolah_id);
-      $status_penilaian = Status_penilaian::firstOrCreate(
-         [
-            'sekolah_id' => request()->sekolah_id,
-            'semester_id' => request()->semester_id,
-         ],
-         ['status' => 1]
-      );
+      $status_penilaian = Status_penilaian::where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->first();
       $data = [
          'sekolah' => $sekolah,
          'rekap' => [
@@ -107,7 +101,8 @@ class DashboardController extends Controller
             'app_name' => 'e-Rapor SMK',
             'app_version' => get_setting('app_version'),
             'db_version' => get_setting('db_version'),
-            'status_penilaian' => ($status_penilaian->status) ? TRUE: FALSE
+            'status_penilaian' => ($status_penilaian && $status_penilaian->status) ? TRUE: FALSE,
+            'status' => $status_penilaian->status,
          ],
       ];
       return $data;
@@ -209,7 +204,7 @@ class DashboardController extends Controller
       return response()->json($data);
    }
    public function status_penilaian(){
-      $insert = Status_penilaian::firstOrCreate(
+      $insert = Status_penilaian::updateOrCreate(
          [
             'sekolah_id' => request()->sekolah_id,
             'semester_id' => request()->semester_id,

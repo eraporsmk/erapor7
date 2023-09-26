@@ -48,7 +48,7 @@
       </b-col>
     </b-row>
     <b-modal ref="detil-modal" size="lg" :title="judul" @ok="handleOk" ok-title="Simpan" cancel-title="Tutup">
-      <b-table-simple bordered responsive>
+      <b-table-simple bordered responsive v-if="data">
         <b-tr>
           <b-td>Nama</b-td>
           <b-td>{{(data) ? data.name : ''}}</b-td>
