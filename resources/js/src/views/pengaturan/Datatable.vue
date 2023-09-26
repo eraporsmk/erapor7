@@ -195,7 +195,10 @@ export default {
   },
   methods: {
     cekPass(password, default_password){
-      return bcrypt.compareSync(default_password, password)
+      if(default_password){
+        return bcrypt.compareSync(default_password, password)
+      }
+      return false
       /*bcrypt.compare(default_password, password, (err, res) => {
         if(res)
           return 'sama'
