@@ -278,7 +278,8 @@ class CetakController extends Controller
 				]);
 			},
 		])->first();
-		$tanggal_rapor = config('global.'.request()->route('sekolah_id').'.'.request()->route('semester_id').'.tanggal_rapor');
+		$tanggal_rapor = get_setting('tanggal_rapor', request()->route('sekolah_id'), request()->route('semester_id'));
+		//config('global.'.request()->route('sekolah_id').'.'.request()->route('semester_id').'.tanggal_rapor');
 		if($tanggal_rapor) {
             $tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');
         } else {
