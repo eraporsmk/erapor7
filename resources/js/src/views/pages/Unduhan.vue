@@ -2,7 +2,7 @@
   <b-card no-body>
     <b-card-body>
       <h3>Panduan Penggunaan Aplikasi e-Rapor SMK</h3>
-      <p><a href="https://drive.google.com/file/d/1lqQl_kmRSqWZydEse634nEa6gVY5npGb/view?usp=share_link" target="blank"><font-awesome-icon icon="fa-solid fa-book" /> Panduan Penggunaan Aplikasi e-Rapor SMK</a></p>
+      <p><a href="https://drive.google.com/file/d/1zT0r9SVwJhyRle6JnydoN2wu-p6nnC12/view" target="blank"><font-awesome-icon icon="fa-solid fa-book" /> Panduan Penggunaan Aplikasi e-Rapor SMK</a></p>
       <h3>Panduan &amp; Pedoman Kurikulum</h3>
       <p><a href="https://drive.google.com/file/d/1VWJ3MGrc9q12z3VOAfTO8WwxbGuaw_WN/view?usp=share_link" target="blank"><font-awesome-icon icon="fa-solid fa-book" /> Panduan Pembelajaran dan Asesmen Kurikulum Merdeka</a></p>
       <p><a href="https://drive.google.com/file/d/104vUWWHkAaXit-nxiTXDLP4ktM7zJX6K/view?usp=sharing" target="blank"><font-awesome-icon icon="fa-solid fa-book" /> Panduan Penguatan Projek Profil Pelajar Pancasila</a></p>
