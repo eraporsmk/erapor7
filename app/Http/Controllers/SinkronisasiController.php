@@ -573,4 +573,23 @@ class SinkronisasiController extends Controller
         ];
         return response()->json($data);
     }
+    public function get_matev_rapor(){
+        $data = Matev_rapor::withWhereHas('pembelajaran', function($query){
+            $query->where('semester_id', request()->semester_id);
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->with(['guru' => function($query){
+                $query->select('guru_id', 'nama');
+            }]);
+        })->orderBy(request()->sortby, request()->sortbydesc)
+        ->orderBy('rombongan_belajar_id', request()->sortbydesc)
+        ->when(request()->q, function($query){
+            $query->where('nm_mata_evaluasi', 'ILIKE', '%' . request()->q . '%');
+            $query->orWhereHas('pembelajaran', function($query){
+                $query->whereHas('guru', function($query){
+                    $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+                });
+            });
+        })->paginate(request()->per_page);
+        return response()->json(['status' => 'success', 'data' => $data]);        
+    }
 }

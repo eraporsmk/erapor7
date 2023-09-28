@@ -46,6 +46,9 @@
                         </template>
                       </v-select>
                     </b-form-group>
+                    <b-form-group label="Token Web Services Dapodik" label-for="token">
+                      <b-form-input v-model="form.token_dapodik" placeholder="Token Web Services Dapodik"></b-form-input>
+                    </b-form-group>
                   </b-col>
                 </b-row>
               </b-col>
@@ -99,6 +102,7 @@ export default {
         zona: '',
         kepala_sekolah: '',
         rombel_4_tahun: [],
+        token_dapodik: '',
         file: null,
       },
       feedback: {
@@ -169,6 +173,7 @@ export default {
         this.form.zona = getData.zona
         this.form.kepala_sekolah = getData.kepala_sekolah
         this.form.rombel_4_tahun = getData.rombel_4_tahun
+        this.form.token_dapodik = getData.token_dapodik
         this.data_guru = getData.data_guru
         this.data_rombel = getData.data_rombel
         this.semester = getData.semester
@@ -191,6 +196,7 @@ export default {
       data.append('zona', (this.form.zona) ? this.form.zona : '')
       data.append('kepala_sekolah', (this.form.kepala_sekolah) ? this.form.kepala_sekolah : '')
       data.append('rombel_4_tahun', JSON.stringify(this.form.rombel_4_tahun))
+      data.append('token_dapodik', (this.form.token_dapodik) ? this.form.token_dapodik : '')
       this.$http.post('/setting/update', data).then(response => {
         this.loading = false
         let data = response.data

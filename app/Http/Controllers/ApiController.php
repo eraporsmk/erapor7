@@ -41,6 +41,7 @@ class ApiController extends Controller
                 $query->whereIn('tingkat', [11, 12, 13]);
             })->select('rombongan_belajar_id', 'nama')->get(),
             'rombel_4_tahun' => $plucked->all(),
+            'token_dapodik' => get_setting('token_dapodik', request()->sekolah_id, request()->semester_id),
             'logo_sekolah' => $sekolah->logo_sekolah,
             'periode' => substr(request()->semester_id, -1),
             'sekolah' => $sekolah,
@@ -132,6 +133,18 @@ class ApiController extends Controller
             Rombel_empat_tahun::whereNotIn('rombongan_belajar_id', $rombongan_belajar_id)->where('sekolah_id', $request->sekolah_id)->where('semester_id', $request->semester_aktif)->delete();
         } else {
             Rombel_empat_tahun::where('sekolah_id', $request->sekolah_id)->where('semester_id', $request->semester_aktif)->delete();
+        }
+        if($request->token_dapodik){
+            Setting::updateOrCreate(
+                [
+                    'key' => 'token_dapodik',
+                    'sekolah_id' => request()->sekolah_id,
+                    'semester_id' => request()->semester_id,
+                ],
+                [
+                    'value' => request()->token_dapodik,
+                ]
+            );
         }
         if($request->photo){
             $sekolah = Sekolah::find($request->sekolah_id);

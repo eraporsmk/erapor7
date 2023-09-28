@@ -39,13 +39,13 @@
           <b-tabs justified>
             <b-tab title="Rombongan Belajar">
               <b-card-text>
-                <datatable-rombel :form="form" />
+                <rombel-dapodik :form="form" />
               </b-card-text>
             </b-tab>
             <b-tab title="Mata Evaluasi Rapor" @click="getMatev">
-              <b-card-text>Tab contents 2</b-card-text>
+              <matev-rapor :form="form" :loading="loading" :isBusy="false" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort"  />
             </b-tab>
-            <b-tab title="Rekapitulasi" @click="getRekap">
+            <!--b-tab title="Rekapitulasi" @click="getRekap">
               <b-card-text>
                 <b-table-simple bordered responsive>
                   <b-thead>
@@ -66,7 +66,7 @@
                   </b-tbody>
                 </b-table-simple>
               </b-card-text>
-            </b-tab>
+            </b-tab-->
           </b-tabs>
         </template>
       </div>
@@ -76,9 +76,12 @@
 
 <script>
 import { BCard, BCardBody, BCardText, BSpinner, BRow, BCol, BOverlay, BForm, BFormGroup, BFormInput, BButton, BAlert, BTabs, BTab, BTableSimple, BThead, BTbody, BTfoot, BTr, BTh, BTd } from 'bootstrap-vue'
-import DatatableRombel from './datatables/Rombel.vue'
+import RombelDapodik from './datatables/RombelDapodik.vue'
+import MatevRapor from './datatables/MatevRapor.vue'
 export default {
   components: {
+    RombelDapodik,
+    MatevRapor,
     BCard,
     BCardBody,
     BSpinner,
@@ -100,11 +103,11 @@ export default {
     BTr, 
     BTh, 
     BTd,
-    DatatableRombel,
   },
   data() {
     return {
       isBusy: true,
+      isBusyMatev: true,
       loading: false,
       lengkap: false,
       form: {
@@ -120,6 +123,44 @@ export default {
       url_dapodik_state: null,
       token_dapodik_feedback: '',
       token_dapodik_state: null,
+      items: [],
+      fields: [
+        {
+          key: 'nm_mata_evaluasi',
+          label: 'Mata Pelajaran',
+          sortable: true,
+          thClass: 'text-center',
+        },
+        {
+          key: 'guru',
+          label: 'Guru Mapel',
+          sortable: false,
+          thClass: 'text-center',
+        },
+        {
+          key: 'no_urut',
+          label: 'Nomor Urut',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center',
+        },
+        {
+          key: 'status',
+          label: 'Status',
+          sortable: false,
+          thClass: 'text-center',
+          tdClass: 'text-center'
+        },
+      ],
+      isBusy: true,
+      loading: false,
+      meta: {},
+      current_page: 1,
+      per_page: 10,
+      search: '',
+      sortBy: 'mata_pelajaran_id',
+      sortByDesc: false,
+      sortDesc: false,
     }
   },
   created() {
@@ -139,6 +180,37 @@ export default {
         this.lengkap = (getData.url_dapodik) ? true : false
         this.form.url_dapodik = getData.url_dapodik
         this.form.token_dapodik = getData.token_dapodik
+      })
+    },
+    getMatevRapor(){
+      this.loading = true
+      let current_page = this.current_page
+      this.$http.get('/sinkronisasi/get-matev-rapor', {
+        params: {
+          user_id: this.form.user_id,
+          sekolah_id: this.form.sekolah_id,
+          semester_id: this.form.semester_id,
+          periode_aktif: this.form.periode_aktif,
+          page: current_page,
+          per_page: this.per_page,
+          q: this.search,
+          sortby: this.sortBy,
+          sortbydesc: this.sortByDesc ? 'DESC' : 'ASC'
+        }
+      }).then(response => {
+        let getData = response.data.data
+        this.isBusyMatev = false
+        this.loading = false
+        this.items = getData.data
+        this.meta = {
+          total: getData.total,
+          current_page: getData.current_page,
+          per_page: getData.per_page,
+          from: getData.from,
+          to: getData.to,
+          role_id: this.role_id,
+          roles: response.data.roles,
+        }
       })
     },
     handleSubmit(){
@@ -168,9 +240,29 @@ export default {
     },
     getMatev(){
       console.log('getMatev');
+      this.getMatevRapor()
     },
     getRekap(){
       console.log('getRekap');
+    },
+    handlePerPage(val) {
+      this.per_page = val
+      this.getMatevRapor()
+    },
+    handlePagination(val) {
+      this.current_page = val
+      this.getMatevRapor()
+    },
+    handleSearch(val) {
+      this.search = val
+      this.getMatevRapor()
+    },
+    handleSort(val) {
+      if (val.sortBy) {
+        this.sortBy = val.sortBy
+        this.sortByDesc = val.sortDesc
+        this.getMatevRapor()
+      }
     },
   },
 }

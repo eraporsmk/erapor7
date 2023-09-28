@@ -83,7 +83,7 @@ export default {
       fields: [
         {
           key: 'nama',
-          label: 'Nama',
+          label: 'Kelas',
           sortable: true,
           thClass: 'text-center',
         },
@@ -238,13 +238,17 @@ export default {
       })
     },
     loadPerPage(val) {
-      this.$emit('per_page', this.meta.per_page)
+      this.current_page = 1
+      this.per_page = val
+      this.loadPostsData()
     },
     changePage(val) {
-      this.$emit('pagination', val)
+      this.current_page = val
+      this.loadPostsData()
     },
     cari: _.debounce(function (e) {
-      this.$emit('search', e)
+      this.search = e
+      this.loadPostsData()
     }, 500),
   },
 }

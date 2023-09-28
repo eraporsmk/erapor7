@@ -148,7 +148,7 @@ class AuthController extends Controller
             $waka = [
                 [
                     'action' => 'read',
-                    'subject' => 'Wali'
+                    'subject' => 'Waka'
                 ],
                 [
                     'action' => 'read',

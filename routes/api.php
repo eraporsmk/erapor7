@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/rombongan-belajar', [SinkronisasiController::class, 'rombongan_belajar']);
     Route::post('/matev-rapor', [SinkronisasiController::class, 'matev_rapor']);
     Route::post('/kirim-nilai', [SinkronisasiController::class, 'kirim_nilai']);
+    Route::get('/get-matev-rapor', [SinkronisasiController::class, 'get_matev_rapor']);
   });
   Route::group(['prefix' => 'users'], function () {
     Route::get('/', [UsersController::class, 'index']);

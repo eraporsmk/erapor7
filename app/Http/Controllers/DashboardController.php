@@ -102,7 +102,6 @@ class DashboardController extends Controller
             'app_version' => get_setting('app_version'),
             'db_version' => get_setting('db_version'),
             'status_penilaian' => ($status_penilaian && $status_penilaian->status) ? TRUE: FALSE,
-            'status' => $status_penilaian->status,
          ],
       ];
       return $data;
