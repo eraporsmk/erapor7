@@ -1,5 +1,14 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.1</h3>
+    </legend>
+    <ol>
+        <li><b class="text-danger">[Perbaikan]</b> Perbaikan laman beranda di login Administrator</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perbaikan laman sinkronisasi nilai Dapodik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perbaikan akses waka kurikulum</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan form input token Dapodik di laman Pengaturan Umum</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.0</h3>
     </legend>
     <ol>
