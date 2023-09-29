@@ -30,7 +30,7 @@
               <br>
               <li><strong>Menggunakan file .bat</strong>
                   <ul style="padding-left: 10px;">
-                      <li>Silahkan download file <strong>updater e-Rapor SMK V7.0.0.bat</strong> <a href="https://drive.google.com/file/d/1cBZWtlGqv_bgRFa3CJnVCXzpaGVlg1u1/view" target="_blank">disini</a>.</li>
+                      <li>Silahkan download file <strong>updater e-Rapor SMK V7.0.0.bat</strong> <a href="https://drive.google.com/drive/folders/1gjKuWR0-17xa8m5v2WNvqRvmnMgqDk8a?usp=drive_link" target="_blank">disini</a>.</li>
                       <li>Buka file <strong>updater e-Rapor SMK V7.0.0.bat</strong> dengan cara klik kanan dan pilih Run as Administartor.</li>
                       <li>Tunggu sampai proses update versi aplikasi selesai.</li>
                   </ul>
