@@ -27,7 +27,7 @@
                   </b-form-group>
                 </b-col>
               </b-row>  
-              <b-table-simple bordered striped responsive>
+              <b-table-simple bordered striped responsive v-if="data_siswa.length">
                 <b-thead>
                   <b-tr>
                     <b-th class="text-center">Nama Peserta Didik</b-th>
@@ -63,7 +63,7 @@
                   </template>
                 </b-tbody>
               </b-table-simple>
-              <b-form-group label-cols-md="3" v-if="show_form">
+              <b-form-group label-cols-md="3" v-if="data_siswa.length">
                 <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
               </b-form-group>
             </template>
@@ -102,6 +102,7 @@ export default {
   },
   data() {
     return {
+      disabled: false,
       loadingForm: false,
       isBusy: true,
       notif: null,
@@ -130,6 +131,7 @@ export default {
         rombongan_belajar_id_state: '',
       },
       data_dudi: [],
+      data_siswa: [],
       allowed: false,
       semester_allowed: false,
       nama_kurikulum: '',
@@ -173,22 +175,25 @@ export default {
       this.$http.post('/walas/save', this.form).then(response => {
         this.loadingForm = false
         let getData = response.data
+        this.error = false
+        var lokasi_prakerin_state = {}
+        var skala_state = {}
+        var lama_prakerin_state = {}
+        var keterangan_prakerin_state = {}
+        this.data_siswa.forEach(function(siswa, key) {
+          lokasi_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = null
+          skala_state[siswa.anggota_rombel.anggota_rombel_id] = null
+          lama_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = null
+          keterangan_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = null
+        })
         if(getData.errors){
           this.error = true
-          var lokasi_prakerin_state = {}
-          var skala_state = {}
-          var lama_prakerin_state = {}
-          var keterangan_prakerin_state = {}
           this.data_siswa.forEach(function(siswa, key) {
             lokasi_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = (getData.errors[`lokasi_prakerin.${siswa.anggota_rombel.anggota_rombel_id}`]) ? false : null
             skala_state[siswa.anggota_rombel.anggota_rombel_id] = (getData.errors[`skala.${siswa.anggota_rombel.anggota_rombel_id}`]) ? false : null
             lama_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = (getData.errors[`lama_prakerin.${siswa.anggota_rombel.anggota_rombel_id}`]) ? false : null
             keterangan_prakerin_state[siswa.anggota_rombel.anggota_rombel_id] = (getData.errors[`keterangan_prakerin.${siswa.anggota_rombel.anggota_rombel_id}`]) ? false : null
           })
-          this.lokasi_prakerin_state = lokasi_prakerin_state
-          this.skala_state = skala_state
-          this.lama_prakerin_state = lama_prakerin_state
-          this.keterangan_prakerin_state = keterangan_prakerin_state
         } else {
           this.$swal({
             icon: getData.icon,
@@ -199,6 +204,10 @@ export default {
             },
           })
         }
+        this.lokasi_prakerin_state = lokasi_prakerin_state
+        this.skala_state = skala_state
+        this.lama_prakerin_state = lama_prakerin_state
+        this.keterangan_prakerin_state = keterangan_prakerin_state
       })
     },
     changeDudi(val){
