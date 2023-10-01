@@ -44,6 +44,9 @@
         <b-overlay :show="loading_modal" rounded opacity="0.6" size="sm" spinner-variant="primary">
           <b-button variant="primary" @click="ok()">Perbaharui</b-button>
         </b-overlay>
+        <b-overlay :show="loading_modal" rounded opacity="0.6" size="sm" spinner-variant="danger">
+          <b-button variant="danger" @click="hapusData()" v-if="hapus">Hapus</b-button>
+        </b-overlay>
       </template>
     </b-modal>
   </div>
@@ -90,6 +93,7 @@ export default {
   },
   data() {
     return {
+      hapus: false,
       loading: false,
       loading_modal: false,
       sortBy: null,
@@ -149,6 +153,11 @@ export default {
         this.ref_dudi = getData.ref_dudi
         this.form.dudi_id = getData.dudi_id
         this.judul = 'DETIL '+getData.guru.nama_lengkap
+        if(this.data.jenis_ptk_id === 97 || this.data.jenis_ptk_id === 98){
+          this.hapus = true
+        } else {
+          this.hapus = false
+        }
         this.$refs['detil-modal'].show()
       });
     },
@@ -190,6 +199,43 @@ export default {
     search: _.debounce(function (e) {
       this.$emit('search', e)
     }, 500),
+    hapusData(){
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: 'Tindakan ini tidak ada dibatalkan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => false,
+      }).then(result => {
+        if (result.value) {
+          this.loading_modal = true
+          this.$http.post('/guru/hapus', {
+            data: (this.data.jenis_ptk_id === 97) ? 'Instruktur' : 'Asesor',
+            id: this.guru_id,
+          }).then(response => {
+            let getData = response.data
+            this.$swal({
+              icon: getData.icon,
+              title: getData.title,
+              text: getData.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+              allowOutsideClick: false,
+            }).then(result => {
+              this.$refs['detil-modal'].hide()
+              this.loadPerPage(this.meta.per_page);
+            })
+          });
+        }
+      })
+    },
   },
 }
 </script>

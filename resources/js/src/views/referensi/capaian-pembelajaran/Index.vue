@@ -196,7 +196,7 @@ export default {
           cancelButton: 'btn btn-outline-danger ml-1',
         },
         buttonsStyling: false,
-        allowOutsideClick: () => false,
+        allowOutsideClick: false,
       }).then(result => {
         if (result.value) {
           this.loading_modal = true
@@ -209,6 +209,7 @@ export default {
               customClass: {
                 confirmButton: 'btn btn-success',
               },
+              allowOutsideClick: false,
             }).then(result => {
               if(after == 'refresh'){
                 this.loadPostsData()

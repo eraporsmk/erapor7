@@ -237,4 +237,29 @@ class GuruController extends Controller
         ];
         return response()->json($data);
     }
+    public function hapus(){
+        $find = Guru::find(request()->id);
+        if($find){
+            if($find->delete()){
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Data '.request()->data.' berhasil dihapus',
+                ];
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Gagal!',
+                    'text' => 'Data '.request()->data.' gagal dihapus',
+                ];
+            }
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Data '.request()->data.' tidak ditemukan',
+            ];
+        }
+        return response()->json($data);
+    }
 }

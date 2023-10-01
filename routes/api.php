@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/update', [GuruController::class, 'update']);
     Route::post('/upload', [GuruController::class, 'upload']);
     Route::post('/simpan', [GuruController::class, 'simpan']);
+    Route::post('/hapus', [GuruController::class, 'hapus']);
   });
   Route::group(['prefix' => 'rombongan-belajar'], function () {
     Route::get('/', [RombelController::class, 'index']);
