@@ -47,7 +47,12 @@ class SheetNilaiTp implements FromView, ShouldAutoSize
                 ]);
             }
         ])->orderBy('nama')->get();
-        if($this->merdeka){
+        $data_tp = Tujuan_pembelajaran::where(function($query){
+            $query->whereHas('tp_mapel', function($query){
+                $query->where('tp_mapel.pembelajaran_id', $this->pembelajaran_id);
+            });
+        })->orderBy('created_at')->get();
+        /*if($this->merdeka){
             $data_tp = Tujuan_pembelajaran::whereHas('cp', function($query){
                 $query->whereHas('pembelajaran', function($query){
                     $query->where('pembelajaran_id', $this->pembelajaran_id);
@@ -59,7 +64,7 @@ class SheetNilaiTp implements FromView, ShouldAutoSize
                     $query->where('pembelajaran_id', $this->pembelajaran_id);
                 });
             })->orderBy('created_at')->get();
-        }
+        }*/
         $params = array(
 			'data_siswa' => $data_siswa,
             'data_tp' => $data_tp,
