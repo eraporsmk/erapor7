@@ -167,8 +167,11 @@ class PdController extends Controller
                 $query->where('jurusan_id', $rombel->jurusan_id);
             });
         }])->orderBy('nama')->get();
-        $pembelajaran = Pembelajaran::withWhereHas('rombongan_belajar', function($query){
-            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+        $pembelajaran = Pembelajaran::withWhereHas('rombongan_belajar', function($query) use ($rombel){
+            //$query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            $query->where('semester_id', request()->semester_id);
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->where('guru_id', $rombel->guru_id);
         })->with([
             'all_nilai_akhir_kurmer',
             'all_nilai_akhir_pengetahuan'
