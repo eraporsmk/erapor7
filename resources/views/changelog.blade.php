@@ -1,5 +1,18 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.2</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan Kolom Ketidakhadiran di Unduh Legger</li>
+        <li><b class="text-danger">[Perbaikan]</b> Sub Menu Cetak Rapor Semester & Unduh Legger di akun Waka Kurikulum</li>
+        <li><b class="text-danger">[Perbaikan]</b> Menu Referensi GTK, Rombongan Belajar & Peserta Didik di akun Tendik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Proses sinkronisasi Peserta Didik Keluar</li>
+        <li><b class="text-danger">[Perbaikan]</b> Proses sinkronisasi Anggota Rombel Matpel Pilihan</li>
+        <li><b class="text-danger">[Perbaikan]</b> Penilaian PKL K13</li>
+        <li><b class="text-danger">[Perbaikan]</b> Import ulang Instruktur & Asesor setelah melakukan penghapusan data</li>
+        <li><b class="text-danger">[Perbaikan]</b> Link Panduan Aplikasi e-Rapor V7</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.1</h3>
     </legend>
     <ol>

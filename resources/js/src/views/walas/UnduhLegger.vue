@@ -14,6 +14,9 @@
               <template v-for="(pembelajaran, index) in data_pembelajaran">
                 <b-th class="text-center">{{pembelajaran.nama_mata_pelajaran}}</b-th>
               </template>
+              <b-th class="text-center">S</b-th>
+              <b-th class="text-center">I</b-th>
+              <b-th class="text-center">A</b-th>
             </b-tr>
           </b-thead>
           <b-tbody>
@@ -30,6 +33,9 @@
                     <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan.anggota_rombel_id)}}</b-td>
                   </template>
                 </template>
+                <b-td class="text-center">{{(item.anggota_rombel.absensi) ? item.anggota_rombel.absensi.sakit : '-'}}</b-td>
+                <b-td class="text-center">{{(item.anggota_rombel.absensi) ? item.anggota_rombel.absensi.izin : '-'}}</b-td>
+                <b-td class="text-center">{{(item.anggota_rombel.absensi) ? item.anggota_rombel.absensi.alpa : '-'}}</b-td>
               </b-tr>
             </template>
           </b-tbody>

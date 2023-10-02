@@ -29,6 +29,9 @@
             @foreach ($all_pembelajaran as $pembelajaran)
                 <th>{{ $pembelajaran->nama_mata_pelajaran }}</th>
             @endforeach
+            <th>S</th>
+            <th>I</th>
+            <th>A</th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +75,9 @@
                     ?>
                     <td>{{ $nilai ? $nilai->nilai : '-' }}</td>
                 @endforeach
+                <td>{{($siswa->anggota_rombel->absensi) ? $siswa->anggota_rombel->absensi->sakit : '-'}}</td>
+                <td>{{($siswa->anggota_rombel->absensi) ? $siswa->anggota_rombel->absensi->izin : '-'}}</td>
+                <td>{{($siswa->anggota_rombel->absensi) ? $siswa->anggota_rombel->absensi->alpa : '-'}}</td>
             </tr>
         @endforeach
     </tbody>

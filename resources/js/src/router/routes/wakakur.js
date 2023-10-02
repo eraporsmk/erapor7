@@ -94,4 +94,42 @@ export default [
       ],
     },
   },
+  {
+    path: '/progress/cetak-rapor',
+    name: 'progress-cetak-rapor',
+    component: () => import('@/views/progress/CetakRapor.vue'),
+    meta: {
+      resource: 'Waka',
+      action: 'read',
+      pageTitle: 'Cetak Rapor Semester',
+      breadcrumb: [
+        {
+          text: 'Monitoring',
+        },
+        {
+          text: 'Cetak Rapor Semester',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/progress/unduh-legger',
+    name: 'progress-unduh-legger',
+    component: () => import('@/views/progress/UnduhLegger.vue'),
+    meta: {
+      resource: 'Waka',
+      action: 'read',
+      pageTitle: 'Unduh Leger',
+      breadcrumb: [
+        {
+          text: 'Monitoring',
+        },
+        {
+          text: 'Unduh Leger',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

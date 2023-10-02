@@ -6,33 +6,35 @@ export default [
         {
           icon: 'hand-point-right',
           title: 'Referensi GTK',
+          resource: 'Ref_Guru',
+          action: 'read',
           children: [
             {
               icon: 'graduation-cap',
               title: 'Guru',
               route: 'referensi-guru',
-              resource: 'Administrator',
+              resource: 'Ref_Guru',
               action: 'read',
             },
             {
               icon: 'graduation-cap',
               title: 'Tendik',
               route: 'referensi-tendik',
-              resource: 'Administrator',
+              resource: 'Ref_Guru',
               action: 'read',
             },
             {
               icon: 'graduation-cap',
               title: 'Instruktur',
               route: 'referensi-instruktur',
-              resource: 'Administrator',
+              resource: 'Ref_Guru',
               action: 'read',
             },
             {
               icon: 'graduation-cap',
               title: 'Asesor',
               route: 'referensi-asesor',
-              resource: 'Administrator',
+              resource: 'Ref_Guru',
               action: 'read',
             },
           ]
@@ -40,6 +42,8 @@ export default [
         {
           icon: 'hand-point-right',
           title: 'Rombongan Belajar',
+          resource: 'Rombel',
+          action: 'read',
           children: [
             {
               icon: 'hand-point-right',
@@ -60,9 +64,34 @@ export default [
         {
           icon: 'hand-point-right',
           title: 'Peserta Didik',
-          //route: 'referensi-peserta-didik-aktif',
-          //resource: 'Guru',
-          //action: 'read',
+          children: [
+            {
+              icon: 'hand-point-right',
+              title: 'PD Aktif',
+              route: 'referensi-peserta-didik-aktif',
+              resource: 'Ref_Siswa',
+              action: 'read',
+            },
+            {
+              icon: 'graduation-cap',
+              title: 'PD Keluar',
+              route: 'referensi-peserta-didik-keluar',
+              resource: 'Ref_Siswa_Keluar',
+              action: 'read',
+              variant: 'danger',
+            },
+            {
+              icon: 'hand-point-right',
+              title: 'Password PD',
+              route: 'referensi-password-pd',
+              resource: 'Password_pd',
+              action: 'read',
+            },
+          ]
+        },
+        /*{
+          icon: 'hand-point-right',
+          title: 'Peserta Didik',
           children: [
             {
               icon: 'hand-point-right',
@@ -79,7 +108,7 @@ export default [
               action: 'read',
             },
           ],
-        },
+        },*/
         {
           icon: 'hand-point-right',
           title: 'Kompetensi Dasar',
@@ -114,27 +143,6 @@ export default [
           route: 'referensi-ukk',
           resource: 'Kaprog',
           action: 'read',
-        },
-        {
-          icon: 'hand-point-right',
-          title: 'Peserta Didik',
-          children: [
-            {
-              icon: 'hand-point-right',
-              title: 'PD Aktif',
-              route: 'referensi-peserta-didik-aktif',
-              resource: 'Administrator',
-              action: 'read',
-            },
-            {
-              icon: 'graduation-cap',
-              title: 'PD Keluar',
-              route: 'referensi-peserta-didik-keluar',
-              resource: 'Administrator',
-              action: 'read',
-              variant: 'danger',
-            },
-          ]
         },
         {
           icon: 'hand-point-right',

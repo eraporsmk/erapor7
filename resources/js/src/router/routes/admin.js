@@ -105,7 +105,7 @@ export default [
     name: 'referensi-guru',
     component: () => import('@/views/referensi/gtk/Guru.vue'),
     meta: {
-      resource: 'Administrator',
+      resource: 'Ref_Guru',
       action: 'read',
       pageTitle: 'Data Guru',
       breadcrumb: [
@@ -124,7 +124,7 @@ export default [
     name: 'referensi-tendik',
     component: () => import('@/views/referensi/gtk/Tendik.vue'),
     meta: {
-      resource: 'Administrator',
+      resource: 'Ref_Guru',
       action: 'read',
       pageTitle: 'Data Tendik',
       breadcrumb: [
@@ -143,7 +143,7 @@ export default [
     name: 'referensi-instruktur',
     component: () => import('@/views/referensi/gtk/Instruktur.vue'),
     meta: {
-      resource: 'Administrator',
+      resource: 'Ref_Guru',
       action: 'read',
       pageTitle: 'Data Instruktur',
       breadcrumb: [
@@ -168,7 +168,7 @@ export default [
     name: 'referensi-asesor',
     component: () => import('@/views/referensi/gtk/Asesor.vue'),
     meta: {
-      resource: 'Administrator',
+      resource: 'Ref_Guru',
       action: 'read',
       pageTitle: 'Data Asesor',
       breadcrumb: [
@@ -231,7 +231,7 @@ export default [
     name: 'referensi-peserta-didik-aktif',
     component: () => import('@/views/referensi/peserta-didik/Aktif.vue'),
     meta: {
-      resource: 'Web',
+      resource: 'Ref_Siswa',
       action: 'read',
       pageTitle: 'Data Peserta Didik Aktif',
       breadcrumb: [
@@ -250,7 +250,7 @@ export default [
     name: 'referensi-peserta-didik-keluar',
     component: () => import('@/views/referensi/peserta-didik/Keluar.vue'),
     meta: {
-      resource: 'Administrator',
+      resource: 'Ref_Siswa_Keluar',
       action: 'read',
       pageTitle: 'Data Peserta Didik Keluar',
       breadcrumb: [

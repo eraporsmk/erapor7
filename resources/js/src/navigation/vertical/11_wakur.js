@@ -38,6 +38,20 @@ export default [
           resource: 'Waka',
           action: 'read',
         },
+        {
+          icon: 'hand-point-right',
+          title: 'Cetak Rapor Semester',
+          route: 'progress-cetak-rapor',
+          resource: 'Waka',
+          action: 'read',
+        },
+        {
+          icon: 'hand-point-right',
+          title: 'Unduh Legger',
+          route: 'progress-unduh-legger',
+          resource: 'Waka',
+          action: 'read',
+        },
       ]
     },
   ]

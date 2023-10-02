@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Peserta_didik;
 use App\Models\Rombongan_belajar;
+use App\Models\Pembelajaran;
 use App\Models\Jurusan_sp;
 use App\Models\Pekerjaan;
 
@@ -143,6 +145,44 @@ class PdController extends Controller
         $data = Peserta_didik::withWhereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->orderBy('nama')->get();
-        return response()->json(['data_siswa' => $data]);
+        $merdeka = FALSE;
+        if(request()->aksi == 'cetak-rapor'){
+            $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
+            $merdeka = Str::of($rombel->kurikulum->nama_kurikulum)->contains('Merdeka');
+        }
+        return response()->json([
+            'data_siswa' => $data,
+            'merdeka' => $merdeka
+        ]);
+    }
+    public function unduh_legger(){
+        $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
+        $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
+            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            $query->with(['absensi']);
+        })->with(['anggota_pilihan' => function($query) use ($rombel){
+            $query->where('semester_id', request()->semester_id);
+            $query->whereHas('rombongan_belajar', function($query) use ($rombel){
+                //$query->where('jenis_rombel', 16);
+                $query->where('jurusan_id', $rombel->jurusan_id);
+            });
+        }])->orderBy('nama')->get();
+        $pembelajaran = Pembelajaran::withWhereHas('rombongan_belajar', function($query){
+            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+        })->with([
+            'all_nilai_akhir_kurmer',
+            'all_nilai_akhir_pengetahuan'
+        ])->where(function($query){
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
+        })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
+        $data = [
+            'merdeka' => ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE,
+            'rombel' => $rombel,
+            'data_siswa' => $data_siswa,
+            'pembelajaran' => $pembelajaran,
+        ];
+        return response()->json($data);
     }
 }

@@ -31,6 +31,7 @@ class LeggerNilaiKurmerExport implements FromView, ShouldAutoSize
         })->with([
             'anggota_rombel' => function($query){
                 $query->where('rombongan_belajar_id', $this->rombongan_belajar_id);
+                $query->with(['absensi']);
             },
             'anggota_pilihan' => function($query){
                 $query->where('semester_id', $this->semester_id);

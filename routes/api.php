@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/detil', [PdController::class, 'detil']);
     Route::post('/update', [PdController::class, 'update']);
     Route::post('/get-pd', [PdController::class, 'get_pd']);
+    Route::post('/unduh-legger', [PdController::class, 'unduh_legger']);
   });
   Route::group(['prefix' => 'referensi'], function () {
     Route::get('/mata-pelajaran', [ReferensiController::class, 'mata_pelajaran']);

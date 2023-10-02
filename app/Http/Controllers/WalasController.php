@@ -455,6 +455,7 @@ class WalasController extends Controller
     public function unduh_legger(){
         $rombel = $this->getRombel();
         $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
+            $query->with(['absensi']);
             $query->whereHas('rombongan_belajar', function($query){
                 $query->where('jenis_rombel', 1);
                 $query->where('semester_id', request()->semester_id);

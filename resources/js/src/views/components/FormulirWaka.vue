@@ -81,6 +81,7 @@ export default {
   methods: {
     changeTingkat(val){
       this.form.rombongan_belajar_id = ''
+      this.data_rombel = []
       if(val){
         this.$emit('hide_form')
         this.loading_rombel = true

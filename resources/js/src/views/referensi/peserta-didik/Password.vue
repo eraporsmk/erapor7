@@ -1,6 +1,6 @@
 <template>
   <b-card>
-    <datatable :status="status_pd" :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort"  />
+    <datatable :status="status_pd" :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" :filter="filter" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort"  />
   </b-card>
 </template>
 
@@ -66,6 +66,7 @@ export default {
       search: '',
       sortBy: 'nama',
       sortByDesc: false,
+      filter: {},
     }
   },
   created() {
