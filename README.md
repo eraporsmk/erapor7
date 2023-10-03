@@ -146,6 +146,11 @@ MAIL_ENCRYPTION=ssl
 MAIL_FROM_ADDRESS=eraporsmk@gmail.com
 ```
 
+Kemudian simpan perubahan file .env lalu jalankan:
+```
+php artisan config:clear
+```
+
 ## Contributing
 
 1. Fork it (<https://github.com/eraporsmk/erapor7/fork>)
