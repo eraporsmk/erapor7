@@ -133,6 +133,7 @@ MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 Kemudian ganti dengan kode ini:
@@ -144,12 +145,14 @@ MAIL_USERNAME=eraporsmk@gmail.com
 MAIL_PASSWORD="twvv dabv jimx mykw"
 MAIL_ENCRYPTION=ssl
 MAIL_FROM_ADDRESS=eraporsmk@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 Kemudian simpan perubahan file .env lalu jalankan:
 ```
 php artisan config:clear
 ```
+Catatan: Tidak perlu merubah apapun, copy paste sesuai yang tertera di deskripsi
 
 ## Contributing
 
