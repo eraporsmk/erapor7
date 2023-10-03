@@ -92,6 +92,9 @@
               <span>&nbsp;Register Disini</span>
             </b-link>
             |
+            <b-link :to="{name:'auth-reset-password'}">
+              <span>&nbsp;Lupa Password</span>
+            </b-link>
           </b-card-text>
           <b-card-text class="text-center mt-2" v-else>
             <b-link :to="{name:'auth-reset-password'}">
