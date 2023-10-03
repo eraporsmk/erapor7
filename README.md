@@ -152,6 +152,7 @@ Kemudian simpan perubahan file .env lalu jalankan:
 ```
 php artisan config:clear
 ```
+Catatan: Tidak perlu merubah apapun, copy paste sesuai yang tertera di deskripsi
 
 ## Contributing
 
