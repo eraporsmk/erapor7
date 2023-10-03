@@ -91,6 +91,10 @@
             <b-link :to="{name:'auth-register'}">
               <span>&nbsp;Register Disini</span>
             </b-link>
+            |
+            <b-link :to="{name:'auth-reset-password'}">
+              <span>&nbsp;Lupa Password</span>
+            </b-link>
           </b-card-text>
         </b-col>
       </b-col>

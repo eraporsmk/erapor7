@@ -34,6 +34,9 @@ Route::group(['prefix' => 'auth'], function () {
   Route::get('/allow-register', [AuthController::class, 'allow_register']);
   Route::post('login', [AuthController::class, 'login']);
   Route::post('register', [AuthController::class, 'register']);
+  Route::post('forget-password', [AuthController::class, 'submitForgetPasswordForm']); 
+  Route::post('get-email', [AuthController::class, 'get_email']); 
+  Route::post('reset-password', [AuthController::class, 'submitResetPasswordForm']);
   Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('logout', [AuthController::class, 'logout']);
     Route::get('user', [AuthController::class, 'user']);

@@ -12,4 +12,17 @@ export const togglePasswordVisibility = {
   },
 }
 
+export const toggleConfirmPasswordVisibility = {
+  data() {
+    return {
+      confirmPasswordFieldType: 'password',
+    }
+  },
+  methods: {
+    toggleConfirmPasswordVisibility() {
+      this.confirmPasswordFieldType = this.confirmPasswordFieldType === 'password' ? 'text' : 'password'
+    },
+  },
+}
+
 export const _ = null

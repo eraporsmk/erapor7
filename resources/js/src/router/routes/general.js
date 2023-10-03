@@ -27,6 +27,17 @@ export default [
     },
   },
   {
+    path: '/reset-password/:token?',
+    name: 'auth-reset-password',
+    component: () => import('@/views/pages/LupaPassword.vue'),
+    meta: {
+      layout: 'full',
+      resource: 'Auth',
+      redirectIfLoggedIn: true,
+      pageTitle: 'Reset Password',
+    },
+  },
+  {
     path: '/register',
     name: 'auth-register',
     component: () => import('@/views/pages/Register.vue'),

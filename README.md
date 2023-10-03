@@ -123,6 +123,29 @@ DB_PASSWORD=windows
 ## Catatan khusus untuk pengguna lama (ALL OS):
 Untuk mengambil gambar/foto/logo yang telah di upload di aplikasi versi sebelumnya, silahkan copy dari aplikasi lama di folder storage/public, kemudian paste di aplikasi baru di folder storage/public
 
+## Fitur Reset Password:
+Untuk mengaktifkan fitur reset password, silahkan edit file .env, cari kode dibawah ini:
+```
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+```
+
+Kemudian ganti dengan kode ini:
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=eraporsmk@gmail.com
+MAIL_PASSWORD="twvv dabv jimx mykw"
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS=eraporsmk@gmail.com
+```
+
 ## Contributing
 
 1. Fork it (<https://github.com/eraporsmk/erapor7/fork>)
