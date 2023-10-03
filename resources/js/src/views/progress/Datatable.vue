@@ -9,7 +9,7 @@
       </b-col>
     </b-row>
     <b-overlay :show="loading" rounded opacity="0.6" size="lg" spinner-variant="warning">
-      <b-table responsive bordered striped :items="items" :fields="fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" show-empty :busy="isBusy">
+      <b-table responsive bordered striped :items="items" :fields="fields" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" show-empty :busy="isBusy" :tbody-tr-class="rowClass">
         <template #table-busy>
           <div class="text-center text-danger my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -26,7 +26,7 @@
           {{row.item.akt_pd.judul_akt_pd}}
         </template>
         <template v-slot:cell(detil)="row">
-          <b-button variant="success" size="sm" @click="getDetil(row.item.pembelajaran_id)">Detil</b-button>
+          <b-button variant="success" size="sm" @click="getDetilNilai(row.item.pembelajaran_id)">Detil</b-button>
         </template>
         <template v-slot:cell(detil_pkl)="row">
           <b-button variant="success" size="sm" @click="detilPkl(row.item.pkl_id)">Detil</b-button>
@@ -129,6 +129,9 @@ export default {
         ekstrakurikuler_id: ekstrakurikuler_id,
       })
     },
+    getDetilNilai(pembelajaran_id){
+      this.$emit('detil', pembelajaran_id);
+    },
     detilPkl(pkl_id){
       this.$emit('detil', pkl_id)
     },
@@ -147,7 +150,11 @@ export default {
         Jumlah =+ value.aspek_budaya_kerja_count
       })
       return Jumlah
-    }
+    },
+    rowClass(item, type) {
+      if (!item || type !== 'row') return
+      if (item.induk_pembelajaran_id) return 'table-warning'
+    },
   },
 }
 </script>

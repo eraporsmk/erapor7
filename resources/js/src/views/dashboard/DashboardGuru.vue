@@ -23,7 +23,7 @@
             <b-tbody>
               <template v-if="pembelajaran.length">
                 <template v-for="(item, index) in pembelajaran">
-                  <b-tr>
+                  <b-tr :variant="(item.induk_pembelajaran_id) ? 'warning' : null">
                     <b-td class="text-center">{{item.no}}</b-td>
                     <b-td>{{item.nama_mata_pelajaran}}</b-td>
                     <b-td>{{item.rombel}}</b-td>

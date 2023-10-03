@@ -19,7 +19,7 @@ class ProgressController extends Controller
       $collection = Pembelajaran::where(function($query){
          $query->whereNotNull('kelompok_id');
          $query->whereNotNull('no_urut');
-         $query->whereNull('induk_pembelajaran_id');
+         //$query->whereNull('induk_pembelajaran_id');
          $query->where('semester_id', request()->semester_id);
          $query->where('sekolah_id', request()->sekolah_id);
       })
@@ -31,7 +31,7 @@ class ProgressController extends Controller
          $query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
          $query->whereNotNull('kelompok_id');
          $query->whereNotNull('no_urut');
-         $query->whereNull('induk_pembelajaran_id');
+         //$query->whereNull('induk_pembelajaran_id');
          $query->orWhereHas('rombongan_belajar', function($query){
             $query->whereIn('jenis_rombel', [1, 16]);
             $query->where('semester_id', request()->semester_id);
@@ -40,25 +40,26 @@ class ProgressController extends Controller
          });
          $query->whereNotNull('kelompok_id');
          $query->whereNotNull('no_urut');
-         $query->whereNull('induk_pembelajaran_id');
+         //$query->whereNull('induk_pembelajaran_id');
          $query->orWhereHas('guru', function($query){
             $query->where('nama', 'ILIKE', '%' . request()->q . '%');
          });
          $query->whereNotNull('kelompok_id');
          $query->whereNotNull('no_urut');
-         $query->whereNull('induk_pembelajaran_id');
+         //$query->whereNull('induk_pembelajaran_id');
          $query->orWhereHas('pengajar', function($query){
             $query->where('nama', 'ILIKE', '%' . request()->q . '%');
          });
          $query->whereNotNull('kelompok_id');
          $query->whereNotNull('no_urut');
-         $query->whereNull('induk_pembelajaran_id');
+         //$query->whereNull('induk_pembelajaran_id');
       })
       ->paginate(request()->per_page);
       $result = [];
       foreach($collection->sortBy('rombongan_belajar.tingkat')->sortBy('rombongan_belajar.nama') as $item){
          $result[] = [
             'pembelajaran_id' => $item->pembelajaran_id,
+            'induk_pembelajaran_id' => $item->induk_pembelajaran_id,
             'rombel' => $item->rombongan_belajar->nama,
             'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
             'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,

@@ -9,6 +9,8 @@ use App\Models\Pembelajaran;
 use App\Models\Rencana_penilaian;
 use App\Models\Capaian_pembelajaran;
 use App\Models\Kompetensi_dasar;
+use App\Models\Peserta_didik;
+use App\Models\Tujuan_pembelajaran;
 use App\Exports\LeggerKDExport;
 use App\Exports\LeggerNilaiAkhirExport;
 use App\Exports\LeggerNilaiRaporExport;
@@ -19,6 +21,7 @@ use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
 use App\Exports\LeggerNilaiKurmerExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class DownloadController extends Controller
 {
@@ -132,5 +135,69 @@ class DownloadController extends Controller
 		} else {
 			echo 'Akses tidak sah!';
 		}
+	}
+	public function template_sumatif_lingkup_materi($pembelajaran_id){
+		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
+		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
+		$data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama, $data){
+			$query->where('rombongan_belajar_id', $data->rombongan_belajar_id);
+			$query->with(['nilai_tp' => function($query) use ($data){
+				$query->where('pembelajaran_id', $data->pembelajaran_id);
+			}]);
+		})->orderBy('nama')->get();
+		$data_tp = Tujuan_pembelajaran::where(function($query) use ($data){
+			$query->whereHas('tp_mapel', function($query) use ($data){
+				$query->where('tp_mapel.pembelajaran_id', $data->pembelajaran_id);
+			});
+		})->orderBy('created_at')->get();
+		$file = clean('template-nilai-sumatif-lingkup-materi-'.$data->nama_mata_pelajaran.'-kelas-'.$data->rombongan_belajar->nama);
+		$lists = [];
+		$i=1;
+		foreach($data_siswa as $siswa){
+			$record = [];
+			$record['NO'] = $i++;
+			$record['PD_ID'] = $siswa->anggota_rombel->anggota_rombel_id;
+			$record['NAMA'] = $siswa->nama;
+			foreach($data_tp as $tp){
+				$nilai_tp = $siswa->anggota_rombel->nilai_tp->first(function ($value, $key) use ($tp){
+					return $value->tp_id == $tp->tp_id;
+				});
+				$record[$tp->deskripsi] = ($nilai_tp) ? $nilai_tp->nilai : NULL;
+			}
+			$lists[] = $record;
+		}
+		return (new FastExcel($lists))->download($file.'.xlsx');
+	}
+	public function template_sumatif_akhir_semester($pembelajaran_id){
+		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
+		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
+        $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama, $data){
+			if($get_mapel_agama){
+				$query->where('agama_id', $get_mapel_agama);
+			}
+			$query->where('rombongan_belajar_id', $data->rombongan_belajar_id);
+			$query->with(['nilai_sumatif' => function($query) use ($data){
+				$query->where('pembelajaran_id', $data->pembelajaran_id);
+			}]);
+		})->orderBy('nama')->get();
+		$lists = [];
+		$i=1;
+        foreach($data_siswa as $siswa){
+			$nilai_non_tes = $siswa->anggota_rombel->nilai_sumatif->first(function ($value, $key){
+				return $value->jenis == 'non-tes';
+			});
+			$nilai_tes = $siswa->anggota_rombel->nilai_sumatif->first(function ($value, $key){
+				return $value->jenis == 'tes';
+			});
+			$record = [];
+			$record['NO'] = $i++;
+			$record['PD_ID'] = $siswa->anggota_rombel->anggota_rombel_id;
+			$record['NAMA'] = $siswa->nama;
+			$record['NILAI_NON_TES'] = ($nilai_non_tes) ? $nilai_non_tes->nilai : NULL;
+			$record['NILAI_TES'] = ($nilai_tes) ? $nilai_tes->nilai : NULL;
+			$lists[] = $record;
+		}
+		$file = clean('template-nilai-sumatif-akhir-semester-'.$data->nama_mata_pelajaran.'-kelas-'.$data->rombongan_belajar->nama);
+		return (new FastExcel($lists))->download($file.'.xlsx');
 	}
 }

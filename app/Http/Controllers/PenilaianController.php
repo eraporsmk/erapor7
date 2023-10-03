@@ -29,6 +29,7 @@ use App\Models\Capaian_pembelajaran;
 use App\Models\Nilai_tp;
 use App\Models\Nilai_sumatif;
 use Maatwebsite\Excel\Facades\Excel;
+use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
 use Carbon\Carbon;
 use Storage;
@@ -301,14 +302,14 @@ class PenilaianController extends Controller
             $data = [
                 'icon' => 'success',
                 'title' => 'Berhasil!',
-                'text' => 'Nilai TP berhasil disimpan',
+                'text' => 'Nilai Sumatif Lingkup Materi berhasil disimpan',
                 'request' => request()->all(),
             ];
         } else {
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
-                'text' => 'Nilai TP gagal disimpan. Silahkan coba beberapa saat lagi!',
+                'text' => 'Nilai Sumatif Lingkup Materi gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);
@@ -323,12 +324,28 @@ class PenilaianController extends Controller
             ]
         );
         $file_path = request()->template_excel->store('files', 'public');
-        Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
+        $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
+        //Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
         Storage::disk('public')->delete($file_path);
+        $list = [];
+        foreach($collection as $items){
+            $siswa = [];
+            foreach($items as $key => $item){
+                if($key != 'NO' || $key != 'PD_ID' || $key != 'NAMA'){
+                    $tp = Tujuan_pembelajaran::where('deskripsi', $key)->first();
+                    $key = ($tp) ? $tp->tp_id : $key;    
+                }
+                $siswa[$key] = $item;
+                unset($siswa['NO'], $siswa['NAMA']);
+            }
+            $list[] = $siswa;
+        }
         $data = [
             'icon' => 'success',
             'title' => 'Berhasil!',
             'text' => 'Nilai Akhir berhasil disimpan',
+            'collection' => $collection,
+            'data_nilai' => $list,
         ];
         return response()->json($data);
     }
@@ -929,6 +946,9 @@ class PenilaianController extends Controller
         $get_mapel_agama = filter_agama_siswa(request()->pembelajaran_id, request()->rombongan_belajar_id);
         $data = [
             'data_siswa' => Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama){
+                if($get_mapel_agama){
+                    $query->where('agama_id', $get_mapel_agama);
+                }
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                 $query->with(['nilai_sumatif' => function($query){
                     $query->where('pembelajaran_id', request()->pembelajaran_id);
@@ -965,14 +985,14 @@ class PenilaianController extends Controller
             $data = [
                 'icon' => 'success',
                 'title' => 'Berhasil!',
-                'text' => 'Nilai TP berhasil disimpan',
+                'text' => 'Nilai Sumatif Akhir Semester berhasil disimpan',
                 'request' => request()->all(),
             ];
         } else {
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
-                'text' => 'Nilai TP gagal disimpan. Silahkan coba beberapa saat lagi!',
+                'text' => 'Nilai Sumatif Akhir Semester gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);

@@ -341,7 +341,7 @@ class SinkronDapodik extends Command
         foreach($dapodik as $data){
             $anggota_rombel_id[] = $data->anggota_rombel->anggota_rombel_id;
             $this->simpan_pd($data, $user, $semester, NULL);
-            Pd_keluar::where('peserta_didik_id', $data->peserta_didik_id)->where('semester_id', $semester->semester_id)->delete();
+            $a = Pd_keluar::where('peserta_didik_id', $data->peserta_didik_id)->where('semester_id', $semester->semester_id)->delete();
             $this->proses_sync('Memperoses', 'peserta_didik_aktif', $i, count($dapodik), $user->sekolah_id);
             $bar->advance();
             $i++;
@@ -361,7 +361,7 @@ class SinkronDapodik extends Command
         foreach($dapodik as $data){
             $peserta_didik_id[] = $data->peserta_didik_id;
             $this->simpan_pd($data, $user, $semester, now());
-            Pd_keluar::updateOrCreate(
+            $a = Pd_keluar::updateOrCreate(
                 [
                     'peserta_didik_id' => $data->peserta_didik_id,
                 ],
@@ -488,7 +488,7 @@ class SinkronDapodik extends Command
                 'alamat_wali' 		=> ($data->alamat_jalan) ?? 0,
                 'telp_wali' 		=> ($data->nomor_telepon_seluler) ?? 0,
                 'kerja_wali' 		=> ($data->pekerjaan_id_wali) ? $data->pekerjaan_id_wali : 1,
-                'deleted_at'        => $deleted_at,
+                'deleted_at'        => NULL,
                 'active' 			=> 1,
                 'last_sync' => Carbon::now()->subDays(30),
             ]

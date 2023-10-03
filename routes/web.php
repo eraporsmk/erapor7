@@ -41,5 +41,8 @@ Route::group(['prefix' => 'downloads'], function () {
     Route::get('/template-nilai-kd/{rencana_penilaian_id?}', [DownloadController::class, 'template_nilai_kd'])->name('template-nilai-kd');
     Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [DownloadController::class, 'template_nilai_tp'])->name('template-nilai-tp');
     Route::get('/template-tp/{id?}/{rombongan_belajar_id?}/{pembelajaran_id?}', [DownloadController::class, 'template_tp'])->name('template-tp');
+    //http://erapor7-live.test/downloads/template-sumatif-akhir-semester/8eedbb56-7160-4238-aca3-fc535ea95cc3
+    Route::get('/template-sumatif-lingkup-materi/{pembelajaran_id?}', [DownloadController::class, 'template_sumatif_lingkup_materi'])->name('template-sumatif-lingkup-materi');
+    Route::get('/template-sumatif-akhir-semester/{pembelajaran_id?}', [DownloadController::class, 'template_sumatif_akhir_semester'])->name('template-sumatif-akhir-semester');
 });
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');

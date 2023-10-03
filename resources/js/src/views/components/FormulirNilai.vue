@@ -238,10 +238,10 @@ export default {
           this.$emit('show_cp', getData.show_cp)
           var opsi;
           if(!getData.show_cp){
-            opsi = 'nilai-akhir-sumatif'
+            opsi = 'sumatif-akhir-semester'
             this.$emit('show_sumatif', true)
           } else {
-            opsi = 'nilai-tp'
+            opsi = 'sumatif-lingkup-materi'
           }
           this.$emit('show_form', opsi)
           this.data_cp = getData.data_cp

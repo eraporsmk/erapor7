@@ -5,23 +5,23 @@
         <b-form @submit="onSubmit">
           <formulir-nilai ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" :show_cp="show_cp" :show_sumatif="handleShowSumatif" @hide_form="handleHideForm" @show_cp="handleShowCp"></formulir-nilai>
           <b-row v-if="show">
+            <b-col cols="12" class="mb-2" v-if="show_sumatif || data_tp.length">
+              <b-row>
+                <b-col cols="6">
+                  <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
+                    <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
+                  </b-form-group>
+                </b-col>
+                <b-col cols="6">
+                  <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template {{ nama_template }}</b-button>
+                </b-col>
+              </b-row>
+            </b-col>
             <template v-if="show_sumatif">
               <show-sumatif :data_siswa="data_siswa" :form="form" @setRerata="setRerata"></show-sumatif>
             </template>
             <template v-else>
               <template v-if="data_tp.length">
-                <!--b-col cols="12" class="mb-2">
-                  <b-row>
-                    <b-col cols="6">
-                      <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
-                        <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
-                      </b-form-group>
-                    </b-col>
-                    <b-col cols="6">
-                      <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template Nilai Akhir</b-button>
-                    </b-col>
-                  </b-row>
-                </b-col-->
                 <template v-if="show_cp">
                   <b-col cols="12">
                     <b-table-simple bordered striped responsive>
@@ -99,7 +99,7 @@
                 </b-col>
               </template>
             </template>
-            <b-col cols="12">
+            <b-col cols="12" v-if="show_sumatif || data_tp.length">
               <b-form-group label-cols-md="3">
                 <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
               </b-form-group>
@@ -141,6 +141,7 @@ export default {
   },
   data() {
     return {
+      nama_template: '',
       show: false,
       show_cp: false,
       show_sumatif: false,
@@ -234,6 +235,7 @@ export default {
       data.append('pembelajaran_id', this.form.pembelajaran_id)
       data.append('sekolah_id', this.form.sekolah_id)
       data.append('merdeka', this.form.merdeka)
+      data.append('opsi', this.opsi)
       this.$http.post('/penilaian/upload-nilai', data).then(response => {
         this.isBusy = false
         let data = response.data
@@ -241,17 +243,35 @@ export default {
           this.template_excel_state = (data.errors.template_excel) ? false : null
           this.template_excel_feedback = (data.errors.template_excel) ? data.errors.template_excel.join(', ') : ''
         } else {
-          this.$swal({
-            icon: data.icon,
-            title: data.title,
-            html: data.text,
-            customClass: {
-              confirmButton: 'btn btn-success',
-            },
-          }).then(result => {
-            this.handleHideForm()
-            this.onReset()
+          this.template_excel = null
+          var nilai_tp = {}
+          var nilai_sumatif = {}
+          var _this = this
+          data.data_nilai.forEach(function(item, index) {
+            if(_this.opsi == 'sumatif-lingkup-materi'){
+              var set_nilai = []
+              Object.keys(item).forEach(key => {
+                if(key != 'PD_ID'){
+                  set_nilai.push({
+                    tp_id: key,
+                    nilai: item[key] ? item[key] : null,
+                  })
+                }
+              });
+              set_nilai.forEach(function(value, tp_id){
+                nilai_tp[item.PD_ID+'#'+value.tp_id] = value.nilai
+              })
+            } else {
+              nilai_sumatif[item.PD_ID+'#non-tes'] = item.NILAI_NON_TES
+              nilai_sumatif[item.PD_ID+'#tes'] = item.NILAI_TES
+              nilai_sumatif[item.PD_ID+'#na'] = _this.calculateAverage([item.NILAI_NON_TES, item.NILAI_TES])
+            }
           })
+          if(this.opsi == 'sumatif-lingkup-materi'){
+            this.form.nilai_tp = nilai_tp
+          } else {
+            this.form.nilai_sumatif = nilai_sumatif
+          }
         }
       });
     },
@@ -270,12 +290,14 @@ export default {
         this.show = true
         let getData = response.data
         this.data_siswa = getData.data.data_siswa
-        if(opsi == 'nilai-tp'){
+        if(opsi == 'sumatif-lingkup-materi'){
           this.data_tp = getData.data.data_tp
           this.show_sumatif = false
+          this.nama_template = 'Sumatif Lingkup Materi'
         }
-        if(opsi == 'nilai-akhir-sumatif'){
+        if(opsi == 'sumatif-akhir-semester'){
           this.show_sumatif = true
+          this.nama_template = 'Sumatif Akhir Semester'
         }
         var nilai = {}
         var nilai_tp = {}
@@ -288,12 +310,12 @@ export default {
               kompeten[value.anggota_rombel.anggota_rombel_id+'#'+capaian.tp_id] = capaian.kompeten
             })
           }
-          if(opsi == 'nilai-tp'){
+          if(opsi == 'sumatif-lingkup-materi'){
             value.anggota_rombel.nilai_tp.forEach(function(tp, index) {
               nilai_tp[value.anggota_rombel.anggota_rombel_id+'#'+tp.tp_id] = tp.nilai
             })
           }
-          if(opsi == 'nilai-akhir-sumatif'){
+          if(opsi == 'sumatif-akhir-semester'){
             value.anggota_rombel.nilai_sumatif.forEach(function(sumatif, index) {
               nilai_sumatif[value.anggota_rombel.anggota_rombel_id+'#'+sumatif.jenis] = sumatif.nilai
             })

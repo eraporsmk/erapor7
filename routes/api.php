@@ -168,10 +168,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-teknik-penilaian', [PenilaianController::class, 'get_teknik_penilaian']);
     Route::post('/get-cp', [PenilaianController::class, 'get_cp']);
     Route::post('/get-tp', [PenilaianController::class, 'get_tp']);
-    Route::post('/get-nilai-tp', [PenilaianController::class, 'get_nilai_tp']);
-    Route::post('/get-nilai-akhir-sumatif', [PenilaianController::class, 'get_nilai_akhir_sumatif']);
-    Route::post('/simpan-nilai-tp', [PenilaianController::class, 'simpan_nilai_tp']);
-    Route::post('/simpan-nilai-akhir-sumatif', [PenilaianController::class, 'simpan_nilai_akhir_sumatif']);
+    Route::post('/get-sumatif-lingkup-materi', [PenilaianController::class, 'get_nilai_tp']);
+    Route::post('/get-sumatif-akhir-semester', [PenilaianController::class, 'get_nilai_akhir_sumatif']);
+    Route::post('/simpan-sumatif-lingkup-materi', [PenilaianController::class, 'simpan_nilai_tp']);
+    Route::post('/simpan-sumatif-akhir-semester', [PenilaianController::class, 'simpan_nilai_akhir_sumatif']);
   });
   Route::group(['prefix' => 'ukk'], function () {
     Route::get('/paket-ukk', [UkkController::class, 'paket_ukk']);
