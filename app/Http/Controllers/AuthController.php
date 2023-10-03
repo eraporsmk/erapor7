@@ -493,8 +493,7 @@ class AuthController extends Controller
             'created_at' => Carbon::now()
         ]);
         $mail = Mail::send('cetak.lupa-password', ['token' => $token], function($message) use($request){
-            //$message->to($request->email);
-            $message->to('masadi.com@gmail.com');
+            $message->to($request->email);
             $message->subject('Reset Password');
         });
         $data = [
