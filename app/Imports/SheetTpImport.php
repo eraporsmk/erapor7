@@ -29,7 +29,7 @@ class SheetTpImport implements ToCollection
             unset($collection[0], $collection[1], $collection[2], $collection[3], $collection[4], $collection[5], $collection[6], $collection[7], $collection[8], $collection[9], $collection[10], $collection[11], $collection[12]);
             $tp_kompeten = [];
             $tp_inkompeten = [];
-            $folder = session('guru_id').'-'.$this->pembelajaran_id;
+            $folder = 'excel-'.$this->pembelajaran_id;
             //$file = $folder.'.json';
             $file = NULL;
             foreach($collection as $item){
