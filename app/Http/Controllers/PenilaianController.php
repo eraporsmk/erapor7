@@ -325,7 +325,7 @@ class PenilaianController extends Controller
         );
         $file_path = request()->template_excel->store('files', 'public');
         $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-        //Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
+        Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
         Storage::disk('public')->delete($file_path);
         $list = [];
         foreach($collection as $items){
