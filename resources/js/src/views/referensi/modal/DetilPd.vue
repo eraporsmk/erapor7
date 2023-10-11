@@ -9,7 +9,7 @@
         </b-col>
         <b-col cols="12">
           <b-form-group label="NIS" label-cols-md="3">
-            <b-form-input :value="data.nis" disabled />
+            <b-form-input :value="data.no_induk" disabled />
           </b-form-group>
         </b-col>
         <b-col cols="12">
