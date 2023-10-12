@@ -20,20 +20,25 @@ class SheetNilaiImport implements ToCollection
     */
     public function collection(Collection $collection)
     {
-        $rombongan_belajar_id = $collection[3][2];
+		if($this->merdeka == 'false'){
+			$kompetensi_id = 1;
+		} else {
+			$kompetensi_id = 4;
+		}
+		$rombongan_belajar_id = $collection[3][2];
         $pembelajaran_id = $collection[4][2];
         if($rombongan_belajar_id == $this->rombongan_belajar_id && $pembelajaran_id == $this->pembelajaran_id){
             unset($collection[0], $collection[1], $collection[2], $collection[3], $collection[4], $collection[5], $collection[6]);
             foreach($collection as $item){
                 if ($item[1] && is_numeric($item[4])) {
-                    Nilai_akhir::updateOrCreate(
+					Nilai_akhir::updateOrCreate(
                         [
                             'sekolah_id' => $this->sekolah_id,
                             'anggota_rombel_id' => $item[1],
                             'pembelajaran_id' => $this->pembelajaran_id,
-                            'kompetensi_id' => ($this->merdeka) ? 4 : 1,
                         ],
                         [
+							'kompetensi_id' => $kompetensi_id,
                             'nilai' => ($item[4] >= 0 && $item[4] <= 100) ? number_format($item[4], 0) : 0,
                         ]
                     );
