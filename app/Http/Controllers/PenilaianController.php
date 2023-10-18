@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Rombongan_belajar;
 use App\Models\Pembelajaran;
@@ -31,6 +32,7 @@ use App\Models\Nilai_sumatif;
 use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
+use App\Imports\NilaiSumatifImport;
 use Carbon\Carbon;
 use Storage;
 
@@ -323,23 +325,28 @@ class PenilaianController extends Controller
                 'template_excel.mimes' => 'File harus berupa file dengan ekstensi: xlsx.',
             ]
         );
-        $file_path = request()->template_excel->store('files', 'public');
-        $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-        Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
-        Storage::disk('public')->delete($file_path);
         $list = [];
-        foreach($collection as $items){
-            $siswa = [];
-            foreach($items as $key => $item){
-                if($key != 'NO' || $key != 'PD_ID' || $key != 'NAMA'){
-                    $tp = Tujuan_pembelajaran::where('deskripsi', $key)->first();
-                    $key = ($tp) ? $tp->tp_id : $key;    
+        $collection = [];
+        $file_path = request()->template_excel->store('files', 'public');
+        if(request()->opsi == 'sumatif-lingkup-materi' || request()->opsi == 'sumatif-akhir-semester'){
+            $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
+            foreach($collection as $items){
+                $siswa = [];
+                foreach($items as $key => $item){
+                    if($key != 'NO' || $key != 'PD_ID' || $key != 'NAMA'){
+                        $tp = Tujuan_pembelajaran::where(DB::raw('TRIM(deskripsi)'), trim($key))->first();
+                        $key = ($tp) ? $tp->tp_id : $key;    
+                    }
+                    $siswa[$key] = $item;
+                    unset($siswa['NO'], $siswa['NAMA']);
                 }
-                $siswa[$key] = $item;
-                unset($siswa['NO'], $siswa['NAMA']);
-            }
-            $list[] = $siswa;
+                $list[] = $siswa;
+            }    
+        } else {
+            Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
         }
+        Storage::disk('public')->delete($file_path);
+        
         $data = [
             'icon' => 'success',
             'title' => 'Berhasil!',

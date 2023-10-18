@@ -1,5 +1,16 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.3</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan Fitur reset password</li>
+        <li><b class="text-danger">[Perbaikan]</b> Import Template Nilai Asesmen Sumatif</li>
+        <li><b class="text-danger">[Perbaikan]</b> Import Template Nilai Akhir</li>
+        <li><b class="text-danger">[Perbaikan]</b> Proses Sinkronisasi Peserta Didik Aktif (NIS)</li>
+        <li><b class="text-danger">[Perbaikan]</b> Unduh Template Nilai Asesmen</li>
+        <li><b class="text-danger">[Perbaikan]</b> Proses sinkronisasi Peserta Didik Keluar</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.2</h3>
     </legend>
     <ol>
