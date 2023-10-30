@@ -973,7 +973,7 @@ class SinkronDapodik extends Command
         }
     }
     private function insert_mata_pelajaran($data, $user, $semester){
-        if($data->jurusan_id){
+        if($data && $data->jurusan_id){
             $jurusan = Jurusan::find($data->jurusan_id);
             if($jurusan){
                 $this->simpan_mapel($data);
