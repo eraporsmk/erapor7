@@ -42,7 +42,8 @@
   <div id="app">
   </div>
   <script>
-    var app_url = '{{ config('app.url') }}';
+    //var app_url = '{{ config('app.url') }}';
+    var app_url = '{{ url('/') }}';
     var app_version = '{{ get_setting('app_version') }}';
     var app_name = '{{ config('app.name') }}';
     var app_registration = '{{ config('app.registration') }}';
