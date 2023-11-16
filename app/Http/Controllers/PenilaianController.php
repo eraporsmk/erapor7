@@ -227,6 +227,9 @@ class PenilaianController extends Controller
                         'nilai' => ($nilai_akhir) ? number_format($nilai_akhir,0) : 0,
                     ]
                 );
+            } else {
+                $kompetensi_id = (request()->merdeka) ? 4 : 1;
+                Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_i)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
             }
         }
         $segments = [];
@@ -257,6 +260,8 @@ class PenilaianController extends Controller
                         ],
                         $update
                     );
+                } else {
+                    Tp_nilai::where('anggota_rombel_id', $anggota_rombel_id)->where('tp_id', $tp_id)->delete();
                 }
             }
         }
