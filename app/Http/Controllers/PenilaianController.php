@@ -247,15 +247,17 @@ class PenilaianController extends Controller
                         'kd_id' => $tp->kd_id,
                     ];
                 }
-                Tp_nilai::updateOrCreate(
-                    [
-                        'sekolah_id' => request()->sekolah_id,
-                        'anggota_rombel_id' => $anggota_rombel_id,
-                        'tp_id' => $tp_id,
-                        'kompeten' => $kompeten,
-                    ],
-                    $update
-                );
+                if($kompeten){
+                    Tp_nilai::updateOrCreate(
+                        [
+                            'sekolah_id' => request()->sekolah_id,
+                            'anggota_rombel_id' => $anggota_rombel_id,
+                            'tp_id' => $tp_id,
+                            'kompeten' => $kompeten,
+                        ],
+                        $update
+                    );
+                }
             }
         }
         if($insert){
