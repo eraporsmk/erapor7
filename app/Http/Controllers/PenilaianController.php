@@ -229,7 +229,7 @@ class PenilaianController extends Controller
                 );
             } else {
                 $kompetensi_id = (request()->merdeka) ? 4 : 1;
-                Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_i)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
+                Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
             }
         }
         $segments = [];
