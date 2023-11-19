@@ -250,7 +250,7 @@ class PenilaianController extends Controller
                         'kd_id' => $tp->kd_id,
                     ];
                 }
-                if($kompeten){
+                if($kompeten > -1){
                     Tp_nilai::updateOrCreate(
                         [
                             'sekolah_id' => request()->sekolah_id,
