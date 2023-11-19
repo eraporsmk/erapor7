@@ -959,14 +959,15 @@ class PenilaianController extends Controller
     public function get_nilai_akhir_sumatif(){
         $get_mapel_agama = filter_agama_siswa(request()->pembelajaran_id, request()->rombongan_belajar_id);
         $data = [
-            'data_siswa' => Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama){
-                if($get_mapel_agama){
-                    $query->where('agama_id', $get_mapel_agama);
-                }
+            'data_siswa' => Peserta_didik::withWhereHas('anggota_rombel', function($query){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                 $query->with(['nilai_sumatif' => function($query){
                     $query->where('pembelajaran_id', request()->pembelajaran_id);
                 }]);
+            })->where(function($query) use ($get_mapel_agama){
+                if($get_mapel_agama){
+                    $query->where('agama_id', $get_mapel_agama);
+                }
             })->orderBy('nama')->get(),
         ];
         return response()->json(['status' => 'success', 'data' => $data]);
