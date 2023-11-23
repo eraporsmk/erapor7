@@ -83,7 +83,7 @@ export default {
     }
   },
   created() {
-    eventBus.$on('add-modal', (val) => {
+    eventBus.$on('add-sikap', (val) => {
       this.$router.push({ name: 'penilaian-input-sikap' })
     })
     this.loadPostsData()
