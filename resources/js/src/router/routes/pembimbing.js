@@ -44,19 +44,19 @@ export default [
     },
   },
   {
-    path: '/pkl/kehadiran',
+    path: '/pkl/ketidakhadiran',
     name: 'pkl-kehadiran',
     component: () => import('@/views/pkl/Kehadiran.vue'),
     meta: {
       resource: 'Pkl',
       action: 'read',
-      pageTitle: 'Kehadiran',
+      pageTitle: 'Ketidakhadiran',
       breadcrumb: [
         {
           text: 'Praktik Kerja Lapangan',
         },
         {
-          text: 'Kehadiran',
+          text: 'Ketidakhadiran',
           active: true,
         },
       ],

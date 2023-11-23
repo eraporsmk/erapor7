@@ -1,6 +1,6 @@
 <template>
   <b-card>
-    <datatable :isBusy="isBusy" :loading="loading" :fields="fields" :items="items" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handleAksi" />
+    <datatable :isBusy="isBusy" :loading="loading" :fields="fields" :items="items" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handleAksi" @rombel="handleRombel" />
   </b-card>
 </template>
 
@@ -52,6 +52,7 @@ export default {
       search: '',
       sortBy: 'nama',
       sortByDesc: true,
+      rombongan_belajar_id: '',
     }
   },
   created() {
@@ -71,7 +72,8 @@ export default {
           per_page: this.per_page,
           q: this.search,
           sortby: this.sortBy,
-          sortbydesc: this.sortByDesc ? 'DESC' : 'ASC'
+          sortbydesc: this.sortByDesc ? 'DESC' : 'ASC',
+          rombongan_belajar_id: this.rombongan_belajar_id,
         }
       }).then(response => {
         let getData = response.data.data
@@ -83,6 +85,7 @@ export default {
           per_page: getData.per_page,
           from: getData.from,
           to: getData.to,
+          data_rombel: response.data.data_rombel
         }
       })
     },
@@ -164,6 +167,12 @@ export default {
       var params = {anggota_rombel_id: id}
       this.swalConfirm(text, aksi, params, 'keluar')
     },
+    handleRombel(val){
+      console.log('handleRombel');
+      console.log(val);
+      this.rombongan_belajar_id = val
+      this.loadPostsData()
+    }
   },
 }
 </script>

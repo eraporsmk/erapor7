@@ -19,7 +19,7 @@ export default [
         },
         {
           icon: 'hand-point-right',
-          title: 'Kehadiran',
+          title: 'Ketidakhadiran',
           route: 'pkl-kehadiran',
           resource: 'Pkl',
           action: 'read',

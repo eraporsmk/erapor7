@@ -98,7 +98,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 ?>
 @if($get_siswa->rombongan_belajar->tingkat != 10 && $get_siswa->all_prakerin->count())
 @if(!merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
-<div class="strong"><strong>C.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
+<div class="strong"><strong>B.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
 @else
 <div class="strong"><strong>B.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
 @endif

@@ -75,6 +75,7 @@ class UsersController extends Controller
         $WalasRole = Role::where('name', 'wali')->first();
         $adminRole = Role::where('name', 'admin')->first();
         $pembimbingRole = Role::where('name', 'pembimbing')->first();
+        $all_role = ['pembina_ekskul', 'guru-p5', 'wali', 'admin', 'pembimbing'];
         if($data){
             foreach($data as $d){
                 $insert++;
@@ -98,7 +99,8 @@ class UsersController extends Controller
 						'default_password' => $new_password,
                     ]);
                 }
-                $user->detachRole($adminRole, request()->periode_aktif);
+                //$user->detachRole($adminRole, request()->periode_aktif);
+                $user->detachRoles($all_role, request()->periode_aktif);
                 if($jenis_tu->contains($d->jenis_ptk_id)){
                     $role = Role::where('name', 'tu')->first();
                 } elseif($asesor->contains($d->jenis_ptk_id)){

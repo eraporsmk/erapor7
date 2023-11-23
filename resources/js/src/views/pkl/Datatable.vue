@@ -4,7 +4,10 @@
       <b-col md="4" class="mb-2">
         <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @input="loadPerPage" :clearable="false" :searchable="false"></v-select>
       </b-col>
-      <b-col md="4" offset-md="4">
+      <b-col md="4">
+        <v-select v-model="rombongan_belajar_id" :options="meta.data_rombel" @input="changeRombel" :reduce="nama => nama.rombongan_belajar_id" label="nama" placeholder="== Filter Rombel =="></v-select>
+      </b-col>
+      <b-col md="4">
         <b-form-input @input="search" placeholder="Cari data..."></b-form-input>
       </b-col>
     </b-row>
@@ -97,6 +100,7 @@ export default {
     return {
       sortBy: null,
       sortDesc: false,
+      rombongan_belajar_id: '',
     }
   },
   watch: {
@@ -132,6 +136,11 @@ export default {
     cetakPkl(peserta_didik_id, pkl_id){
       window.open(`/cetak/rapor-pkl/${peserta_didik_id}/${pkl_id}/${this.user.guru_id}/${this.user.semester.semester_id}`, `_blank`);
     },
+    changeRombel(val){
+      //console.log(val);
+      this.rombongan_belajar_id = val
+      this.$emit('rombel', val)
+    }
   },
 }
 </script>

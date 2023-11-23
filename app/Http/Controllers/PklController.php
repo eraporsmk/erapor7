@@ -367,13 +367,13 @@ class PklController extends Controller
             $data = [
                 'icon' => 'success',
                 'title' => 'Berhasil!',
-                'text' => 'Kehadiran PKL berhasil disimpan',
+                'text' => 'Ketidakhadiran PKL berhasil disimpan',
             ];
         } else {
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
-                'text' => 'Kehadiran PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
+                'text' => 'Ketidakhadiran PKL gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);
@@ -395,7 +395,22 @@ class PklController extends Controller
         }])->orderBy(request()->sortby, request()->sortbydesc)
         ->when(request()->q, function($query){
             $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+        })
+        ->when(request()->rombongan_belajar_id, function($query){
+            $query->whereHas('kelas', function($query){
+                $query->where('anggota_rombel.rombongan_belajar_id', request()->rombongan_belajar_id);
+            });
         })->paginate(request()->per_page);
-        return response()->json(['status' => 'success', 'data' => $data]);
+        $data_rombel = Rombongan_belajar::whereHas('anggota_rombel', function($query){
+            $query->whereHas('peserta_didik', function($query){
+                $query->whereHas('pd_pkl', function($query){
+                    $query->whereHas('praktik_kerja_lapangan', function($query){
+                        $query->where('guru_id', request()->guru_id);
+                        $query->where('semester_id', request()->semester_id);
+                    });
+                });
+            });
+        })->where('jenis_rombel', 1)->orderBy('nama')->get();
+        return response()->json(['status' => 'success', 'data' => $data, 'data_rombel' => $data_rombel]);
     }    
 }

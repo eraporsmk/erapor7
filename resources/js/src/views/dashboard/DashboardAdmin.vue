@@ -84,7 +84,7 @@
                 </b-tr>
                 <b-tr>
                   <b-td>Kepala Sekolah</b-td>
-                  <b-td>: {{(sekolah.kepala_sekolah) ? sekolah.kepala_sekolah.nama_lengkap : '-'}}</b-td>
+                  <b-td>: {{(sekolah.kasek) ? sekolah.kasek.nama_lengkap : '-'}}</b-td>
                 </b-tr>
               </b-table-simple>
             </template>
@@ -135,7 +135,7 @@
                       <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282113057512&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Iman [082113057512]</a>
                       <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282174508706&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Ikhsan [082174508706]</a>
                       <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285643935009&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Adhi Prasetya [085643935009]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285624669298&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Deetha [085624669298]</a>
+                      <!--a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285624669298&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Deetha [085624669298]</a-->
                     </div>
                   </b-td>
                 </b-tr>

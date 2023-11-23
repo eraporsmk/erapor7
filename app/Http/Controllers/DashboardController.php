@@ -19,7 +19,9 @@ use App\Models\Deskripsi_mata_pelajaran;
 class DashboardController extends Controller
 {
    private function dashboard_admin(){
-      $sekolah = Sekolah::with(['kepala_sekolah'])->withCount([
+      $sekolah = Sekolah::with(['kasek' => function($query){
+         $query->where('semester_id', request()->semester_id);
+      }])->withCount([
          'ptk' => function($query){
              $query->where('is_dapodik', 1);
              $query->whereDoesntHave('ptk_keluar', function($query){
