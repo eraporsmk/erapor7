@@ -380,11 +380,11 @@ class PenilaianController extends Controller
                 },
                 'tp_kompeten' => function($query){
                     $this->wherehas($query);
-                    $query->with(['tp']);
+                    $query->withWhereHas('tp');
                 },
                 'tp_inkompeten' => function($query){
                     $this->wherehas($query);
-                    $query->with(['tp']);
+                    $query->withWhereHas('tp');
                 },
             ]);
         };
