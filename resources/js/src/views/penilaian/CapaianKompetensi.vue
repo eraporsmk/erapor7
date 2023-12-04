@@ -171,6 +171,7 @@ export default {
             }
           }
         })
+        console.log(nilai);
         this.form.nilai = nilai
         this.form.kompeten = kompeten
         this.form.inkompeten = inkompeten
