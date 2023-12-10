@@ -109,8 +109,8 @@
     <br>
     <br>
     <br>
-      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->dudi->contact_person}}</u></p>
+      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->akt_pd->mou->contact_person}}</u></p>
     </td>
     </tr>
-    </table>
+  </table>
 @endsection

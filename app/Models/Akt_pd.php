@@ -30,6 +30,10 @@ class Akt_pd extends Model
             'dudi_id' // Local key on users table...
         );
 	}
+	public function mou()
+	{
+		return $this->hasOne(Mou::class, 'mou_id', 'mou_id');
+	}
 	public function praktik_kerja_lapangan()
 	{
 		return $this->hasMany(Praktik_kerja_lapangan::class, 'akt_pd_id', 'akt_pd_id');

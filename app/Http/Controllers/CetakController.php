@@ -565,6 +565,9 @@ class CetakController extends Controller
 			},
 			'pd_pkl' => function($query){
 				$query->withWhereHas('praktik_kerja_lapangan', function($query){
+					$query->withWhereHas('akt_pd', function($query){
+						$query->with('mou');
+					});
 					$query->where('pkl_id', request()->route('pkl_id'));
 				});
 			},
