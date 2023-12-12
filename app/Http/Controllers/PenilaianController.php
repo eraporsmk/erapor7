@@ -304,7 +304,9 @@ class PenilaianController extends Controller
                     ]
                 );
             } else {
-                Nilai_tp::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('tp_id', $tp_id)->delete();
+                if(Str::isUuid($anggota_rombel_id)){
+                    Nilai_tp::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('tp_id', $tp_id)->delete();
+                }
             }
         }
         if($insert){

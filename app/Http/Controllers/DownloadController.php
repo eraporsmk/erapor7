@@ -139,7 +139,11 @@ class DownloadController extends Controller
 	public function template_sumatif_lingkup_materi($pembelajaran_id){
 		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
 		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
-		$data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama, $data){
+		$data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
+			if($get_mapel_agama){
+				$query->where('agama_id', $get_mapel_agama);
+			}
+		})->withWhereHas('anggota_rombel', function($query) use ($data){
 			$query->where('rombongan_belajar_id', $data->rombongan_belajar_id);
 			$query->with(['nilai_tp' => function($query) use ($data){
 				$query->where('pembelajaran_id', $data->pembelajaran_id);
@@ -171,10 +175,11 @@ class DownloadController extends Controller
 	public function template_sumatif_akhir_semester($pembelajaran_id){
 		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
 		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
-        $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($get_mapel_agama, $data){
+        $data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
 			if($get_mapel_agama){
 				$query->where('agama_id', $get_mapel_agama);
 			}
+		})->withWhereHas('anggota_rombel', function($query) use ($data){
 			$query->where('rombongan_belajar_id', $data->rombongan_belajar_id);
 			$query->with(['nilai_sumatif' => function($query) use ($data){
 				$query->where('pembelajaran_id', $data->pembelajaran_id);
