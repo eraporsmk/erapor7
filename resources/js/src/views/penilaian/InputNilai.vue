@@ -264,7 +264,15 @@ export default {
             } else {
               nilai_sumatif[item.PD_ID+'#non-tes'] = item.NILAI_NON_TES
               nilai_sumatif[item.PD_ID+'#tes'] = item.NILAI_TES
-              nilai_sumatif[item.PD_ID+'#na'] = _this.calculateAverage([item.NILAI_NON_TES, item.NILAI_TES])
+              var calculateAverage = 0;
+              if(item.NILAI_NON_TES && item.NILAI_TES){
+                calculateAverage = _this.calculateAverage([item.NILAI_NON_TES, item.NILAI_TES])
+              } else if(item.NILAI_NON_TES && !item.NILAI_TES){
+                calculateAverage = item.NILAI_NON_TES
+              } else if(!item.NILAI_NON_TES && item.NILAI_TES){
+                calculateAverage = item.NILAI_TES
+              }
+              nilai_sumatif[item.PD_ID+'#na'] = calculateAverage
             }
           })
           if(this.opsi == 'sumatif-lingkup-materi'){
