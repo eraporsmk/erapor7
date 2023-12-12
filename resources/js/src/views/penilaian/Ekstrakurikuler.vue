@@ -55,7 +55,7 @@
                         <b-td>{{item.nama}}</b-td>
                         <b-td>{{(item.kelas) ? item.kelas.nama : ''}}</b-td>
                         <b-td>
-                          <v-select v-model="form.nilai_ekskul[item.anggota_ekskul.anggota_rombel_id]" :reduce="name => name.id" label="name" :options="data_nilai" placeholder="== Pilih Predikat ==" :searchable="false" @input="changeNilai(form.nilai_ekskul[item.anggota_ekskul.anggota_rombel_id], item.anggota_ekskul.anggota_rombel_id)"></v-select>
+                          <v-select append-to-body v-model="form.nilai_ekskul[item.anggota_ekskul.anggota_rombel_id]" :reduce="name => name.id" label="name" :options="data_nilai" placeholder="== Pilih Predikat ==" :searchable="false" @input="changeNilai(form.nilai_ekskul[item.anggota_ekskul.anggota_rombel_id], item.anggota_ekskul.anggota_rombel_id)"></v-select>
                         </b-td>
                         <b-td>
                           <b-form-input v-model="form.deskripsi_ekskul[item.anggota_ekskul.anggota_rombel_id]" />

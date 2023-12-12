@@ -52,7 +52,7 @@
                       <template v-for="(tp, i) in data_tp">
                         <b-tr>
                           <b-td>
-                            <v-select v-model="form.kompeten[siswa.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false"></v-select>
+                            <v-select v-model="form.kompeten[siswa.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false" append-to-body></v-select>
                           </b-td>
                           <b-td>
                             {{tp.deskripsi}}
