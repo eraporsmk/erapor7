@@ -2,61 +2,70 @@
   <b-card no-body>
     <b-overlay :show="isBusy" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-card-body>
-        <b-form @submit="onSubmit">
-          <formulir ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir>
-          <b-row v-if="show">
-            <b-col cols="12" class="mb-2" v-if="show_reset">
-              <b-form-group label="Reset Capaian Kompetensi" label-for="tingkat" label-cols-md="3">
-                <b-button variant="danger" @click="resetData">Reset Capaian Kompetensi</b-button>
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-table-simple bordered striped responsive>
-                <b-thead>
-                  <b-tr>
-                    <b-th class="text-center" rowspan="2" style="vertical-align:middle">No</b-th>
-                    <b-th class="text-center" rowspan="2" style="vertical-align:middle">Nama Peserta Didik</b-th>
-                    <b-th class="text-center" rowspan="2" style="vertical-align:middle">Nilai Akhir</b-th>
-                    <b-th class="text-center" colspan="2">Capaian Kompetensi</b-th>
-                  </b-tr>
-                  <b-tr>
-                    <b-th class="text-center">Kompetensi yang sudah dicapai</b-th>
-                    <b-th class="text-center">Kompetensi yang perlu ditingkatkan</b-th>
-                  </b-tr>
-                </b-thead>
-                <b-tbody>
-                  <template v-for="(siswa, index) in data_siswa">
+        <template v-if="status_penilaian">
+          <b-form @submit="onSubmit">
+            <formulir ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir>
+            <b-row v-if="show">
+              <b-col cols="12" class="mb-2" v-if="show_reset">
+                <b-form-group label="Reset Capaian Kompetensi" label-for="tingkat" label-cols-md="3">
+                  <b-button variant="danger" @click="resetData">Reset Capaian Kompetensi</b-button>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-table-simple bordered striped responsive>
+                  <b-thead>
                     <b-tr>
-                      <b-td class="text-center">{{index + 1}}</b-td>
-                      <b-td>{{siswa.nama}}</b-td>
-                      <b-td class="text-center">
-                        {{form.nilai[siswa.anggota_rombel.anggota_rombel_id]}}
-                      </b-td>
-                      <b-td class="text-center">
-                        <b-form-textarea v-model="form.kompeten[siswa.anggota_rombel.anggota_rombel_id]" rows="5"></b-form-textarea>
-                      </b-td>
-                      <b-td class="text-center">
-                        <b-form-textarea v-model="form.inkompeten[siswa.anggota_rombel.anggota_rombel_id]" rows="5"></b-form-textarea>
-                      </b-td>
+                      <b-th class="text-center" rowspan="2" style="vertical-align:middle">No</b-th>
+                      <b-th class="text-center" rowspan="2" style="vertical-align:middle">Nama Peserta Didik</b-th>
+                      <b-th class="text-center" rowspan="2" style="vertical-align:middle">Nilai Akhir</b-th>
+                      <b-th class="text-center" colspan="2">Capaian Kompetensi</b-th>
                     </b-tr>
-                  </template>
-                </b-tbody>
-              </b-table-simple>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label-cols-md="3">
-                <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-form>
+                    <b-tr>
+                      <b-th class="text-center">Kompetensi yang sudah dicapai</b-th>
+                      <b-th class="text-center">Kompetensi yang perlu ditingkatkan</b-th>
+                    </b-tr>
+                  </b-thead>
+                  <b-tbody>
+                    <template v-for="(siswa, index) in data_siswa">
+                      <b-tr>
+                        <b-td class="text-center">{{index + 1}}</b-td>
+                        <b-td>{{siswa.nama}}</b-td>
+                        <b-td class="text-center">
+                          {{form.nilai[siswa.anggota_rombel.anggota_rombel_id]}}
+                        </b-td>
+                        <b-td class="text-center">
+                          <b-form-textarea v-model="form.kompeten[siswa.anggota_rombel.anggota_rombel_id]" rows="5"></b-form-textarea>
+                        </b-td>
+                        <b-td class="text-center">
+                          <b-form-textarea v-model="form.inkompeten[siswa.anggota_rombel.anggota_rombel_id]" rows="5"></b-form-textarea>
+                        </b-td>
+                      </b-tr>
+                    </template>
+                  </b-tbody>
+                </b-table-simple>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label-cols-md="3">
+                  <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-form>
+        </template>
+        <template v-else>
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <p>Penilaian tidak aktif. Silahkan hubungi administrator!</p>
+            </div>
+          </b-alert>
+        </template>
       </b-card-body>
     </b-overlay>
   </b-card>
 </template>
 
 <script>
-import { BCard, BOverlay, BCardBody, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd } from 'bootstrap-vue'
+import { BCard, BOverlay, BCardBody, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BAlert } from 'bootstrap-vue'
 import Formulir from './../components/Formulir.vue'
 import vSelect from 'vue-select'
 export default {
@@ -72,14 +81,16 @@ export default {
     BCol,
     BButton,
     BTableSimple, BThead, BTbody, BTh, BTr, BTd,
+    BAlert,
     Formulir,
     vSelect
   },
   data() {
     return {
+      status_penilaian: true,
       show_reset: 0,
       show: false,
-      isBusy: false,
+      isBusy: true,
       form: {
         tahun_pelajaran: '',
         tingkat: '',
@@ -127,10 +138,11 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.tahun_pelajaran = this.user.semester.nama
-    /*this.$http.get('/dashboard').then(response => {
+    this.isBusy = true
+    this.$http.post(`/penilaian/status`, this.form).then(response => {
+      this.status_penilaian = response.data
       this.isBusy = false
-      this.data = response.data
-    })*/
+    })
   },
   methods: {
     handleShowForm(){

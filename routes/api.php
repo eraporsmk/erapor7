@@ -140,6 +140,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/simpan-bobot-penilaian', [ReferensiController::class, 'simpan_bobot_penilaian']);
   });
   Route::group(['prefix' => 'penilaian'], function () {
+    Route::post('/status', [PenilaianController::class, 'status']);
     Route::post('/get-rombel', [PenilaianController::class, 'get_rombel']);
     Route::post('/get-mapel', [PenilaianController::class, 'get_mapel']);
     Route::post('/get-nilai-akhir', [PenilaianController::class, 'get_nilai_akhir']);

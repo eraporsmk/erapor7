@@ -2,85 +2,94 @@
   <b-card no-body>
     <b-overlay :show="isBusy" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-card-body>
-        <b-form @submit="onSubmit">
-          <formulir ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir>
-          <b-row>
-            <b-col cols="12">
-              <b-form-group label="Bentuk Penilaian" label-for="bentuk_penilaian" label-cols-md="3" :invalid-feedback="meta.bentuk_penilaian_feedback" :state="meta.bentuk_penilaian_state">
-                <v-select id="bentuk_penilaian" v-model="form.bentuk_penilaian" :reduce="nama => nama.id" label="nama" :options="data_bentuk_penilaian" placeholder="== Pilih Bentuk Penilaian ==" :state="meta.bentuk_penilaian_state" @input="changeBentuk">
-                  <template #no-options="{ search, searching, loading }">
-                    Tidak ada data untuk ditampilkan
-                  </template>
-                </v-select>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row v-if="show">
-            <template v-if="data_tp.length">
-              <b-col cols="12" class="mb-2" v-if="link_template_tp">
-                <b-row>
-                  <b-col cols="6">
-                    <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
-                      <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
-                    </b-form-group>
-                  </b-col>
-                  <b-col cols="6">
-                    <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template Nilai Akhir</b-button>
-                  </b-col>
-                </b-row>
-              </b-col>
+        <template v-if="status_penilaian">
+          <b-form @submit="onSubmit">
+            <formulir ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir>
+            <b-row>
               <b-col cols="12">
-                <b-table-simple bordered striped responsive>
-                  <b-thead>
-                    <b-tr>
-                      <b-th class="text-center">No</b-th>
-                      <b-th class="text-center">Nama Peserta Didik</b-th>
-                      <b-th class="text-center">Nilai Akhir</b-th>
-                      <b-th class="text-center">Ketercapaian Kompetensi</b-th>
-                      <b-th class="text-center">Deskripsi Tujuan Pembelajaran</b-th>
-                    </b-tr>
-                  </b-thead>
-                  <b-tbody>
-                    <template v-for="(siswa, index) in data_siswa">
-                      <b-tr>
-                        <b-td class="text-center" style="vertical-align:top" :rowspan="data_tp.length + 1">{{index + 1}}</b-td>
-                        <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">{{siswa.nama}}</b-td>
-                        <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">
-                          <b-form-input v-model="form.nilai[siswa.anggota_rombel_id]" :disabled="disabled" />
-                        </b-td>
-                      </b-tr>
-                      <template v-for="(tp, i) in data_tp">
-                        <b-tr>
-                          <b-td>
-                            <v-select v-model="form.kompeten[siswa.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false" append-to-body></v-select>
-                          </b-td>
-                          <b-td>
-                            {{tp.deskripsi}}
-                          </b-td>
-                        </b-tr>
-                      </template>
+                <b-form-group label="Bentuk Penilaian" label-for="bentuk_penilaian" label-cols-md="3" :invalid-feedback="meta.bentuk_penilaian_feedback" :state="meta.bentuk_penilaian_state">
+                  <v-select id="bentuk_penilaian" v-model="form.bentuk_penilaian" :reduce="nama => nama.id" label="nama" :options="data_bentuk_penilaian" placeholder="== Pilih Bentuk Penilaian ==" :state="meta.bentuk_penilaian_state" @input="changeBentuk">
+                    <template #no-options="{ search, searching, loading }">
+                      Tidak ada data untuk ditampilkan
                     </template>
-                  </b-tbody>
-                </b-table-simple>
-              </b-col>
-              <b-col cols="12">
-                <b-form-group label-cols-md="3">
-                  <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+                  </v-select>
                 </b-form-group>
               </b-col>
-            </template>
-            <template v-else>
-              <b-col cols="12">
-                <b-alert show variant="danger">
-                  <div class="alert-body text-center">
-                    <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
-                    <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <b-link to="/referensi/tujuan-pembelajaran">disini</b-link></p>
-                  </div>
-                </b-alert>
-              </b-col>
-            </template>
-          </b-row>
-        </b-form>
+            </b-row>
+            <b-row v-if="show">
+              <template v-if="data_tp.length">
+                <b-col cols="12" class="mb-2" v-if="link_template_tp">
+                  <b-row>
+                    <b-col cols="6">
+                      <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
+                        <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
+                      </b-form-group>
+                    </b-col>
+                    <b-col cols="6">
+                      <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template Nilai Akhir</b-button>
+                    </b-col>
+                  </b-row>
+                </b-col>
+                <b-col cols="12">
+                  <b-table-simple bordered striped responsive>
+                    <b-thead>
+                      <b-tr>
+                        <b-th class="text-center">No</b-th>
+                        <b-th class="text-center">Nama Peserta Didik</b-th>
+                        <b-th class="text-center">Nilai Akhir</b-th>
+                        <b-th class="text-center">Ketercapaian Kompetensi</b-th>
+                        <b-th class="text-center">Deskripsi Tujuan Pembelajaran</b-th>
+                      </b-tr>
+                    </b-thead>
+                    <b-tbody>
+                      <template v-for="(siswa, index) in data_siswa">
+                        <b-tr>
+                          <b-td class="text-center" style="vertical-align:top" :rowspan="data_tp.length + 1">{{index + 1}}</b-td>
+                          <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">{{siswa.nama}}</b-td>
+                          <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">
+                            <b-form-input v-model="form.nilai[siswa.anggota_rombel_id]" :disabled="disabled" />
+                          </b-td>
+                        </b-tr>
+                        <template v-for="(tp, i) in data_tp">
+                          <b-tr>
+                            <b-td>
+                              <v-select v-model="form.kompeten[siswa.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false" append-to-body></v-select>
+                            </b-td>
+                            <b-td>
+                              {{tp.deskripsi}}
+                            </b-td>
+                          </b-tr>
+                        </template>
+                      </template>
+                    </b-tbody>
+                  </b-table-simple>
+                </b-col>
+                <b-col cols="12">
+                  <b-form-group label-cols-md="3">
+                    <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+                  </b-form-group>
+                </b-col>
+              </template>
+              <template v-else>
+                <b-col cols="12">
+                  <b-alert show variant="danger">
+                    <div class="alert-body text-center">
+                      <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
+                      <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <b-link to="/referensi/tujuan-pembelajaran">disini</b-link></p>
+                    </div>
+                  </b-alert>
+                </b-col>
+              </template>
+            </b-row>
+          </b-form>
+        </template>
+        <template v-else>
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <p>Penilaian tidak aktif. Silahkan hubungi administrator!</p>
+            </div>
+          </b-alert>
+        </template>
       </b-card-body>
     </b-overlay>
   </b-card>
@@ -110,8 +119,9 @@ export default {
   },
   data() {
     return {
+      status_penilaian: true,
       show: false,
-      isBusy: false,
+      isBusy: true,
       form: {
         tahun_pelajaran: '',
         tingkat: '',
@@ -174,10 +184,11 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.tahun_pelajaran = this.user.semester.nama
-    /*this.$http.get('/dashboard').then(response => {
+    this.isBusy = true
+    this.$http.post(`/penilaian/status`, this.form).then(response => {
+      this.status_penilaian = response.data
       this.isBusy = false
-      this.data = response.data
-    })*/
+    })
   },
   methods: {
     onFileChange(e) {

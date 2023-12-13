@@ -29,6 +29,7 @@ use App\Models\Teknik_penilaian;
 use App\Models\Capaian_pembelajaran;
 use App\Models\Nilai_tp;
 use App\Models\Nilai_sumatif;
+use App\Models\Status_penilaian;
 use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
@@ -38,6 +39,11 @@ use Storage;
 
 class PenilaianController extends Controller
 {
+    public function status(){
+        $status_penilaian = Status_penilaian::where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->first();
+        $data = ($status_penilaian && $status_penilaian->status) ? TRUE: FALSE;
+        return response()->json($data);
+    }
     private function kondisiPembelajaran(){
         return function($query){
             $query->where('guru_id', request()->guru_id);

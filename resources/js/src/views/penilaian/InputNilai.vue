@@ -2,110 +2,119 @@
   <b-card no-body>
     <b-overlay :show="isBusy" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-card-body>
-        <b-form @submit="onSubmit">
-          <formulir-nilai ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" :show_cp="show_cp" :show_sumatif="handleShowSumatif" @hide_form="handleHideForm" @show_cp="handleShowCp"></formulir-nilai>
-          <b-row v-if="show">
-            <b-col cols="12" class="mb-2" v-if="show_sumatif || data_tp.length">
-              <b-row>
-                <b-col cols="6">
-                  <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
-                    <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
-                  </b-form-group>
-                </b-col>
-                <b-col cols="6">
-                  <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template {{ nama_template }}</b-button>
-                </b-col>
-              </b-row>
-            </b-col>
-            <template v-if="show_sumatif">
-              <show-sumatif :data_siswa="data_siswa" :form="form" @setRerata="setRerata"></show-sumatif>
-            </template>
-            <template v-else>
-              <template v-if="data_tp.length">
-                <template v-if="show_cp">
-                  <b-col cols="12">
-                    <b-table-simple bordered striped responsive>
-                      <b-thead>
-                        <b-tr>
-                          <b-th class="text-center">No</b-th>
-                          <b-th class="text-center">Nama Peserta Didik</b-th>
-                          <template v-for="(tp, i) in data_tp">
-                            <b-th class="text-center"><span v-b-tooltip.hover :title="tp.deskripsi">{{`TP ${i+1}`}}</span></b-th>
-                          </template>
-                        </b-tr>
-                      </b-thead>
-                      <b-tbody>
-                        <template v-for="(siswa, index) in data_siswa">
+        <template v-if="status_penilaian">
+          <b-form @submit="onSubmit">
+            <formulir-nilai ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" :show_cp="show_cp" :show_sumatif="handleShowSumatif" @hide_form="handleHideForm" @show_cp="handleShowCp"></formulir-nilai>
+            <b-row v-if="show">
+              <b-col cols="12" class="mb-2" v-if="show_sumatif || data_tp.length">
+                <b-row>
+                  <b-col cols="6">
+                    <b-form-group :invalid-feedback="template_excel_feedback" :state="template_excel_state">
+                      <b-form-file v-model="template_excel" :state="template_excel_state" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
+                    </b-form-group>
+                  </b-col>
+                  <b-col cols="6">
+                    <b-button block variant="primary" :href="link_template_tp" target="_blank">Unduh Template {{ nama_template }}</b-button>
+                  </b-col>
+                </b-row>
+              </b-col>
+              <template v-if="show_sumatif">
+                <show-sumatif :data_siswa="data_siswa" :form="form" @setRerata="setRerata"></show-sumatif>
+              </template>
+              <template v-else>
+                <template v-if="data_tp.length">
+                  <template v-if="show_cp">
+                    <b-col cols="12">
+                      <b-table-simple bordered striped responsive>
+                        <b-thead>
                           <b-tr>
-                            <b-td class="text-center" style="vertical-align:middle">{{index + 1}}</b-td>
-                            <b-td style="vertical-align:middle">{{siswa.nama}}</b-td>
+                            <b-th class="text-center">No</b-th>
+                            <b-th class="text-center">Nama Peserta Didik</b-th>
                             <template v-for="(tp, i) in data_tp">
-                              <b-td>
-                                <b-form-input v-model="form.nilai_tp[siswa.anggota_rombel.anggota_rombel_id+'#'+tp.tp_id]" />
-                              </b-td>
+                              <b-th class="text-center"><span v-b-tooltip.hover :title="tp.deskripsi">{{`TP ${i+1}`}}</span></b-th>
                             </template>
                           </b-tr>
-                        </template>
-                      </b-tbody>
-                    </b-table-simple>
-                  </b-col>
+                        </b-thead>
+                        <b-tbody>
+                          <template v-for="(siswa, index) in data_siswa">
+                            <b-tr>
+                              <b-td class="text-center" style="vertical-align:middle">{{index + 1}}</b-td>
+                              <b-td style="vertical-align:middle">{{siswa.nama}}</b-td>
+                              <template v-for="(tp, i) in data_tp">
+                                <b-td>
+                                  <b-form-input v-model="form.nilai_tp[siswa.anggota_rombel.anggota_rombel_id+'#'+tp.tp_id]" />
+                                </b-td>
+                              </template>
+                            </b-tr>
+                          </template>
+                        </b-tbody>
+                      </b-table-simple>
+                    </b-col>
+                  </template>
+                  <template v-else>
+                    <b-col cols="12">
+                      <b-table-simple bordered striped responsive>
+                        <b-thead>
+                          <b-tr>
+                            <b-th class="text-center">No</b-th>
+                            <b-th class="text-center">Nama Peserta Didik</b-th>
+                            <b-th class="text-center">Nilai Akhir</b-th>
+                            <b-th class="text-center">Ketercapaian Kompetensi</b-th>
+                            <b-th class="text-center">Deskripsi Tujuan Pembelajaran</b-th>
+                          </b-tr>
+                        </b-thead>
+                        <b-tbody>
+                          <template v-for="(siswa, index) in data_siswa">
+                            <b-tr>
+                              <b-td class="text-center" style="vertical-align:top" :rowspan="data_tp.length + 1">{{index + 1}}</b-td>
+                              <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">{{siswa.nama}}</b-td>
+                              <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">
+                                <b-form-input v-model="form.nilai[siswa.anggota_rombel.anggota_rombel_id]" />
+                              </b-td>
+                            </b-tr>
+                            <template v-for="(tp, i) in data_tp">
+                              <b-tr>
+                                <b-td>
+                                  <!--[siswa.anggota_rombel.anggota_rombel_id][tp.tp_id]-->
+                                  <v-select append-to-body v-model="form.kompeten[siswa.anggota_rombel.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false"></v-select>
+                                </b-td>
+                                <b-td>
+                                  {{tp.deskripsi}}
+                                </b-td>
+                              </b-tr>
+                            </template>
+                          </template>
+                        </b-tbody>
+                      </b-table-simple>
+                    </b-col>
+                  </template>
                 </template>
                 <template v-else>
                   <b-col cols="12">
-                    <b-table-simple bordered striped responsive>
-                      <b-thead>
-                        <b-tr>
-                          <b-th class="text-center">No</b-th>
-                          <b-th class="text-center">Nama Peserta Didik</b-th>
-                          <b-th class="text-center">Nilai Akhir</b-th>
-                          <b-th class="text-center">Ketercapaian Kompetensi</b-th>
-                          <b-th class="text-center">Deskripsi Tujuan Pembelajaran</b-th>
-                        </b-tr>
-                      </b-thead>
-                      <b-tbody>
-                        <template v-for="(siswa, index) in data_siswa">
-                          <b-tr>
-                            <b-td class="text-center" style="vertical-align:top" :rowspan="data_tp.length + 1">{{index + 1}}</b-td>
-                            <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">{{siswa.nama}}</b-td>
-                            <b-td :rowspan="data_tp.length + 1" style="vertical-align:top">
-                              <b-form-input v-model="form.nilai[siswa.anggota_rombel.anggota_rombel_id]" />
-                            </b-td>
-                          </b-tr>
-                          <template v-for="(tp, i) in data_tp">
-                            <b-tr>
-                              <b-td>
-                                <!--[siswa.anggota_rombel.anggota_rombel_id][tp.tp_id]-->
-                                <v-select append-to-body v-model="form.kompeten[siswa.anggota_rombel.anggota_rombel_id+'#'+tp.tp_id]" :reduce="nama => nama.id" label="nama" :options="data_capaian" placeholder="== Pilih Capaian ==" :searchable="false"></v-select>
-                              </b-td>
-                              <b-td>
-                                {{tp.deskripsi}}
-                              </b-td>
-                            </b-tr>
-                          </template>
-                        </template>
-                      </b-tbody>
-                    </b-table-simple>
+                    <b-alert show variant="danger">
+                      <div class="alert-body text-center">
+                        <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
+                        <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <b-link to="/referensi/tujuan-pembelajaran">disini</b-link></p>
+                      </div>
+                    </b-alert>
                   </b-col>
                 </template>
               </template>
-              <template v-else>
-                <b-col cols="12">
-                  <b-alert show variant="danger">
-                    <div class="alert-body text-center">
-                      <h2>Tidak ditemukan data Tujuan Pembelajaran</h2>
-                      <p>Silahkan tambah data Tujuan Pembelajaran terlebih dahulu <b-link to="/referensi/tujuan-pembelajaran">disini</b-link></p>
-                    </div>
-                  </b-alert>
-                </b-col>
-              </template>
-            </template>
-            <b-col cols="12" v-if="show_sumatif || data_tp.length">
-              <b-form-group label-cols-md="3">
-                <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-form>
+              <b-col cols="12" v-if="show_sumatif || data_tp.length">
+                <b-form-group label-cols-md="3">
+                  <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-form>
+        </template>
+        <template v-else>
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <p>Penilaian tidak aktif. Silahkan hubungi administrator!</p>
+            </div>
+          </b-alert>
+        </template>
       </b-card-body>
     </b-overlay>
   </b-card>
@@ -141,11 +150,12 @@ export default {
   },
   data() {
     return {
+      status_penilaian: true,
       nama_template: '',
       show: false,
       show_cp: false,
       show_sumatif: false,
-      isBusy: false,
+      isBusy: true,
       form: {
         tahun_pelajaran: '',
         tingkat: '',
@@ -201,6 +211,11 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.tahun_pelajaran = this.user.semester.nama
+    this.isBusy = true
+    this.$http.post(`/penilaian/status`, this.form).then(response => {
+      this.status_penilaian = response.data
+      this.isBusy = false
+    })
   },
   methods: {
     setRerata(val){
