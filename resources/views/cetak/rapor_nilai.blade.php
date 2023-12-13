@@ -82,7 +82,7 @@
 	$get_pembelajaran = [];
 	$set_pembelajaran = $get_siswa->rombongan_belajar->pembelajaran;//()->whereNotNull('kelompok_id')->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
 	foreach($set_pembelajaran as $pembelajaran){
-		if(in_array($pembelajaran->mata_pelajaran_id, mapel_agama())){
+		if(in_array($pembelajaran->mata_pelajaran_id, mapel_agama()) && $get_siswa->peserta_didik->agama){
 			if(filter_pembelajaran_agama($get_siswa->peserta_didik->agama->nama, $pembelajaran->mata_pelajaran->nama)){
 				$get_pembelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran;
 			}

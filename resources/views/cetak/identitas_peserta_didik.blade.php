@@ -34,7 +34,7 @@
 		<td style="width: 5%;">5.</td>
 		<td style="width: 35%;padding:5px;">Agama</td>
 		<td style="width: 1%;">:</td>
-		<td style="width: 58%">{{$get_siswa->peserta_didik->agama->nama}}</td>
+		<td style="width: 58%">{{($get_siswa->peserta_didik->agama) ? $get_siswa->peserta_didik->agama->nama : ''}}</td>
 	</tr>
 	<tr>
 		<td style="width: 5%;">6.</td>
