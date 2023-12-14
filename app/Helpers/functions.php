@@ -27,14 +27,16 @@ function filter_agama_siswa($pembelajaran_id, $rombongan_belajar_id){
         $agama_id[$agama->agama_id] = $nama_agama;
     }
     $get_mapel = Pembelajaran::with('mata_pelajaran')->find($pembelajaran_id);
-    $nama_mapel = str_replace('Pendidikan Agama', '', $get_mapel->mata_pelajaran->nama);
-    $nama_mapel = str_replace('KongHuChu', 'Konghuchu', $nama_mapel);
-    $nama_mapel = str_replace('Kong Hu Chu', 'Konghuchu', $nama_mapel);
-    $nama_mapel = str_replace('dan Budi Pekerti', '', $nama_mapel);
-    $nama_mapel = str_replace('Pendidikan Kepercayaan terhadap', '', $nama_mapel);
-    $nama_mapel = str_replace('Tuhan YME', 'Kepercayaan kpd Tuhan YME', $nama_mapel);
-    $nama_mapel = trim($nama_mapel);
-    $agama_id = array_search($nama_mapel, $agama_id);
+    if($get_mapel){
+        $nama_mapel = str_replace('Pendidikan Agama', '', $get_mapel->mata_pelajaran->nama);
+        $nama_mapel = str_replace('KongHuChu', 'Konghuchu', $nama_mapel);
+        $nama_mapel = str_replace('Kong Hu Chu', 'Konghuchu', $nama_mapel);
+        $nama_mapel = str_replace('dan Budi Pekerti', '', $nama_mapel);
+        $nama_mapel = str_replace('Pendidikan Kepercayaan terhadap', '', $nama_mapel);
+        $nama_mapel = str_replace('Tuhan YME', 'Kepercayaan kpd Tuhan YME', $nama_mapel);
+        $nama_mapel = trim($nama_mapel);
+        $agama_id = array_search($nama_mapel, $agama_id);
+    }
     return $agama_id;
 }
 function mapel_agama(){
