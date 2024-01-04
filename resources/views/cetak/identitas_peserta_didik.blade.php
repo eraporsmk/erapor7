@@ -106,7 +106,7 @@
 		<td style="width: 5%;">12.</td>
 		<td style="width: 35%;padding:5px;">Alamat Orang Tua</td>
 		<td style="width: 1%;">:</td>
-		<td style="width: 58%">{{ucwords(strtolower($get_siswa->peserta_didik->alamat))}} Rt {{$get_siswa->peserta_didik->rt}} / Rw {{$get_siswa->peserta_didik->rw}}, {{ucwords(strtolower($get_siswa->peserta_didik->desa_kelurahan))}} {{ucwords(strtolower($get_siswa->peserta_didik->kecamatan))}} {{$get_siswa->peserta_didik->wilayah->get_kabupaten->nama}}  {{$get_siswa->peserta_didik->kode_pos}}</td>
+		<td style="width: 58%">{{ucwords(strtolower($get_siswa->peserta_didik->alamat))}} RT {{$get_siswa->peserta_didik->rt}} / RW {{$get_siswa->peserta_didik->rw}}, {{ucwords(strtolower($get_siswa->peserta_didik->desa_kelurahan))}} {{ucwords(strtolower($get_siswa->peserta_didik->kecamatan))}} {{$get_siswa->peserta_didik->wilayah->parrentRecursive->parrentRecursive->nama}}  {{$get_siswa->peserta_didik->kode_pos}}</td>
 	</tr>
 	<tr>
 		<td style="width: 5%;">&nbsp;</td>
