@@ -112,8 +112,8 @@ function predikat($kkm, $nilai, $produktif = NULL){
         $result[$nilai] = 100;
     return $result[$nilai];
 }
-function konversi_huruf($kkm, $nilai, $produktif = NULL){
-    $check_2018 = check_2018();
+function konversi_huruf($kkm, $nilai, $produktif = NULL, $semester_id = NULL){
+    $check_2018 = check_2018($semester_id);
     if ($check_2018) {
         $show = 'predikat';
         $a = predikat($kkm, 'A') + 1;
@@ -208,12 +208,12 @@ function opsi_budaya($n)
     }
     return $predikat;
 }
-function get_kkm($kelompok_id, $kkm)
+function get_kkm($kelompok_id, $kkm, $semester_id)
 {
     if ($kkm) {
         return $kkm;
     }
-    $check_2018 = check_2018();
+    $check_2018 = check_2018($semester_id);
     if ($check_2018) {
         $produktif = array(4, 5, 9, 10, 13);
         $non_produktif = array(1, 2, 3, 6, 7, 8, 11, 12, 99);
@@ -484,4 +484,12 @@ function array_filter_recursive($array, $callback = null, $remove_empty_arrays =
     }
     unset($value); // kill the reference
     return $array;
+}
+function check_2018($semester_id){
+	$tahun = substr($semester_id, 0, 4);
+	if ($tahun >= 2018) {
+        return true;
+    } else {
+        return false;
+    }
 }

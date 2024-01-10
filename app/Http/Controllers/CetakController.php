@@ -261,12 +261,12 @@ class CetakController extends Controller
 								$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
 							},
 							'kelompok',
-							//'nilai_akhir' => $callback,
+							'nilai_akhir' => $callback,
 							'nilai_akhir_pengetahuan' => $callback,
-							//'nilai_akhir_keterampilan' => $callback,
-							//'nilai_akhir_pk' => $callback,
+							'nilai_akhir_keterampilan' => $callback,
+							'nilai_akhir_pk' => $callback,
 							'nilai_akhir_kurmer' => $callback,
-							//'deskripsi_mata_pelajaran' => $callback,
+							'deskripsi_mata_pelajaran' => $callback,
 							'single_deskripsi_mata_pelajaran' => $callback,
 						]);
 						$query->whereNull('induk_pembelajaran_id');
@@ -279,7 +279,6 @@ class CetakController extends Controller
 			},
 		])->first();
 		$tanggal_rapor = get_setting('tanggal_rapor', request()->route('sekolah_id'), request()->route('semester_id'));
-		//config('global.'.request()->route('sekolah_id').'.'.request()->route('semester_id').'.tanggal_rapor');
 		if($tanggal_rapor) {
             $tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');
         } else {
@@ -314,18 +313,12 @@ class CetakController extends Controller
 		$general_title .= ' - ';
 		$general_title .= $get_siswa->rombongan_belajar->nama;
 		$pdf->getMpdf()->SetFooter($general_title.'|{PAGENO}|Dicetak dari '.config('app.name').' v.'.get_setting('app_version'));
-		//$pdf->getMpdf()->shrink_tables_to_fit=1.4;
-		$rapor_nilai = view('cetak.rapor_nilai_akhir', $params);
-		//dd($params);
+		if(request()->route('semester_id') == 20212){
+			$rapor_nilai = view('cetak.rapor_nilai.'.request()->route('semester_id'), $params);
+		} else {
+			$rapor_nilai = view('cetak.rapor_nilai_akhir', $params);
+		}
 		$pdf->getMpdf()->WriteHTML($rapor_nilai);
-		/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
-			$pdf->getMpdf()->WriteHTML('<pagebreak />');
-			$rapor_catatan = view('cetak.rapor_catatan', $params);
-			$pdf->getMpdf()->WriteHTML($rapor_catatan);
-			$rapor_karakter = view('cetak.rapor_karakter', $params);
-			$pdf->getMpdf()->WriteHTML('<pagebreak />');
-			$pdf->getMpdf()->WriteHTML($rapor_karakter);
-		}*/
 		$pdf->getMpdf()->WriteHTML('<pagebreak />');
 		$rapor_catatan = view('cetak.rapor_catatan', $params);
 		$pdf->getMpdf()->WriteHTML($rapor_catatan);
