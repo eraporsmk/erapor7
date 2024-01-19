@@ -270,7 +270,7 @@ class SinkronisasiController extends Controller
         ];
     }
     public function proses_sync(){
-        $argumen = ['satuan' => request()->satuan, 'akses' => 1, 'sekolah_id' => request()->sekolah_id];
+        $argumen = ['satuan' => request()->satuan, 'akses' => 1, 'sekolah_id' => request()->sekolah_id, 'semester_id' => request()->semester_id];
         Artisan::call('sinkron:'.request()->tujuan, $argumen);
     }
     public function hitung(){

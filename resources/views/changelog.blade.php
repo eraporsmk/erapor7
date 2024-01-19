@@ -1,5 +1,12 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.4</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Rilis Tahun Ajaran 2023/2024 Semester Genap</li>
+        <li><b class="text-danger">[Perbaikan]</b> Akses sinkronisasi berdasar tahun ajaran terpilih</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.3</h3>
     </legend>
     <ol>

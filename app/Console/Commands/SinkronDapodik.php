@@ -43,7 +43,7 @@ class SinkronDapodik extends Command
      *
      * @var string
      */
-    protected $signature = 'sinkron:dapodik {satuan?} {akses?} {sekolah_id?}';
+    protected $signature = 'sinkron:dapodik {satuan?} {akses?} {sekolah_id?} {semester_id?}';
 
     /**
      * The console command description.
@@ -69,7 +69,13 @@ class SinkronDapodik extends Command
      */
     public function handle()
     {
-        $semester = Semester::where('periode_aktif', 1)->first();
+        $semester = Semester::where(function($query){
+            if($this->argument('semester_id')){
+                $query->where('semester_id', $this->argument('semester_id'));
+            } else {
+                $query->where('periode_aktif', 1);
+            }
+        })->first();
         $list_data = [
             'semua_data',
             /*'jurusan', 
