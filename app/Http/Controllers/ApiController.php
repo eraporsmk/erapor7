@@ -146,6 +146,18 @@ class ApiController extends Controller
                 ]
             );
         }
+        if($request->url_dapodik){
+            Setting::updateOrCreate(
+                [
+                    'key' => 'url_dapodik',
+                    'sekolah_id' => request()->sekolah_id,
+                    'semester_id' => request()->semester_id,
+                ],
+                [
+                    'value' => request()->url_dapodik,
+                ]
+            );
+        }
         if($request->photo){
             $sekolah = Sekolah::find($request->sekolah_id);
             if (!File::isDirectory(storage_path('app/public/images'))) {

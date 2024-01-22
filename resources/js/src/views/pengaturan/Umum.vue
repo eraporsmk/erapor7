@@ -46,8 +46,11 @@
                         </template>
                       </v-select>
                     </b-form-group>
-                    <b-form-group label="Token Web Services Dapodik" label-for="token">
-                      <b-form-input v-model="form.token_dapodik" placeholder="Token Web Services Dapodik"></b-form-input>
+                    <b-form-group label="URL Dapodik" label-for="url_dapodik">
+                      <b-form-input id="url_dapodik" v-model="form.url_dapodik" placeholder="URL Dapodik"></b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Token Web Services Dapodik" label-for="token_dapodik">
+                      <b-form-input id="token_dapodik" v-model="form.token_dapodik" placeholder="Token Web Services Dapodik"></b-form-input>
                     </b-form-group>
                   </b-col>
                 </b-row>
@@ -102,6 +105,7 @@ export default {
         zona: '',
         kepala_sekolah: '',
         rombel_4_tahun: [],
+        url_dapodik: '',
         token_dapodik: '',
         file: null,
       },
@@ -174,6 +178,7 @@ export default {
         this.form.kepala_sekolah = getData.kepala_sekolah
         this.form.rombel_4_tahun = getData.rombel_4_tahun
         this.form.token_dapodik = getData.token_dapodik
+        this.form.url_dapodik = getData.url_dapodik
         this.data_guru = getData.data_guru
         this.data_rombel = getData.data_rombel
         this.semester = getData.semester
