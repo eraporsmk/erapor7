@@ -42,7 +42,12 @@
           {{row.item.kelas.nama}}
         </template>
         <template v-slot:cell(cetak)="row">
-          <b-button size="sm" variant="primary" @click="cetakPkl(row.item.peserta_didik_id, row.item.pd_pkl.pkl_id)">Cetak Rapor</b-button>
+          <b-dropdown id="dropdown-dropleft" dropleft text="Cetak Rapor" variant="success" size="sm">
+            <template v-for="(pkl, index) in row.item.all_pd_pkl">
+              <b-dropdown-item href="javascript:" @click="cetakPkl(row.item.peserta_didik_id, pkl.pkl_id)"><font-awesome-icon icon="fa-solid fa-print" /> {{ pkl.praktik_kerja_lapangan.nama_dudi }}</b-dropdown-item>
+            </template>
+          </b-dropdown>
+          <!--b-button size="sm" variant="primary" @click="cetakPkl(row.item.peserta_didik_id, row.item.pd_pkl.pkl_id)">Cetak Rapor</b-button-->
         </template>
       </b-table>
     </b-overlay>

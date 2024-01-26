@@ -278,7 +278,10 @@ class PklController extends Controller
     }
     public function get_pkl(){
         $data = [
-            'data' => Praktik_kerja_lapangan::where('rombongan_belajar_id', request()->rombongan_belajar_id)->orderBy('created_at')->get(),
+            'data' => Praktik_kerja_lapangan::where(function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->where('guru_id', request()->guru_id);
+            })->orderBy('created_at')->get(),
         ];
         return response()->json($data);
     }
@@ -379,7 +382,12 @@ class PklController extends Controller
         return response()->json($data);
     }
     public function cetak_rapor(){
-        $data = Peserta_didik::withWhereHas('pd_pkl', function($query){
+        $data = Peserta_didik::withWhereHas('all_pd_pkl', function($query){
+            $query->withWhereHas('praktik_kerja_lapangan', function($query){
+                $query->where('guru_id', request()->guru_id);
+                $query->where('semester_id', request()->semester_id);
+            });
+        })->withWhereHas('pd_pkl', function($query){
             $query->withWhereHas('praktik_kerja_lapangan', function($query){
                 $query->where('guru_id', request()->guru_id);
                 $query->where('semester_id', request()->semester_id);
