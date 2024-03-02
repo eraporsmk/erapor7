@@ -23,7 +23,7 @@
           {{row.item.guru_internal.nama_lengkap}}
         </template>
         <template v-slot:cell(guru_eksternal)="row">
-          {{row.item.guru_internal.nama_lengkap}}
+          {{row.item.guru_eksternal.nama_lengkap}}
         </template>
         <template v-slot:cell(actions)="row">
           <b-dropdown id="dropdown-dropleft" dropleft text="Aksi" variant="primary" size="sm">

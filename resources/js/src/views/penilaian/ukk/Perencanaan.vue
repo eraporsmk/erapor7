@@ -11,7 +11,7 @@
     </b-card-body>
     <b-modal ref="add-rencana" :title="title" size="xl">
       <add-rencana :loading_form="loading_form" :form="form" :state="state" :feedback="feedback"></add-rencana>
-      <template #modal-footer="{ ok, cancel }">
+      <template #modal-footer>
         <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="primary">
           <b-button variant="primary" @click="handleSubmit">Simpan</b-button>
         </b-overlay>

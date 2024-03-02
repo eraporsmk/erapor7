@@ -3,10 +3,15 @@ use App\Models\Setting;
 use App\Models\Peserta_didik;
 use App\Models\Agama;
 use App\Models\Pembelajaran;
+use App\Models\Semester;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Http;
+function semester_id(){
+    $data = Semester::where('periode_aktif', 1)->first();
+    return $data->semester_id;
+}
 function get_setting($key, $sekolah_id = NULL, $semester_id = NULL){
     $data = Setting::where(function($query) use ($key, $sekolah_id, $semester_id){
         $query->where('key', $key);
