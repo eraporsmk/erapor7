@@ -18,7 +18,11 @@ Telah mengikuti Uji Kompetensi Keahlian<br />
 <i>has taken the competency test</i>
 <br>
 <br>
+@if(merdeka($paket->jurusan->nama_kurikulum))
+pada Konsentrasi Keahlian<br />
+@else
 pada Kompetensi Keahlian<br />
+@endif
 <i>in Competency of</i>
 <br>
 <br>

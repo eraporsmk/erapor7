@@ -40,12 +40,17 @@
       <b-col cols="12">
         <b-form-group label="Penguji Eksternal" label-for="penguji_eksternal" label-cols-md="3" :invalid-feedback="feedback.penguji_eksternal" :state="state.penguji_eksternal">
           <b-overlay :show="loading_guru" opacity="0.6" size="md" spinner-variant="secondary">
-            <v-select id="penguji_eksternal" v-model="form.penguji_eksternal" :reduce="nama_lengkap => nama_lengkap.guru_id" label="nama_lengkap" :options="data_eksternal" placeholder="== Pilih Penguji Eksternal ==" @input="changeEksternal" :state="state.penguji_eksternal">
+            <v-select id="penguji_eksternal" v-model="form.penguji_eksternal" :reduce="nama_lengkap => nama_lengkap.guru_id" label="nama_lengkap" :options="data_eksternal" placeholder="== Pilih Penguji Eksternal ==" :state="state.penguji_eksternal">
               <template #no-options="{ search, searching, loading }">
                 Tidak ada data untuk ditampilkan
               </template>
             </v-select>
           </b-overlay>
+        </b-form-group>
+      </b-col>
+      <b-col cols="12">
+        <b-form-group label="Tanggal Sertifikat" label-for="tanggal" label-cols-md="3"  :invalid-feedback="feedback.tanggal" :state="state.tanggal">
+          <b-form-datepicker v-model="form.tanggal" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal" @context="onContext" placeholder="== Pilih Tanggal ==" />
         </b-form-group>
       </b-col>
       <b-col cols="12">
@@ -57,11 +62,6 @@
               </template>
             </v-select>
           </b-overlay>
-        </b-form-group>
-      </b-col>
-      <b-col cols="12">
-        <b-form-group label="Tanggal Sertifikat" label-for="tanggal" label-cols-md="3"  :invalid-feedback="feedback.tanggal" :state="state.tanggal">
-          <b-form-datepicker v-model="form.tanggal" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal" @context="onContext" placeholder="== Pilih Tanggal ==" />
         </b-form-group>
       </b-col>
     </b-row>
@@ -206,6 +206,10 @@ export default {
         })
       }
     },
+    onContext(ctx) {
+      this.formatted = ctx.selectedFormatted
+      this.changeEksternal(true);
+    },
     changePaket(val){
       if(val){
         this.show_table = false
@@ -227,9 +231,6 @@ export default {
           console.log(error);
         })
       }
-    },
-    onContext(ctx) {
-      this.formatted = ctx.selectedFormatted
     },
   },
 }

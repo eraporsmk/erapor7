@@ -180,6 +180,8 @@ class GuruController extends Controller
             [
                 'nama.*' => 'required',
                 'nik.*' => 'required|numeric|digits:16|unique:guru,nik,NULL,guru_id,deleted_at,NULL',
+                'jenis_kelamin.*' => 'required',
+                'tempat_lahir.*' => 'required',
                 'tanggal_lahir.*' => 'required|date|date_format:Y-m-d',
                 'agama.*' => 'required|exists:pgsql.ref.agama,nama',
                 'email.*' => 'required|unique:guru,email,NULL,guru_id,deleted_at,NULL',
@@ -189,6 +191,8 @@ class GuruController extends Controller
                 'nik.*.required' => 'NIK tidak boleh kosong!',
                 'nik.*.numeric' => 'NIK harus berupa angka!',
                 'nik.*.digits' => 'NIK harus 16 digit!',
+                'jenis_kelamin.*.required' => 'Jenis Kelamin tidak boleh kosong!',
+                'tempat_lahir.*.required' => 'Tanggal Lahir tidak boleh kosong!',
                 'tanggal_lahir.*.required' => 'Tanggal Lahir tidak boleh kosong!',
                 'tanggal_lahir.*.date' => 'Tanggal Lahir format tanggal salah!',
                 'tanggal_lahir.*.date_format' => 'Tanggal Lahir format tanggal salah!',
