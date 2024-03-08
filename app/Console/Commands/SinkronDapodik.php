@@ -456,7 +456,8 @@ class SinkronDapodik extends Command
             try {
                 $kecamatan = ($wilayah['kecamatan']) ? $wilayah['kecamatan']->nama : 0;
             } catch (\Throwable $e) {
-                $this->info('Alamat peserta didik '.strtoupper($data->nama).' tidak valid!');
+                $this->info("\n".'Alamat peserta didik '.strtoupper($data->nama).' tidak valid!');
+                die();
             }
         } else {
             $kecamatan = NULL;
