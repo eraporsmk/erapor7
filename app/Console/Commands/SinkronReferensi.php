@@ -205,22 +205,27 @@ class SinkronReferensi extends Command
         );
     }
     public function simpan_mst_wilayah($data, $table){
-        Mst_wilayah::updateOrCreate(
-            [
-                'kode_wilayah' => $data->kode_wilayah,
-            ],
-            [
-                'nama' => $data->nama,
-                'id_level_wilayah' => $data->id_level_wilayah,
-                'mst_kode_wilayah' => $data->mst_kode_wilayah,
-                'negara_id' => $data->negara_id,
-                'asal_wilayah' => $data->asal_wilayah,
-                'kode_bps' => $data->kode_bps,
-                'kode_dagri' => $data->kode_dagri,
-                'kode_keu' => $data->kode_keu,
-                'deleted_at' => $data->expired_date,
-                'last_sync' => $data->last_sync,
-            ]
-        );
+        try {
+            Mst_wilayah::updateOrCreate(
+                [
+                    'kode_wilayah' => $data->kode_wilayah,
+                ],
+                [
+                    'nama' => $data->nama,
+                    'id_level_wilayah' => $data->id_level_wilayah,
+                    'mst_kode_wilayah' => $data->mst_kode_wilayah,
+                    'negara_id' => $data->negara_id,
+                    'asal_wilayah' => $data->asal_wilayah,
+                    'kode_bps' => $data->kode_bps,
+                    'kode_dagri' => $data->kode_dagri,
+                    'kode_keu' => $data->kode_keu,
+                    'created_at' => $data->create_date,
+                    'deleted_at' => $data->expired_date,
+                    'last_sync' => $data->last_sync,
+                ]
+            );
+        } catch (\Throwable $e) {
+            $this->error('Sinkronisasi gagal. Status server: '.$e->getMessage());
+        }
     }
 }
