@@ -406,7 +406,7 @@ class WalasController extends Controller
     }
     public function simpan_kenaikan_kelas(){
         $insert = 0;
-        foreach(array_filter(request()->rombongan_belajar_id) as $anggota_rombel_id => $rombongan_belajar_id){
+        /*foreach(array_filter(request()->rombongan_belajar_id) as $anggota_rombel_id => $rombongan_belajar_id){
             $insert++;
             Kenaikan_kelas::updateOrCreate(
                 [
@@ -416,6 +416,21 @@ class WalasController extends Controller
                     'sekolah_id' => request()->sekolah_id,
                     'rombongan_belajar_id' => $rombongan_belajar_id,
                     'status' => request()->status[$anggota_rombel_id],
+                    'nama_kelas' => request()->nama_kelas[$anggota_rombel_id],
+                    'last_sync' => now(),
+                ]
+            );
+        }*/
+        foreach(array_filter(request()->status) as $anggota_rombel_id => $status){
+            $insert++;
+            Kenaikan_kelas::updateOrCreate(
+                [
+                    'anggota_rombel_id' => $anggota_rombel_id,
+                ],
+                [
+                    'sekolah_id' => request()->sekolah_id,
+                    'rombongan_belajar_id' => request()->rombongan_belajar_id[$anggota_rombel_id] ?? request()->id_rombel,
+                    'status' => $status,
                     'nama_kelas' => request()->nama_kelas[$anggota_rombel_id],
                     'last_sync' => now(),
                 ]
