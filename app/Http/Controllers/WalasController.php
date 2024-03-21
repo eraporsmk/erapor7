@@ -496,6 +496,11 @@ class WalasController extends Controller
             $query->where('semester_id', request()->semester_id);
             $query->where('sekolah_id', request()->sekolah_id);
             $query->where('guru_id', request()->guru_id);
+            if(request()->pilihan){
+                $query->where('jenis_rombel', 16);
+            } else {
+                $query->where('jenis_rombel', 1);
+            }
         })->with([
             'all_nilai_akhir_kurmer',
             'all_nilai_akhir_pengetahuan'
