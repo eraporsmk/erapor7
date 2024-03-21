@@ -34,7 +34,7 @@
                   <b-td class="text-center" v-else>{{getNilai(pembelajaran.all_nilai_akhir_pengetahuan, item.anggota_rombel.anggota_rombel_id)}}</b-td>
                 </template>
                 <template v-else>
-                  <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan.anggota_rombel_id)}}</b-td>
+                  <b-td class="text-center">{{getNilaiPilihan(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan)}}</b-td>
                 </template>
               </template>
               <b-td class="text-center">{{(item.anggota_rombel.absensi) ? item.anggota_rombel.absensi.sakit : '-'}}</b-td>
@@ -148,6 +148,18 @@ export default {
       }
       return nilai_akhir;
     },
+    getNilaiPilihan(arr, anggota_pilihan){
+      var nilai_akhir = '-';
+      if(anggota_pilihan){
+        var nilai = arr.filter(function (el) {
+          return el.anggota_rombel_id == anggota_pilihan.anggota_rombel_id
+        });
+        if(nilai.length){
+          nilai_akhir = nilai[0].nilai
+        }
+      }
+      return nilai_akhir;
+    }
   },
 }
 </script>

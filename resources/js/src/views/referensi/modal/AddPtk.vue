@@ -58,12 +58,12 @@
                   </b-form-group>
                 </b-td>
                 <b-td>
-                  <b-form-group>
+                  <b-form-group :invalid-feedback="feedback.jenis_kelamin[item.no]" :state="state.jenis_kelamin[item.no]">
                     <b-form-input v-model="form.jenis_kelamin[item.no]"></b-form-input>
                   </b-form-group>
                 </b-td>
                 <b-td>
-                  <b-form-group>
+                  <b-form-group :invalid-feedback="feedback.tempat_lahir[item.no]" :state="state.tempat_lahir[item.no]">
                     <b-form-input v-model="form.tempat_lahir[item.no]"></b-form-input>
                   </b-form-group>
                 </b-td>
@@ -182,6 +182,7 @@ export default {
         tanggal_lahir: null,
         agama: null,
         email: null,
+        jenis_kelamin: null
       },
       feedback: {
         nama: '',
@@ -189,6 +190,7 @@ export default {
         tanggal_lahir: '',
         agama: '',
         email: '',
+        jenis_kelamin: ''
       },
       file: null,
       fileState: null,
@@ -216,7 +218,35 @@ export default {
       this.resetModal()
     },
     resetModal(){
-
+      /*this.form.sekolah_id = ''
+      this.form.nama = {}
+      this.form.nuptk = {}
+      this.form.nip = {}
+      this.form.nik = {}
+      this.form.jenis_kelamin = {}
+      this.form.tempat_lahir = {}
+      this.form.tanggal_lahir = {}
+      this.form.agama = {}
+      this.form.alamat_jalan = {}
+      this.form.rt = {}
+      this.form.rw = {}
+      this.form.desa_kelurahan = {}
+      this.form.kecamatan = {}
+      this.form.kodepos = {}
+      this.form.telp_hp = {}
+      this.form.email = {}
+      this.state.nama = null
+      this.state.nik = null
+      this.state.tanggal_lahir = null
+      this.state.agama = null
+      this.state.email = null
+      this.state.jenis_kelamin = null
+      this.feedback.nama = ''
+      this.feedback.nik = ''
+      this.feedback.tanggal_lahir = ''
+      this.feedback.agama = ''
+      this.feedback.email = ''
+      this.feedback.jenis_kelamin = ''*/
     },
     onFileChange(e) {
       //this.$emit('loading', true)
@@ -257,11 +287,15 @@ export default {
           var email = {}
           var nama_state = {}
           var nik_state = {}
+          var jenis_kelamin_state = {}
+          var tempat_lahir_state = {}
           var tanggal_lahir_state = {}
           var agama_state = {}
           var email_state = {}
           var nama_feedback = {}
           var nik_feedback = {}
+          var jenis_kelamin_feedback = {}
+          var tempat_lahir_feedback = {}
           var tanggal_lahir_feedback = {}
           var agama_feedback = {}
           var email_feedback = {}
@@ -284,11 +318,15 @@ export default {
             email[value.no] = value.email
             nama_state[value.no] = null
             nik_state[value.no] = null
+            jenis_kelamin_state[value.no] = null
+            tempat_lahir_state[value.no] = null
             tanggal_lahir_state[value.no] = null
             agama_state[value.no] = null
             email_state[value.no] = null
             nama_feedback[value.no] = ''
             nik_feedback[value.no] = ''
+            jenis_kelamin_feedback[value.no] = ''
+            tanggal_lahir_feedback[value.no] = ''
             tanggal_lahir_feedback[value.no] = ''
             agama_feedback[value.no] = ''
             email_feedback[value.no] = ''
@@ -311,11 +349,15 @@ export default {
           this.form.email = email
           this.state.nama = nama_state
           this.state.nik = nik_state
+          this.state.jenis_kelamin = jenis_kelamin_state
           this.state.tanggal_lahir = tanggal_lahir_state
+          this.state.tempat_lahir = tempat_lahir_state
           this.state.agama = agama_state
           this.state.email = email_state
           this.feedback.nama = nama_feedback
           this.feedback.nik = nik_feedback
+          this.feedback.jenis_kelamin = jenis_kelamin_feedback
+          this.feedback.tempat_lahir = tempat_lahir_feedback
           this.feedback.tanggal_lahir = tanggal_lahir_feedback
           this.feedback.agama = agama_feedback
           this.feedback.email = email_feedback
@@ -344,30 +386,42 @@ export default {
           var tanggal_lahir_state = {}
           var agama_state = {}
           var email_state = {}
+          var jenis_kelamin_state = {}
+          var tempat_lahir_state = {}
           var nama_feedback = {}
           var nik_feedback = {}
+          var jenis_kelamin_feedback = {}
+          var tempat_lahir_feedback = {}
           var tanggal_lahir_feedback = {}
           var agama_feedback = {}
           var email_feedback = {}
           this.imported_data.forEach(function(value, key) {
             nama_state[value.no] = (data.errors['nama.'+value.no]) ? false : null
             nik_state[value.no] = (data.errors['nik.'+value.no]) ? false : null
+            jenis_kelamin_state[value.no] = (data.errors['jenis_kelamin.'+value.no]) ? false : null
+            tempat_lahir_state[value.no] = (data.errors['tempat_lahir.'+value.no]) ? false : null
             tanggal_lahir_state[value.no] = (data.errors['tanggal_lahir.'+value.no]) ? false : null
             agama_state[value.no] = (data.errors['agama.'+value.no]) ? false : null
             email_state[value.no] = (data.errors['email.'+value.no]) ? false : null
             nama_feedback[value.no] = (data.errors['nama.'+value.no]) ? data.errors['nama.'+value.no].join(', ') : ''
             nik_feedback[value.no] = (data.errors['nik.'+value.no]) ? data.errors['nik.'+value.no].join(', ') : ''
+            jenis_kelamin_feedback[value.no] = (data.errors['jenis_kelamin.'+value.no]) ? data.errors['jenis_kelamin.'+value.no].join(', ') : ''
+            tempat_lahir_feedback[value.no] = (data.errors['tempat_lahir.'+value.no]) ? data.errors['tempat_lahir.'+value.no].join(', ') : ''
             tanggal_lahir_feedback[value.no] = (data.errors['tanggal_lahir.'+value.no]) ? data.errors['tanggal_lahir.'+value.no].join(', ') : ''
             agama_feedback[value.no] = (data.errors['agama.'+value.no]) ? data.errors['agama.'+value.no].join(', ') : ''
             email_feedback[value.no] = (data.errors['email.'+value.no]) ? data.errors['email.'+value.no].join(', ') : ''
           })
           this.state.nama = nama_state
           this.state.nik = nik_state
+          this.state.jenis_kelamin = jenis_kelamin_state
           this.state.tanggal_lahir = tanggal_lahir_state
+          this.state.tempat_lahir = tempat_lahir_state
           this.state.agama = agama_state
           this.state.email = email_state
           this.feedback.nama = nama_feedback
           this.feedback.nik = nik_feedback
+          this.feedback.jenis_kelamin = jenis_kelamin_feedback
+          this.feedback.tempat_lahir = tempat_lahir_feedback
           this.feedback.tanggal_lahir = tanggal_lahir_feedback
           this.feedback.agama = agama_feedback
           this.feedback.email = email_feedback

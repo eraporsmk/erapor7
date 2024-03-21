@@ -68,7 +68,12 @@ class UkkController extends Controller
         return response()->json($data);
     }
     public function get_siswa(){
-        $rencana_ukk = Rencana_ukk::withWhereHas('paket_ukk', function($query){
+        $rencana_ukk = Rencana_ukk::where(function($query){
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->where('internal', request()->penguji_internal);
+            $query->where('eksternal', request()->penguji_eksternal);
+            $query->where('tanggal_sertifikat', request()->tanggal);
+        })->withWhereHas('paket_ukk', function($query){
             $query->where('paket_ukk_id', request()->paket_ukk_id);
         })->first();
         $data = [
@@ -114,13 +119,11 @@ class UkkController extends Controller
                 'tanggal.required' => 'Tanggal Sertifikat tidak boleh kosong!',
             ]
         );
-        $rencana_ukk = Rencana_ukk::updateOrCreate(
+        $rencana_ukk = Rencana_ukk::create(
             [
                 'semester_id' => request()->semester_id,
                 'paket_ukk_id' => request()->paket_ukk_id,
                 'sekolah_id' => request()->sekolah_id,
-            ],
-            [
                 'internal' => request()->penguji_internal,
                 'eksternal' => request()->penguji_eksternal,
                 'tanggal_sertifikat' => request()->tanggal,
