@@ -184,29 +184,31 @@
 		</tr>
 	@endforeach
 	@endforeach
-	@if($find_anggota_rombel_pilihan)
-	@foreach($find_anggota_rombel_pilihan->rombongan_belajar->pembelajaran as $pembelajaran)
-	<tr>
-		<td class="text-center" style="vertical-align:middle;">{{isset($i) ? $i : 1}}</td>
-		<td style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
-		<td class="text-center" style="vertical-align:middle;">{{($pembelajaran->nilai_akhir_kurmer) ? $pembelajaran->nilai_akhir_kurmer->nilai : 0}}</td>
-		<td style="vertical-align:middle;">
-		@if($pembelajaran->single_deskripsi_mata_pelajaran)
-			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
-			<div class="kotak"><hr class="baris"></div>
-			{{ $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
-			@endif
-			@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
-			@endif
-			@if(!$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
-			{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
-			@endif
-		@endif
-		</td>
-	</tr>
-	@endforeach
+	@if($find_anggota_rombel_pilihan->count())
+		@foreach($find_anggota_rombel_pilihan as $anggota_pilihan)
+			@foreach($anggota_pilihan->rombongan_belajar->pembelajaran as $pembelajaran)
+			<tr>
+				<td class="text-center" style="vertical-align:middle;">{{isset($i) ? $i : 1}}</td>
+				<td style="vertical-align:middle;">{{$pembelajaran->nama_mata_pelajaran}}</td>
+				<td class="text-center" style="vertical-align:middle;">{{($pembelajaran->nilai_akhir_kurmer) ? $pembelajaran->nilai_akhir_kurmer->nilai : 0}}</td>
+				<td style="vertical-align:middle;">
+				@if($pembelajaran->single_deskripsi_mata_pelajaran)
+					@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+					{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
+					<div class="kotak"><hr class="baris"></div>
+					{{ $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
+					@endif
+					@if($pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && !$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+					{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan }}
+					@endif
+					@if(!$pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_pengetahuan && $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan)
+					{{  $pembelajaran->single_deskripsi_mata_pelajaran->deskripsi_keterampilan }}
+					@endif
+				@endif
+				</td>
+			</tr>
+			@endforeach
+		@endforeach
 	@endif
 	</tbody>
 </table>

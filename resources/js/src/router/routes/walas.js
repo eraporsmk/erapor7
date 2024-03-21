@@ -138,4 +138,29 @@ export default [
       },
     },
   },
+  {
+    path: '/wali-kelas-pilihan/unduh-legger',
+    name: 'pilihan-unduh-legger',
+    component: () => import('@/views/walas/UnduhLeggerPilihan.vue'),
+    meta: {
+      resource: 'Guru',
+      action: 'read',
+      pageTitle: 'Unduh Leger',
+      breadcrumb: [
+        {
+          text: 'Wali Kelas',
+        },
+        {
+          text: 'Unduh Leger',
+          active: true,
+        },
+      ],
+      tombol_add: {
+        action: 'unduhLegger',
+        link: '',
+        variant: 'success',
+        text: 'Unduh Legger'
+      },
+    },
+  },
 ]

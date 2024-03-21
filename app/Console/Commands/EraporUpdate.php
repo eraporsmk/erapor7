@@ -65,13 +65,26 @@ class EraporUpdate extends Command
                 $this->call('storage:link');
             }
         }
+        Role::updateOrCreate(
+            [
+                'name' => 'pilihan',
+            ],
+            [
+                'display_name' => 'Wali Kelas Matpel Pilihan',
+				'description' => 'Wali Kelas Matpel Pilihan',
+				'created_at' => now(),
+				'updated_at' => now(),
+            ]
+        );
         $roles = Role::get();
         foreach($roles as $role){
-            $permissions = Permission::firstOrCreate([
-                'name' => $role->name,
-                'display_name' => $role->display_name,
-                'description' => $role->description,
-            ])->id;
+            $permissions = Permission::updateOrCreate(
+                [ 'name' => $role->name ],
+                [
+                    'display_name' => $role->display_name,
+                    'description' => $role->description,
+                ]
+            )->id;
             $role->permissions()->sync($permissions);
         }
         $version = File::get(base_path().'/app_version.txt');

@@ -24,7 +24,11 @@ class WalasController extends Controller
     }
     private function getRombel(){
         return Rombongan_belajar::with(['kurikulum', 'rombel_empat_tahun'])->where(function($query){
-            $query->where('jenis_rombel', 1);
+            if(request()->pilihan){
+                $query->where('jenis_rombel', 16);
+            } else {
+                $query->where('jenis_rombel', 1);
+            }
             $query->where('guru_id', request()->guru_id);
             $query->where('semester_id', request()->semester_id);
             $query->where('sekolah_id', request()->sekolah_id);
@@ -472,7 +476,11 @@ class WalasController extends Controller
         $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
             $query->with(['absensi']);
             $query->whereHas('rombongan_belajar', function($query){
-                $query->where('jenis_rombel', 1);
+                if(request()->pilihan){
+                    $query->where('jenis_rombel', 16);
+                } else {
+                    $query->where('jenis_rombel', 1);
+                }
                 $query->where('semester_id', request()->semester_id);
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('guru_id', request()->guru_id);

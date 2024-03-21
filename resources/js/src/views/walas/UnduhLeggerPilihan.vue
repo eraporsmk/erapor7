@@ -80,6 +80,9 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.periode_aktif = this.user.semester.nama
+    if(this.hasRole('pilihan')){
+      this.form.pilihan = true
+    }
     this.loadPostsData()
     eventBus.$on('unduhLegger', this.handleEvent);
   },
