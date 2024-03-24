@@ -226,6 +226,7 @@ class UkkController extends Controller
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->whereHas('rombongan_belajar', function($query){
                     $query->whereIn('tingkat', [12, 13]);
+                    $query->where('semester_id', request()->semester_id);
                 });
                 $query->has('kurikulum');
             })->orderBy('nama_jurusan_sp')->get(),
