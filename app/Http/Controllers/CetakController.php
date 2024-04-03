@@ -247,7 +247,7 @@ class CetakController extends Controller
 				$query->where('jenis_rombel', 16);
 				$query->where('sekolah_id', request()->route('sekolah_id'));
 				$query->where('semester_id', request()->route('semester_id'));
-				$query->where('jurusan_id', $get_siswa->rombongan_belajar->jurusan_id);
+				//$query->where('jurusan_id', $get_siswa->rombongan_belajar->jurusan_id);
 			});
 			$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
 		})->with([
@@ -275,7 +275,7 @@ class CetakController extends Controller
 							'deskripsi_mata_pelajaran' => $callback,
 							'single_deskripsi_mata_pelajaran' => $callback,
 						]);
-						$query->whereNull('induk_pembelajaran_id');
+						//$query->whereNull('induk_pembelajaran_id');
 						$query->whereNotNull('kelompok_id');
 						$query->whereNotNull('no_urut');
 						$query->orderBy('kelompok_id', 'asc');
@@ -283,7 +283,7 @@ class CetakController extends Controller
 					},
 				]);
 			},
-		])->first();
+		])->get();
 		$tanggal_rapor = get_setting('tanggal_rapor', request()->route('sekolah_id'), request()->route('semester_id'));
 		if($tanggal_rapor) {
             $tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');

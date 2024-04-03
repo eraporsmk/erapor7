@@ -54,5 +54,18 @@ export default [
         },
       ]
     },
+    {
+      icon: 'copy',
+      title: 'Wali Kelas (Pilihan)',
+      children: [
+        {
+          icon: 'download',
+          title: 'Unduh Legger',
+          route: 'pilihan-unduh-legger',
+          resource: 'Pilihan',
+          action: 'read',
+        },
+      ],
+    },
   ]
   

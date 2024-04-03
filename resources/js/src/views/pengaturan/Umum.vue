@@ -39,6 +39,13 @@
                         </template>
                       </v-select>
                     </b-form-group>
+                    <b-form-group label="Jabatan Kepala Sekolah" label-for="jabatan">
+                      <v-select id="jabatan" v-model="form.jabatan" :options="jabatan" :reduce="text => text.value" label="text" placeholder="== Pilih Jabatan Kepala Sekolah ==" :clearable="false">
+                        <template #no-options="{ search, searching, loading }">
+                          Tidak ada data untuk ditampilkan
+                        </template>
+                      </v-select>
+                    </b-form-group>
                     <b-form-group label="Rombongan Belajar 4 Tahun" label-for="rombel-4-tahun">
                       <v-select v-model="form.rombel_4_tahun" multiple :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="data_rombel" placeholder="== Pilih Rombongan Belajar 4 Tahun ==">
                         <template #no-options="{ search, searching, loading }">
@@ -148,6 +155,10 @@ export default {
       data_guru: [],
       rombel_4_tahun: [],
       data_rombel: [],
+      jabatan: [
+        { value: 'Kepala', text: 'Kepala Sekolah' },
+        { value: 'Plt. Kepala', text: 'PLT Kepala Sekolah'},
+      ],
       logo_sekolah: null,
     }
   },
@@ -200,6 +211,7 @@ export default {
       data.append('tanggal_rapor_kelas_akhir', (this.form.tanggal_rapor_kelas_akhir) ? this.form.tanggal_rapor_kelas_akhir : '')
       data.append('zona', (this.form.zona) ? this.form.zona : '')
       data.append('kepala_sekolah', (this.form.kepala_sekolah) ? this.form.kepala_sekolah : '')
+      data.append('jabatan', (this.form.jabatan) ? this.form.jabatan : '')
       data.append('rombel_4_tahun', JSON.stringify(this.form.rombel_4_tahun))
       data.append('token_dapodik', (this.form.token_dapodik) ? this.form.token_dapodik : '')
       this.$http.post('/setting/update', data).then(response => {

@@ -56,8 +56,8 @@
           </div>
         </template>
         <template v-else>
-          <h2>Anda adalah Wali Kelas Rombongan Belajar {{rombel_pilihan}}</h2>
-          <h2>Daftar Mata Pelajaran di Rombongan Belajar {{rombel_pilihan}}</h2>
+          <h2>Anda adalah Wali Kelas Rombongan Belajar (Matpel Pilihan) {{rombel_pilihan}}</h2>
+          <h2>Daftar Mata Pelajaran di Rombongan Belajar (Matpel Pilihan) {{rombel_pilihan}}</h2>
           <b-table-simple bordered responsive>
             <b-thead>
               <b-tr>

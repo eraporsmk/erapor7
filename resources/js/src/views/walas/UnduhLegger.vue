@@ -66,6 +66,7 @@ export default {
         sekolah_id: '',
         semester_id: '',
         periode_aktif: '',
+        pilihan: false,
       },
       rombongan_belajar_id: '',
       data_siswa: [],

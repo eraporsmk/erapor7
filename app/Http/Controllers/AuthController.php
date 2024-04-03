@@ -143,6 +143,7 @@ class AuthController extends Controller
         $tu = [];
         $waka = [];
         $wali = [];
+        $pilihan = [];
         $kaprog = [];
         $projek = [];
         $internal = [];
@@ -159,6 +160,14 @@ class AuthController extends Controller
                 [
                     'action' => 'read',
                     'subject' => 'Rombel'
+                ],
+            ];
+        }
+        if($user->hasRole('pilihan', $semester->nama)){
+            $pilihan = [
+                [
+                    'action' => 'read',
+                    'subject' => 'Pilihan'
                 ],
             ];
         }
@@ -319,7 +328,7 @@ class AuthController extends Controller
                 ],
             ];
         }
-        $user->ability = array_filter(array_merge($general, $admin, $tu, $guru, $waka, $wali, $kaprog, $projek, $internal, $pembimbing, $siswa));
+        $user->ability = array_filter(array_merge($general, $admin, $tu, $guru, $waka, $wali, $pilihan, $kaprog, $projek, $internal, $pembimbing, $siswa));
         if($user->allPermissions('display_name', $semester->nama)->count()){
             $user->role = $user->allPermissions('display_name', $semester->nama)->implode('display_name', ', ');
             $user->roles = $user->allPermissions('name', $semester->nama)->pluck('name')->toArray();

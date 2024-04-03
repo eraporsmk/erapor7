@@ -465,17 +465,26 @@ class PenilaianController extends Controller
             $query->whereHas('peserta_didik');
 			$query->whereHas('rombongan_belajar');
 			$query->with(['rombongan_belajar', 'peserta_didik']);
-			//$query->where('sekolah_id', request()->sekolah_id);
-			//$query->where('semester_id', request()->semester_id);
+			$query->where('sekolah_id', request()->sekolah_id);
+			$query->where('semester_id', request()->semester_id);
         })->where(function($query){
             $query->where('guru_id', request()->guru_id);
             $query->whereNotNull('deskripsi');
         })->with(['budaya_kerja', 'elemen_budaya_kerja'])
         ->orderBy(request()->sortby, request()->sortbydesc)
-            ->when(request()->q, function($query) {
-                $query->where('deskripsi', 'ILIKE', '%' . request()->q . '%');
+        ->when(request()->q, function($query) {
+            $query->where('deskripsi', 'ILIKE', '%' . request()->q . '%');
+            $query->orWhereHas('anggota_rombel', function($query){
+                $query->whereHas('peserta_didik', function($query){
+                    $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+                    $query->orWhere('nisn', 'ILIKE', '%' . request()->q . '%');
+                });
+                $query->orWhereHas('rombongan_belajar', function($query){
+                    $query->where('nama', 'ILIKE', '%' . request()->q . '%');
+                });
+            });
         })->paginate(request()->per_page);
-        return response()->json(['status' => 'success', 'data' => $data]);
+        return response()->json(['status' => 'success', 'data' => $data, 'search' => request()->q]);
     }
     public function ref_sikap(){
         $data = Budaya_kerja::with(['elemen_budaya_kerja'])->get();

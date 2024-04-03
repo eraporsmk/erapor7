@@ -32,6 +32,7 @@ class ApiController extends Controller
             'tanggal_rapor' => get_setting('tanggal_rapor', request()->sekolah_id, request()->semester_id),
             'tanggal_rapor_kelas_akhir' => get_setting('tanggal_rapor_kelas_akhir', request()->sekolah_id, request()->semester_id),
             'kepala_sekolah' => ($sekolah->kasek) ? $sekolah->kasek->guru_id : $sekolah->guru_id,
+            'jabatan' => get_setting('jabatan', request()->sekolah_id, request()->semester_id),
             'zona' => get_setting('zona', request()->sekolah_id),
             'data_guru' => Guru::where('sekolah_id', request()->sekolah_id)->select('guru_id', 'nama')->get(),
             'data_rombel' => Rombongan_belajar::where(function($query){
@@ -176,6 +177,16 @@ class ApiController extends Controller
             ],
             [
                 'guru_id' => $request->kepala_sekolah,
+            ]
+        );
+        Setting::updateOrCreate(
+            [
+                'key' => 'jabatan',
+                'sekolah_id' => request()->sekolah_id,
+                'semester_id' => request()->semester_id,
+            ],
+            [
+                'value' => request()->jabatan,
             ]
         );
         $data = [

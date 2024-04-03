@@ -235,7 +235,7 @@
   <table width="100%" style="margin-top:10px;">
 	<tr>
 	  <td style="width:100%;text-align:center;">
-		  <p>Mengetahui,<br>Kepala Sekolah</p>
+		  <p>Mengetahui,<br>{{ get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id) }}</p>
 	  <br>
   <br>
   <br>

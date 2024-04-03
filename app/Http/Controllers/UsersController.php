@@ -73,6 +73,7 @@ class UsersController extends Controller
         $PembinaRole = Role::where('name', 'pembina_ekskul')->first();
         $p5Role = Role::where('name', 'guru-p5')->first();
         $WalasRole = Role::where('name', 'wali')->first();
+        $PilihanRole = Role::where('name', 'pilihan')->first();
         $adminRole = Role::where('name', 'admin')->first();
         $pembimbingRole = Role::where('name', 'pembimbing')->first();
         $all_role = ['pembina_ekskul', 'guru-p5', 'wali', 'admin', 'pembimbing'];
@@ -118,6 +119,14 @@ class UsersController extends Controller
                     }
                 } else {
                     $user->detachRole($WalasRole, request()->periode_aktif);
+                }
+                $find_pilihan = Rombongan_belajar::where('guru_id', $d->guru_id)->where('semester_id', request()->semester_id)->where('jenis_rombel', 16)->first();
+				if($find_pilihan){
+                    if(!$user->hasRole($PilihanRole, request()->periode_aktif)){
+                        $user->attachRole($PilihanRole, request()->periode_aktif);
+                    }
+                } else {
+                    $user->detachRole($PilihanRole, request()->periode_aktif);
                 }
                 $find_mapel_p5 = Pembelajaran::where('guru_id', $d->guru_id)->where('semester_id', request()->semester_id)->where('mata_pelajaran_id', 200040000)->has('tema')->first();
                 if($find_mapel_p5){
