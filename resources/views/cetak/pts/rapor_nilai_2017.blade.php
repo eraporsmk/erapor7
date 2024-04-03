@@ -76,7 +76,7 @@ body{font-size:11px !important;}
 <table width="100%">
   <tr>
     <td style="width:40%;">
-		<p>Mengetahui,<br>Kepala Sekolah</p>
+		<p>Mengetahui,<br>{{ get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id) }}</p>
 	<br>
 <br>
 <br>

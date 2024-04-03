@@ -115,7 +115,7 @@ NIP. {{$get_siswa->rombongan_belajar->wali_kelas->nip}}
 	  <td style="width:40%;">
 	  </td>
 	  <td style="width:60%;">
-		  <p>Mengetahui,<br>Kepala Sekolah</p>
+		  <p>Mengetahui,<br>{{ get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id) }}</p>
 		  <br>
 		  <br>
 		  <br>
