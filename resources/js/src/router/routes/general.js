@@ -95,4 +95,21 @@ export default [
       pageTitle: 'Akses Terbatas! 🔐',
     },
   },
+  {
+    path: '/detil-nilai/:pembelajaran_id',
+    name: 'detil-nilai',
+    component: () => import('@/views/dashboard/DetilNilai.vue'),
+    meta: {
+      navActiveLink: 'beranda',
+      resource: 'Siswa',
+      action: 'read',
+      pageTitle: 'Detil Nilai',
+      breadcrumb: [
+        {
+          text: 'Detil Nilai',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

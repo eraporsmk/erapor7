@@ -247,4 +247,8 @@ class Pembelajaran extends Model
 	public function matev_rapor(){
 		return $this->hasOne(Matev_rapor::class, 'pembelajaran_id', 'pembelajaran_id');
 	}
+	public function nilai_tp()
+	{
+		return $this->hasMany(Nilai_tp::class, 'pembelajaran_id', 'pembelajaran_id');
+	}
 }

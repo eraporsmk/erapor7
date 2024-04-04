@@ -17,6 +17,9 @@ class Nilai_tp extends Model
 	public function tp_nilai(){
         return $this->hasOne(Tp_nilai::class, 'tp_nilai_id', 'tp_nilai_id');
     }
+    public function capaian_kompeten(){
+		return $this->hasOne(Tp_nilai::class, 'tp_id', 'tp_id');
+	}
 	public function siswa(){
 		return $this->hasOneThrough(
             Anggota_rombel::class,
@@ -30,5 +33,9 @@ class Nilai_tp extends Model
     public function anggota_rombel()
     {
         return $this->hasOne(Anggota_rombel::class, 'anggota_rombel_id', 'anggota_rombel_id');
+    }
+    public function tp()
+    {
+        return $this->belongsTo(Tujuan_pembelajaran::class, 'tp_id', 'tp_id');
     }
 }
