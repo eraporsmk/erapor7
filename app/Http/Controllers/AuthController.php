@@ -233,7 +233,7 @@ class AuthController extends Controller
             ];
         }
         if($user->hasRole('pembina_ekskul', $semester->nama)){ 
-            $internal = [
+            $pembina_ekskul = [
                 [
                     'action' => 'read',
                     'subject' => 'Ekskul'
@@ -328,7 +328,7 @@ class AuthController extends Controller
                 ],
             ];
         }
-        $user->ability = array_filter(array_merge($general, $admin, $tu, $guru, $waka, $wali, $pilihan, $kaprog, $projek, $internal, $pembimbing, $siswa));
+        $user->ability = array_filter(array_merge($general, $admin, $tu, $guru, $waka, $wali, $pilihan, $kaprog, $projek, $internal, $pembina_ekskul, $pembimbing, $siswa));
         if($user->allPermissions('display_name', $semester->nama)->count()){
             $user->role = $user->allPermissions('display_name', $semester->nama)->implode('display_name', ', ');
             $user->roles = $user->allPermissions('name', $semester->nama)->pluck('name')->toArray();

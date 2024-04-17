@@ -131,7 +131,33 @@ class DashboardController extends Controller
       return ['pembelajaran' => $result];
    }
    private function dashboard_siswa(){
-      //
+      $data = [
+         'pd' => Peserta_didik::with(['kelas' => function($query){
+            $query->where('jenis_rombel', 1);
+            $query->where('rombongan_belajar.semester_id', request()->semester_id);
+            $query->with([
+               'kurikulum',
+               'wali_kelas' => function($query){
+                  $query->select('guru_id', 'nama');
+               },
+               'pembelajaran' => function($query){
+                  $query->orderBy('mata_pelajaran_id');
+                  $query->with([
+                     'guru' => function($query){
+                        $query->select('guru_id', 'nama');
+                     }, 
+                     'pengajar' => function($query){
+                        $query->select('guru_id', 'nama');
+                     },
+                     'nilai_akhir_pengetahuan' => $this->callback(),
+                     'nilai_akhir_keterampilan' => $this->callback(),
+                     'nilai_akhir_kurmer' => $this->callback(),
+                  ]);
+               },
+            ]);
+         }])->where('peserta_didik_id', request()->user()->peserta_didik_id)->first()
+      ];
+      return $data;
    }
    private function dashboard_user(){
       //
@@ -598,5 +624,26 @@ class DashboardController extends Controller
          'text' => 'Nilai Sub Mapel berhasil digenerate',
      ];
      return response()->json($data);
+   }
+   public function detil_nilai(){
+      $data = Pembelajaran::with([
+         'nilai_tp' => function($query){
+            $query->whereHas('anggota_rombel', function($query){
+               $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+            });
+            $query->with(['capaian_kompeten' => $this->callback(), 'tp']);
+         },
+         'nilai_akhir_pengetahuan' => $this->callback(),
+         'nilai_akhir_kurmer' => $this->callback(),
+         'single_deskripsi_mata_pelajaran' => $this->callback(),
+      ])->find(request()->pembelajaran_id);
+     return response()->json($data);
+   }
+   private function callback(){
+      return function($query){
+         $query->whereHas('anggota_rombel', function($query){
+            $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+         });
+      };
    }
 }

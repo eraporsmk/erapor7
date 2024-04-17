@@ -156,6 +156,7 @@ class ReferensiController extends Controller
             },
             'agama',
             'kelas' => function($query){
+                $query->where('jenis_rombel', 1);
                 $query->where('rombongan_belajar.semester_id', request()->semester_id);
             }
         ])->get();

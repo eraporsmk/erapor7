@@ -187,6 +187,7 @@ export default {
         this.form.tanggal_rapor_kelas_akhir = getData.tanggal_rapor_kelas_akhir
         this.form.zona = getData.zona
         this.form.kepala_sekolah = getData.kepala_sekolah
+        this.form.jabatan = getData.jabatan
         this.form.rombel_4_tahun = getData.rombel_4_tahun
         this.form.token_dapodik = getData.token_dapodik
         this.form.url_dapodik = getData.url_dapodik
@@ -213,6 +214,7 @@ export default {
       data.append('kepala_sekolah', (this.form.kepala_sekolah) ? this.form.kepala_sekolah : '')
       data.append('jabatan', (this.form.jabatan) ? this.form.jabatan : '')
       data.append('rombel_4_tahun', JSON.stringify(this.form.rombel_4_tahun))
+      data.append('url_dapodik', (this.form.url_dapodik) ? this.form.url_dapodik : '')
       data.append('token_dapodik', (this.form.token_dapodik) ? this.form.token_dapodik : '')
       this.$http.post('/setting/update', data).then(response => {
         this.loading = false
