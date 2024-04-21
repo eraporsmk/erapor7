@@ -33,14 +33,14 @@
                       </v-select>
                     </b-form-group>
                     <b-form-group label="Kepala Sekolah" label-for="kepala-sekolah">
-                      <v-select id="kepala-sekolah" v-model="form.kepala_sekolah" :options="data_guru" :reduce="nama_lengkap => nama_lengkap.guru_id" label="nama_lengkap" placeholder="== Pilih Kepala Sekolah ==" :clearable="false">
+                      <v-select id="kepala-sekolah" v-model="form.kepala_sekolah" :options="data_guru" :reduce="nama_lengkap => nama_lengkap.guru_id" label="nama_lengkap" placeholder="== Pilih Kepala Sekolah ==" :clearable="true">
                         <template #no-options="{ search, searching, loading }">
                           Tidak ada data untuk ditampilkan
                         </template>
                       </v-select>
                     </b-form-group>
                     <b-form-group label="Jabatan Kepala Sekolah" label-for="jabatan">
-                      <v-select id="jabatan" v-model="form.jabatan" :options="jabatan" :reduce="text => text.value" label="text" placeholder="== Pilih Jabatan Kepala Sekolah ==" :clearable="false">
+                      <v-select id="jabatan" v-model="form.jabatan" :options="jabatan" :reduce="text => text.value" label="text" placeholder="== Pilih Jabatan Kepala Sekolah ==" :clearable="true">
                         <template #no-options="{ search, searching, loading }">
                           Tidak ada data untuk ditampilkan
                         </template>
@@ -111,6 +111,7 @@ export default {
         tanggal_rapor_kelas_akhir: '',
         zona: '',
         kepala_sekolah: '',
+        jabatan: '',
         rombel_4_tahun: [],
         url_dapodik: '',
         token_dapodik: '',
@@ -127,26 +128,6 @@ export default {
         file: null,
       },
       periode: null,
-      /*
-      semester_id: null,
-      semester_id: '',
-      semester_id: null,
-      tanggal_rapor_uts: '',
-      tanggal_rapor_uts: '',
-      tanggal_rapor_uts: null,
-      tanggal_rapor: '',
-      tanggal_rapor: '',
-      tanggal_rapor: null,
-      zona: null,
-      zona: '',
-      zona: null,
-      kepala_sekolah: null,
-      kepala_sekolah: '',
-      kepala_sekolah: null,
-      file: null,
-      fileState: null,
-      feedback_file: '',
-      */
       data_zona: [
         {value: 'Asia/Jakarta', text: 'Waktu Indonesia Barat (WIB)'},
         {value: 'Asia/Makassar', text: 'Waktu Indonesia Tengah (WITA)'},
@@ -173,8 +154,6 @@ export default {
       this.feedback_file = ''
       this.zona = null
       this.zona = ''
-      this.kepala_sekolah = null
-      this.kepala_sekolah = ''
       this.$http.post('/setting', {
         sekolah_id: this.user.sekolah_id,
         semester_id: this.user.semester.semester_id,
