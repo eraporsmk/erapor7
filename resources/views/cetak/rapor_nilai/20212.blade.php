@@ -241,9 +241,9 @@
   </table>
 @else
 <div class="strong">B.&nbsp;&nbsp;Catatan Akademik</div>
-<table width="100%" border="1">
+<table width="100%" class="table" border="1">
   <tr>
-    <td style="padding:10px;">{!! ($get_siswa->catatan_wali) ? $get_siswa->catatan_wali->uraian_deskripsi : '' !!}</td>
+    <td style="padding:10px;">{!! ($get_siswa->single_catatan_wali) ? $get_siswa->single_catatan_wali->uraian_deskripsi : '' !!}</td>
   </tr>
 </table>
 @endif
