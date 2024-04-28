@@ -290,7 +290,20 @@ class CetakController extends Controller
         } else {
             $tanggal_rapor = Carbon::now()->translatedFormat('d F Y');
         }
-		$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
+		//$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
+		$rombel_4_tahun = Rombel_empat_tahun::with(['rombongan_belajar'])->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get();
+		$jurusan_sp_id = [];
+		$opsi = 'naik';
+		$rombel = $get_siswa->rombongan_belajar;
+		if($rombel->tingkat >= 12 || $rombel->tingkat == 12 && !$rombel->rombel_empat_tahun){
+            $opsi = 'lulus';
+        }
+        foreach($rombel_4_tahun as $r4){
+            $jurusan_sp_id[] = $r4->rombongan_belajar->jurusan_sp_id;
+        }
+        if($rombel->tingkat == 12 && in_array($rombel->jurusan_sp_id, $jurusan_sp_id)){
+            $opsi = 'naik';
+        }
 		$params = array(
 			'budaya_kerja' => $budaya_kerja,
 			'get_siswa'	=> $get_siswa,
@@ -298,6 +311,7 @@ class CetakController extends Controller
 			'cari_tingkat_akhir'	=> $cari_tingkat_akhir,
 			'rombel_4_tahun' => $rombel_4_tahun,
 			'find_anggota_rombel_pilihan' => $find_anggota_rombel_pilihan,
+			'opsi' => $opsi,
 		);
 		//return view('cetak.rapor_nilai', $params);
 		//return view('cetak.rapor_catatan', $params);

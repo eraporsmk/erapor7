@@ -181,6 +181,14 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 <br />
 <?php
 if($get_siswa->rombongan_belajar->semester->semester == 2){
+	if($opsi == 'lulus'){
+		$text_status = 'Status Kelulusan';
+		$not_yet = 'Belum dilakukan kelulusan';
+	} else {
+		$text_status = 'Kenaikan Kelas';
+		$not_yet = 'Belum dilakukan kenaikan kelas';
+	}
+	/*
 	if($get_siswa->rombongan_belajar->rombel_empat_tahun){
 		$text_status = 'Kenaikan Kelas';
 		$not_yet = 'Belum dilakukan kenaikan kelas';
@@ -191,6 +199,7 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 		$text_status = 'Kenaikan Kelas';
 		$not_yet = 'Belum dilakukan kenaikan kelas';
 	}
+	*/
 } else {
 	$text_status = '';
 	$not_yet = '';
