@@ -8,6 +8,7 @@ use App\Models\Peserta_didik;
 use App\Models\Budaya_kerja;
 use App\Models\Catatan_budaya_kerja;
 use App\Models\Rombongan_belajar;
+use App\Models\Rombel_empat_tahun;
 use App\Models\Dudi;
 use App\Models\Prakerin;
 use App\Models\Absensi;
@@ -367,8 +368,16 @@ class WalasController extends Controller
     public function kenaikan_kelas(){
         $rombel = $this->getRombel();
         $options = $this->opsi_naik();
+        $rombel_4_tahun = Rombel_empat_tahun::with(['rombongan_belajar'])->where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->get();
         if($rombel->tingkat >= 12 || $rombel->tingkat == 12 && !$rombel->rombel_empat_tahun){
             $options = $this->opsi_lulus();
+        }
+        $jurusan_sp_id = [];
+        foreach($rombel_4_tahun as $r4){
+            $jurusan_sp_id[] = $r4->rombongan_belajar->jurusan_sp_id;
+        }
+        if($rombel->tingkat == 12 && in_array($rombel->jurusan_sp_id, $jurusan_sp_id)){
+            $options = $this->opsi_naik();
         }
         $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
             $query->whereHas('rombongan_belajar', function($query){
@@ -383,6 +392,8 @@ class WalasController extends Controller
             'data_siswa' => $data_siswa,
             'options' => $options,
             'rombel' => $rombel,
+            'rombel_4_tahun' => $rombel_4_tahun,
+            'in_array' => in_array($rombel->jurusan_sp_id, $jurusan_sp_id),
         ];
         return response()->json($data);
     }
