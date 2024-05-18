@@ -137,8 +137,8 @@ export default {
       rombel_4_tahun: [],
       data_rombel: [],
       jabatan: [
-        { value: 'Kepala', text: 'Kepala Sekolah' },
-        { value: 'Plt. Kepala', text: 'PLT Kepala Sekolah'},
+        { value: 'Kepala Sekolah', text: 'Kepala Sekolah' },
+        { value: 'Plt. Kepala Sekolah', text: 'PLT Kepala Sekolah'},
       ],
       logo_sekolah: null,
     }

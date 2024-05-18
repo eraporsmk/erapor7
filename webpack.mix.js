@@ -55,7 +55,8 @@ mix
   })
   .sass('resources/scss/core.scss', 'public/css')
   .options({
-    postCss: [require('autoprefixer'), require('postcss-rtl')],
+    postCss: [require('autoprefixer')],
+    //postCss: [require('autoprefixer'), require('postcss-rtl')],
   })
 mix.copy('resources/css/loader.css', 'public/css')
 mix.version()
