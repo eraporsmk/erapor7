@@ -285,6 +285,9 @@ class CetakController extends Controller
 			},
 		])->get();
 		$tanggal_rapor = get_setting('tanggal_rapor', request()->route('sekolah_id'), request()->route('semester_id'));
+		if($get_siswa->rombongan_belajar->semester->semester == 2 && $get_siswa->rombongan_belajar->tingkat >= 12){
+			$tanggal_rapor = get_setting('tanggal_rapor_kelas_akhir', request()->route('sekolah_id'), request()->route('semester_id'));
+		}
 		if($tanggal_rapor) {
             $tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');
         } else {
