@@ -382,7 +382,11 @@ class UkkController extends Controller
     }
     public function rencana_ukk(){
         $rencana_ukk = [];
-        $get = Rencana_ukk::where('internal', request()->guru_id)->with(['paket_ukk'])->get();
+        $get = Rencana_ukk::where(function($query){
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->where('semester_id', request()->semester_id);
+            $query->where('internal', request()->guru_id);
+        })->with(['paket_ukk'])->get();
         foreach($get as $val){
             $rencana_ukk[] = [
                 'rencana_ukk_id' => $val->rencana_ukk_id,
