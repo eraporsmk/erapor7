@@ -10,7 +10,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 //import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons'
 import { faFacebook, faTelegram, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { 
-    faHouse, 
+    faHouse,
+    faHouseUser,
     faBuildingColumns,
     faSchoolFlag,
     faLayerGroup, 
@@ -72,9 +73,11 @@ import {
     faStreetView,
     faPlus,
     faChartLine,
+    faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
-    faHouse, 
+    faHouse,
+    faHouseUser,
     faBuildingColumns, 
     faSchoolFlag,
     faLayerGroup, 
@@ -139,4 +142,5 @@ library.add(
     faStreetView,
     faPlus,
     faChartLine,
+    faRightFromBracket,
 )

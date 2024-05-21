@@ -77,6 +77,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/reset-password', [UsersController::class, 'reset_password']);
     Route::post('/hapus-akses', [UsersController::class, 'hapusAkses']);
     Route::get('/profil', [UsersController::class, 'profil']);
+    Route::get('/profil-pd', [UsersController::class, 'profil_pd']);
     Route::post('/update-profile', [UsersController::class, 'update_profile']);
   });
   Route::group(['prefix' => 'setting'], function () {

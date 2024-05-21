@@ -28,5 +28,10 @@ export default {
     DashboardSiswa,
     DashboardUser,
   },
+  mounted() {
+    if(this.hasRole('siswa')){
+      this.$router.replace('/beranda')
+    }
+  },
 }
 </script>

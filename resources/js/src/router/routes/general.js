@@ -74,6 +74,28 @@ export default [
     }
   },
   {
+    path: '/beranda',
+    name: 'home',
+    component: () => import('@/views/pages/profile/Profile.vue'),
+    /*meta: {
+      resource: 'Web',
+      action: 'read',
+      pageTitle: 'Profil Pengguna',
+      breadcrumb: [
+        {
+          text: 'Profil Pengguna',
+          active: true,
+        },
+      ],
+    }*/
+    meta: {
+      layout: 'full',
+      resource: 'Web',
+      action: 'read',
+      pageTitle: 'Profil Pengguna',
+    },
+  },
+  {
     path: '/error-404',
     name: 'error-404',
     component: () => import('@/views/error/Error404.vue'),
