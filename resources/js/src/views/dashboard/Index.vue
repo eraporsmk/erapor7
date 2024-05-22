@@ -7,7 +7,8 @@
       <dashboard-guru></dashboard-guru>
     </template>
     <template v-else-if="hasRole('siswa')">
-      <dashboard-siswa></dashboard-siswa>
+      <profile></profile>
+      <!--dashboard-siswa></dashboard-siswa-->
     </template>
     <template v-else>
       <dashboard-user></dashboard-user>
@@ -20,6 +21,7 @@ import DashboardAdmin from './DashboardAdmin.vue'
 import DashboardGuru from './DashboardGuru.vue'
 import DashboardSiswa from './DashboardSiswa.vue'
 import DashboardUser from './DashboardUser.vue'
+import Profile from './../pages/profile/Profile.vue'
 
 export default {
   components: {
@@ -27,11 +29,7 @@ export default {
     DashboardGuru,
     DashboardSiswa,
     DashboardUser,
-  },
-  mounted() {
-    if(this.hasRole('siswa')){
-      this.$router.replace('/beranda')
-    }
+    Profile,
   },
 }
 </script>

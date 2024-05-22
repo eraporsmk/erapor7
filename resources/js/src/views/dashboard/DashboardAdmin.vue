@@ -191,7 +191,6 @@ export default {
       this.rekapitulasi = getData.rekap
       this.app = getData.app
       this.status_penilaian = this.app.status_penilaian
-      console.log(vc.compare(this.app.app_version, app_version));
     })
   },
   methods: {

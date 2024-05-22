@@ -25,3 +25,12 @@ export const getHomeRouteForLoggedInUser = userRole => {
   //if (userRole === 'client') return { name: 'access-control' }
   return { name: 'auth-login' }
 }
+
+export const hasRole = (roles, role) => {
+  for (var i = 0; i < roles.length; i++) {
+    if (roles[i] == role) {
+        return true
+    }
+  }
+  return false
+}

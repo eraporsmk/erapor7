@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 // Routes
 import { canNavigate } from '@/libs/acl/routeProtection'
-import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser } from '@/auth/utils'
+import { isUserLoggedIn, getUserData, getHomeRouteForLoggedInUser, hasRole } from '@/auth/utils'
 import admin from './routes/admin'
 import general from './routes/general'
 import guru from './routes/guru'
@@ -48,6 +48,14 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  const userData = getUserData()
+  if(userData){
+    if(hasRole(userData.roles, 'siswa')){
+      to.meta.layout = 'full'
+    } else {
+      to.meta.layout = 'vertical'
+    }
+  }
   const isLoggedIn = isUserLoggedIn()
   const title = to.meta.pageTitle
   if (title) {
@@ -64,7 +72,6 @@ router.beforeEach((to, _, next) => {
 
   // Redirect if logged in
   if (to.meta.redirectIfLoggedIn && isLoggedIn) {
-    const userData = getUserData()
     next(getHomeRouteForLoggedInUser(userData ? userData.role : null))
   }
 
