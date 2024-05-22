@@ -18,6 +18,10 @@ use Validator;
 use Hash;
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        set_time_limit(0);
+    }
     public function index()
     {
         $team = Team::where('name', request()->periode_aktif)->first();
