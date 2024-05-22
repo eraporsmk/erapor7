@@ -98,6 +98,9 @@ export default {
     },
     detilNilai(pembelajaran_id){
       this.$emit('nilai', pembelajaran_id)
+    },
+    predikat(angka){
+      return angka
     }
   },
 }
