@@ -181,12 +181,70 @@ class UsersController extends Controller
     }
     private function generate_pd(){
         $insert = 0;
+        $role = Role::where('name', 'siswa')->first();
+        $adminRole = Role::where('name', 'admin')->first();
+        Peserta_didik::where(function($query){
+            $query->whereDoesntHave('pd_keluar', function($query){
+                $query->where('semester_id', request()->semester_id);
+            });
+            $query->where('sekolah_id', request()->sekolah_id);
+        })->orderBy('peserta_didik_id')->chunk(100, function ($data) use ($role, $adminRole, &$insert) {
+            foreach($data as $d){
+                $insert++;
+                $new_password = strtolower(Str::random(8));
+                $user = User::where('peserta_didik_id', $d->peserta_didik_id)->first();
+                if(!$user){
+                    $user_email = $this->check_email($d, 'peserta_didik_id');
+                    $user = User::create([
+                        'name' => $d->nama,
+						'email' => $user_email,
+						'nisn'	=> $d->nisn,
+						'password' => bcrypt($new_password),
+						'last_sync'	=> now(),
+						'sekolah_id'	=> request()->sekolah_id,
+						'password_dapo'	=> md5($new_password),
+						'peserta_didik_id'	=> $d->peserta_didik_id,
+						'default_password' => $new_password,
+                    ]);
+                } elseif(!$user->email){
+                    $user_email = $this->check_email($d, 'peserta_didik_id');
+                    $user->email = $user_email;
+                    $user->save();
+                }
+                if(!$d->email){
+                    $d->email = $user->email;
+                    $d->save();
+                }
+                $user->detachRole($adminRole, request()->periode_aktif);
+                if(!$user->hasRole($role, request()->periode_aktif)){
+                    $user->attachRole($role, request()->periode_aktif);
+                }
+            }
+        });
+        if($insert){
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => 'Pengguna Peserta Didik berhasil diperbaharui',
+            ];
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Pengguna Peserta Didik gagal diperbaharui. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return $data;
+    }
+    private function generate_pdOld(){
+        $insert = 0;
         $data = Peserta_didik::where(function($query){
             $query->whereDoesntHave('pd_keluar', function($query){
                 $query->where('semester_id', request()->semester_id);
             });
             $query->where('sekolah_id', request()->sekolah_id);
         })->get();
+        
         $role = Role::where('name', 'siswa')->first();
         $adminRole = Role::where('name', 'admin')->first();
         if($data){
