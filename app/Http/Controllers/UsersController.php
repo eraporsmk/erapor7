@@ -321,14 +321,14 @@ class UsersController extends Controller
               $query->where('peserta_didik_id', auth()->user()->peserta_didik_id);
            });
         };
-     }
+    }
     public function profil_pd(){
         $user = auth()->user();
         $data = [
                 'header' => [
                     'avatar' => $user->profile_photo_path,
-                    'username' => $user->name,
-                    'designation' => "NISN: $user->nisn",
+                    'nama' => $user->name,
+                    'nisn' => "NISN: $user->nisn",
                     'coverImg' => '/images/profile/timeline.jpg',
                 ],
                 'pekerjaan' => Pekerjaan::orderBy('pekerjaan_id')->get(),
@@ -341,117 +341,55 @@ class UsersController extends Controller
                            $query->select('guru_id', 'nama');
                         },
                         'pembelajaran' => function($query){
-                           $query->orderBy('mata_pelajaran_id');
-                           $query->with([
-                              'guru' => function($query){
-                                 $query->select('guru_id', 'nama');
-                              }, 
-                              'pengajar' => function($query){
-                                 $query->select('guru_id', 'nama');
-                              },
-                              'nilai_akhir_pengetahuan' => $this->callback(),
-                              'nilai_akhir_keterampilan' => $this->callback(),
-                              'nilai_akhir_kurmer' => $this->callback(),
-                           ]);
+                            $query->whereNotNull('kelompok_id');
+                            $query->whereNotNull('no_urut');
+                            $query->orderBy('mata_pelajaran_id');
+                            $query->with([
+                                'guru' => function($query){
+                                    $query->select('guru_id', 'nama');
+                                }, 
+                                'pengajar' => function($query){
+                                    $query->select('guru_id', 'nama');
+                                },
+                                'nilai_akhir_pengetahuan' => $this->callback(),
+                                'nilai_akhir_keterampilan' => $this->callback(),
+                                'nilai_akhir_kurmer' => $this->callback(),
+                            ]);
                         },
                      ]);
                 }])->find($user->peserta_didik_id),
-                'suggestedPages' => [
-                    [
-                        'avatar' => '/images/profile/user-01.jpg',
-                        'username' => 'Peter Reed',
-                        'subtitle' => 'Company',
-                        'favorite' => false,
-                    ],
-                    [
-                        'avatar' => '/images/profile/user-01.jpg',
-                        'username' => 'Harriett Adkins',
-                        'subtitle' => 'Company',
-                        'favorite' => true,
-                    ],
-                ],
-                'twitterFeeds' => [
-                    [
-                        'imgUrl' => '/images/profile/user-01.jpg',
-                        'title' => 'Gertrude Stevens',
-                        'id' => 'tiana59 ',
-                        'tags' => '#design #fasion',
-                        'desc' => 'I love cookie chupa chups sweet tart apple pie ⭐️ chocolate bar.',
-                        'favorite' => false,
-                    ],
-                    [
-                        'imgUrl' => '/images/profile/user-01.jpg',
-                        'title' => 'Lura Jones',
-                        'id' => 'tiana59 ',
-                        'tags' => '#vuejs #code #coffeez',
-                        'desc' => 'Halvah I love powder jelly I love cheesecake cotton candy. 😍',
-                        'favorite' => false,
-                    ]
-                ],
-                'post' => [
-                    [
-                        'avatar' => '/images/profile/user-01.jpg',
-                        'username' => 'Leeanna Alvord',
-                        'postTime' => '12 Dec 2018 at 1:16 AM',
-                        'postText' => 'Wonderful Machine· A well-written bio allows viewers to get to know a photographer beyond the work. This can make the difference when presenting to clients who are looking for the perfect fit.',
-                        'postImg' => '/images/profile/user-01.jpg',
-                        'likes' => 1240,
-                        'youLiked' => true,
-                        'comments' => 1240,
-                        'share' => 1240,
-                        'likedUsers' => [
-                            [
-                                'avatar' => '/images/profile/user-01.jpg',
-                                'username' => 'Trine Lynes 1',
-                            ],
-                            [
-                                'avatar' => '/images/profile/user-01.jpg',
-                                'username' => 'Trine Lynes 2',
-                            ]
-                        ],
-                        'likedCount' => 140,
-                        'detailedComments' => [
-                            'avatar' => '/images/profile/user-01.jpg',
-                            'username' => 'Trine Lynes 1',
-                            'comment' => 'Easy & smart fuzzy search🕵🏻 functionality which enables users to search quickly.',
-                            'commentsLikes' => 34,
-                            'youLiked' => false,
-                        ],
-                    ]
-                ],
-                'latestPhotos' => [
-                    ['img' => '/images/profile/user-01.jpg'],
-                    ['img' => '/images/profile/user-01.jpg'],
-                    ['img' => '/images/profile/user-01.jpg'],
-                ],
-                'suggestions' => [
-                    [
-                        'avatar' => '/images/profile/user-01.jpg',
-                        'name' => 'Trine Lynes 1',
-                        'mutualFriend' => '6 Mutual Friends',
-                    ]
-                ],
-                'polls' => [
-                    [
-                        'name' => 'RDJ',
-                        'result' => '82%',
-                        'votedUser' => [
-                            [
-                                'img' => '/images/profile/user-01.jpg',
-                                'username' => 'Trine Lynes 1',
-                            ],
-                            [
-                                'img' => '/images/profile/user-01.jpg',
-                                'username' => 'Trine Lynes 2',
-                            ],
-                            [
-                                'img' => '/images/profile/user-01.jpg',
-                                'username' => 'Trine Lynes 3',
-                            ],
-                        ]
-                    ]
-                ],
         ];
+        return response()->json($data);
+    }
+    public function nilai_semester(){
+        $data = Rombongan_belajar::where(function($query){
+            $query->where('semester_id', request()->semester_id);
+            $query->where('jenis_rombel', 1);
+            $query->whereHas('anggota_rombel', function($query){
+                $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+            });
+        })->with([
+            'kurikulum',
+            'wali_kelas' => function($query){
+               $query->select('guru_id', 'nama');
+            },
+            'pembelajaran' => function($query){
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->orderBy('mata_pelajaran_id');
+                $query->with([
+                    'guru' => function($query){
+                        $query->select('guru_id', 'nama');
+                    }, 
+                    'pengajar' => function($query){
+                        $query->select('guru_id', 'nama');
+                    },
+                    'nilai_akhir_pengetahuan' => $this->callback(),
+                    'nilai_akhir_keterampilan' => $this->callback(),
+                    'nilai_akhir_kurmer' => $this->callback(),
+                ]);
+            },
+         ])->first();
         return response()->json($data);
     }
     public function update_profile(){

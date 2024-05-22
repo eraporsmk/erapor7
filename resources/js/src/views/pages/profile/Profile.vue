@@ -8,9 +8,9 @@
           <profile-about :about-data="profileData.pd" />
         </b-col>
         <b-col lg="9" cols="12" order="1" order-lg="2">
-          <profile-pembelajaran :posts="profileData.pd" v-if="activeTab === 0" @nilai="handleNilai" />
+          <profile-pembelajaran :kelas="profileData.pd.kelas" v-if="activeTab === 0" @nilai="handleNilai" />
           <profile-biodata :bio-data="profileData.pd" v-if="activeTab === 1" :form="form" :pekerjaan="pekerjaan" />
-          <profile-nilai :posts="profileData.pd" v-if="activeTab === 2" :pembelajaran_id="pembelajaran_id" />
+          <profile-nilai :posts="profileData.pd" v-if="activeTab === 2" :pembelajaran_id="pembelajaran_id" @kembali="handleKembali" />
           <profile-teman :posts="profileData.pd" v-if="activeTab === 3" />
         </b-col>
       </b-row>
@@ -85,9 +85,14 @@ export default {
       this.activeTab = idx
     },
     handleNilai(pembelajaran_id){
+      console.log('pembelajaran_id');
       this.pembelajaran_id = pembelajaran_id
       this.activeTab = 2
-    }
+    },
+    handleKembali(){
+      this.pembelajaran_id = ''
+      this.activeTab = 0
+    },
   },
 }
 /* eslint-disable global-require */

@@ -17,4 +17,8 @@ class Semester extends Model
 	{
 		return $this->hasOne(Tahun_ajaran::class, 'tahun_ajaran_id', 'tahun_ajaran_id');
 	}
+	public function anggota_rombel()
+	{
+		return $this->hasOne(Anggota_rombel::class, 'semester_id', 'semester_id');
+	}
 }

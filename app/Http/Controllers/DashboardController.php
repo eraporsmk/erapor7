@@ -15,6 +15,7 @@ use App\Models\Peserta_didik;
 use App\Models\Opsi_budaya_kerja;
 use App\Models\Nilai_akhir;
 use App\Models\Deskripsi_mata_pelajaran;
+use App\Models\Semester;
 
 class DashboardController extends Controller
 {
@@ -645,5 +646,16 @@ class DashboardController extends Controller
             $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
          });
       };
+   }
+   public function get_semester(){
+      $data = Semester::whereHas('anggota_rombel', function($query){
+         $query->whereHas('rombongan_belajar', function($query){
+            $query->where('jenis_rombel', 1);
+         });
+         $query->whereHas('peserta_didik', function($query){
+            $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+         });
+      })->orderBy('semester_id')->get();
+      return response()->json($data);
    }
 }

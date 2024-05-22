@@ -9,17 +9,17 @@
           </template>
           <template v-else>
             <b-avatar size="8.3rem" rounded :src="headerData.avatar" variant="light-primary">
-              <feather-icon v-if="!headerData.username" icon="UserIcon" size="22"/>
+              <feather-icon v-if="!headerData.nama" icon="UserIcon" size="22"/>
             </b-avatar>
           </template>
         </div>
         <!-- profile title -->
         <div class="profile-title ml-3">
           <h2 class="text-white">
-            {{ headerData.username }}
+            {{ headerData.nama }}
           </h2>
           <p class="text-white">
-            {{ headerData.designation }}
+            {{ headerData.nisn }}
           </p>
         </div>
         <!--/ profile title -->
