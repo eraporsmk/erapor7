@@ -391,7 +391,7 @@ class UsersController extends Controller
                     'avatar' => $user->profile_photo_path,
                     'nama' => $user->name,
                     'nisn' => "NISN: $user->nisn",
-                    'coverImg' => '/images/profile/timeline.jpg',
+                    'coverImg' => '/images/profile/timeline.png',
                 ],
                 'pekerjaan' => Pekerjaan::orderBy('pekerjaan_id')->get(),
                 'pd' => Peserta_didik::with(['pekerjaan_ayah', 'pekerjaan_ibu', 'agama', 'kelas' => function($query){
