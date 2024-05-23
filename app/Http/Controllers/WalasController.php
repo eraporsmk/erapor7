@@ -479,6 +479,7 @@ class WalasController extends Controller
         $data = [
             'merdeka' => ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE,
             'data_siswa' => $data_siswa,
+            'rapor_pts' => config('erapor.rapor_pts'),
         ];
         return response()->json($data);
     }

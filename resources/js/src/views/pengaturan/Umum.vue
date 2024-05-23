@@ -19,6 +19,9 @@
                         </template>
                       </v-select>
                     </b-form-group>
+                    <b-form-group label="Tanggal Rapor Tengah Semester" label-for="tanggal_rapor_pts">
+                      <b-form-datepicker v-model="form.tanggal_rapor_pts" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal_rapor_pts" @context="onContext" placeholder="== Pilih Tanggal Rapor Tengah Semester ==" />
+                    </b-form-group>
                     <b-form-group label="Tanggal Rapor Semester" label-for="tanggal_rapor" :invalid-feedback="feedback.tanggal_rapor" :state="state.tanggal_rapor">
                       <b-form-datepicker v-model="form.tanggal_rapor" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal_rapor" @context="onContext" placeholder="== Pilih Tanggal Rapor Semester ==" />
                     </b-form-group>
@@ -108,6 +111,7 @@ export default {
       form: {
         semester_id: '',
         tanggal_rapor: '',
+        tanggal_rapor_pts: '',
         tanggal_rapor_kelas_akhir: '',
         zona: '',
         kepala_sekolah: '',
@@ -141,6 +145,7 @@ export default {
         { value: 'Plt. Kepala Sekolah', text: 'PLT Kepala Sekolah'},
       ],
       logo_sekolah: null,
+      rapor_pts: false,
     }
   },
   created() {
@@ -174,6 +179,10 @@ export default {
         this.data_rombel = getData.data_rombel
         this.semester = getData.semester
         this.logo_sekolah = getData.logo_sekolah
+        this.rapor_pts = getData.rapor_pts
+        if(this.rapor_pts){
+          this.form.tanggal_rapor_pts = getData.tanggal_rapor_pts
+        }
       })
     },
     onFileChange(e) {
@@ -186,7 +195,7 @@ export default {
       data.append('semester_id', this.form.semester_id);
       data.append('sekolah_id', this.user.sekolah_id);
       data.append('semester_aktif', this.user.semester.semester_id);
-      //data.append('tanggal_rapor_uts', (this.tanggal_rapor_uts) ? this.tanggal_rapor_uts : '')
+      data.append('tanggal_rapor_pts', (this.form.tanggal_rapor_pts) ? this.form.tanggal_rapor_pts : '')
       data.append('tanggal_rapor', (this.form.tanggal_rapor) ? this.form.tanggal_rapor : '')
       data.append('tanggal_rapor_kelas_akhir', (this.form.tanggal_rapor_kelas_akhir) ? this.form.tanggal_rapor_kelas_akhir : '')
       data.append('zona', (this.form.zona) ? this.form.zona : '')

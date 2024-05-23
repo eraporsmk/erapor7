@@ -20,6 +20,7 @@ use App\Exports\TemplateNilaiKd;
 use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
 use App\Exports\LeggerNilaiKurmerExport;
+use App\Exports\TemplateNilaiPts;
 use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -204,5 +205,12 @@ class DownloadController extends Controller
 		}
 		$file = clean('template-nilai-sumatif-akhir-semester-'.$data->nama_mata_pelajaran.'-kelas-'.$data->rombongan_belajar->nama);
 		return (new FastExcel($lists))->download($file.'.xlsx');
+	}
+	public function template_nilai_pts($pembelajaran_id){
+		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
+		$nama_file = 'Tempate Nilai PTS ' . $data->nama_mata_pelajaran.' Kelas '.$data->rombongan_belajar->nama;
+		$nama_file = clean($nama_file);
+		$nama_file = $nama_file . '.xlsx';
+		return (new TemplateNilaiPts)->query($pembelajaran_id, $data)->download($nama_file);
 	}
 }

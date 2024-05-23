@@ -34,6 +34,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
 use App\Imports\NilaiSumatifImport;
+use App\Imports\NilaiPtsImport;
 use Carbon\Carbon;
 use Storage;
 
@@ -329,6 +330,26 @@ class PenilaianController extends Controller
                 'text' => 'Nilai Sumatif Lingkup Materi gagal disimpan. Silahkan coba beberapa saat lagi!',
             ];
         }
+        return response()->json($data);
+    }
+    public function upload_nilai_pts(){
+        request()->validate(
+            [
+                'file_excel' => 'mimes:xlsx', // 1MB Max
+            ],
+            [
+                'file_excel.mimes' => 'File harus berupa file dengan ekstensi: xlsx.',
+            ]
+        );
+        $file_path = request()->file_excel->store('files', 'public');
+        $pembelajaran = Pembelajaran::find(request()->pembelajaran_id);
+        Excel::import(new NilaiPtsImport($pembelajaran), storage_path('/app/public/'.$file_path));
+        Storage::disk('public')->delete($file_path);
+        $data = [
+            'icon' => 'success',
+            'title' => 'Berhasil!',
+            'text' => 'Nilai Tengah Tengah berhasil disimpan',
+        ];
         return response()->json($data);
     }
     public function upload_nilai(){
@@ -1029,4 +1050,47 @@ class PenilaianController extends Controller
         }
         return response()->json($data);
     }
+    public function all_pembelajaran(){
+        $data = [
+            'data' => Pembelajaran::where($this->kondisi())->withCount([
+                'anggota_rombel',
+                'nilai_pts',
+              ])->with('rombongan_belajar')->orderBy('mata_pelajaran_id')->get(),
+        ];
+        return response()->json($data);
+    }
+    private function kondisi(){
+        return function($query){
+            $query->where('semester_id', request()->semester_id);
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->where('guru_id', request()->guru_id);
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            //$query->whereNull('induk_pembelajaran_id');
+            $query->orWhere('guru_pengajar_id', request()->guru_id);
+            $query->where('semester_id', request()->semester_id);
+            $query->where('sekolah_id', request()->sekolah_id);
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            //$query->whereNull('induk_pembelajaran_id');
+        };
+     }
+     public function detil_nilai_pts(){
+        $data = [
+            'pembelajaran' => Pembelajaran::with('rombongan_belajar')->find(request()->pembelajaran_id),
+            'items' => Peserta_didik::withWhereHas('anggota_rombel', function($query){
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('pembelajaran_id', request()->pembelajaran_id);
+                    });
+                });
+                $query->with(['nilai_pts' => function($query){
+                    $query->whereHas('rapor_pts', function($query){
+                        $query->where('pembelajaran_id', request()->pembelajaran_id);
+                    });
+                }]);
+            })->orderBy('nama')->get(),
+        ];
+        return response()->json($data);
+     }
 }

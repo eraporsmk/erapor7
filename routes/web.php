@@ -22,6 +22,7 @@ Route::group(['prefix' => 'cetak'], function () {
     });
     Route::get('/contoh', [CetakController::class, 'generate_pdf'])->name('contoh');
     Route::get('/rapor-uts/{rombongan_belajar_id}', [CetakController::class, 'rapor_uts'])->name('rapor-uts');
+    Route::get('/rapor-tengah-semester/{anggota_rombel_id}/{semester_id}', [CetakController::class, 'rapor_tengah_semester'])->name('rapor-tengah-semester');
     Route::get('/rapor-cover/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_cover'])->name('rapor-cover');
     Route::get('/rapor-semester/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_semester'])->name('rapor-semester');
     Route::get('/rapor-nilai-akhir/{anggota_rombel_id}/{sekolah_id}/{semester_id}', [CetakController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
@@ -44,5 +45,6 @@ Route::group(['prefix' => 'downloads'], function () {
     //http://erapor7-live.test/downloads/template-sumatif-akhir-semester/8eedbb56-7160-4238-aca3-fc535ea95cc3
     Route::get('/template-sumatif-lingkup-materi/{pembelajaran_id?}', [DownloadController::class, 'template_sumatif_lingkup_materi'])->name('template-sumatif-lingkup-materi');
     Route::get('/template-sumatif-akhir-semester/{pembelajaran_id?}', [DownloadController::class, 'template_sumatif_akhir_semester'])->name('template-sumatif-akhir-semester');
+    Route::get('/template-nilai-pts/{pembelajaran_id?}', [DownloadController::class, 'template_nilai_pts'])->name('template-nilai-pts');
 });
 Route::get('/{any}', [ApplicationController::class, 'index'])->where('any', '.*');

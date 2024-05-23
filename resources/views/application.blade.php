@@ -47,6 +47,7 @@
     var app_version = '{{ get_setting('app_version') }}';
     var app_name = '{{ config('app.name') }}';
     var app_registration = '{{ config('app.registration') }}';
+    var rapor_pts = '{{config('erapor.rapor_pts')}}'
   </script>    
   <script src="{{ asset(mix('js/app.js')) }}"></script>
 

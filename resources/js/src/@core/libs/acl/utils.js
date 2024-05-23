@@ -19,10 +19,16 @@ export const can = (action, subject) => {
  * @param {Object} item navigation object item
  */
 export const canViewVerticalNavMenuLink = item => {
-  if(item.action){
-    return can(item.action, item.resource)
+  if(item.uts){
+    if(rapor_pts){
+      return true
+    }
   } else {
-    return true
+    if(item.action){
+      return can(item.action, item.resource)
+    } else {
+      return true
+    }
   }
 }
 

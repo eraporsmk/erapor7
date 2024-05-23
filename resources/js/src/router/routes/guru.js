@@ -157,6 +157,25 @@ export default [
     },
   },
   {
+    path: '/penilaian/nilai-tengah-semester',
+    name: 'penilaian-nilai-tengah-semester',
+    component: () => import('@/views/penilaian/tengah-semester/Index.vue'),
+    meta: {
+      resource: 'Guru',
+      action: 'read',
+      pageTitle: 'Input Nilai Tengah Semester',
+      breadcrumb: [
+        {
+          text: 'Penilaian',
+        },
+        {
+          text: 'Input Nilai Tengah Semester',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
     path: '/penilaian/nilai-akhir',
     name: 'penilaian-nilai-akhir',
     component: () => import('@/views/penilaian/NilaiAkhir.vue'),

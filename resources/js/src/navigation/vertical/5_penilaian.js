@@ -12,6 +12,14 @@ export default [
         },
         {
           icon: 'hand-point-right',
+          title: 'Nilai Tengah Semester',
+          route: 'penilaian-nilai-tengah-semester',
+          resource: 'Guru',
+          action: 'read',
+          uts: true,
+        },
+        {
+          icon: 'hand-point-right',
           title: 'Nilai Akhir',
           route: 'penilaian-nilai-akhir',
           resource: 'Guru',

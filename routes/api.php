@@ -177,6 +177,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-sumatif-akhir-semester', [PenilaianController::class, 'get_nilai_akhir_sumatif']);
     Route::post('/simpan-sumatif-lingkup-materi', [PenilaianController::class, 'simpan_nilai_tp']);
     Route::post('/simpan-sumatif-akhir-semester', [PenilaianController::class, 'simpan_nilai_akhir_sumatif']);
+    Route::get('/all-pembelajaran', [PenilaianController::class, 'all_pembelajaran']);
+    Route::post('/upload-nilai-pts', [PenilaianController::class, 'upload_nilai_pts']);
+    Route::post('/detil-nilai-pts', [PenilaianController::class, 'detil_nilai_pts']);
   });
   Route::group(['prefix' => 'ukk'], function () {
     Route::get('/paket-ukk', [UkkController::class, 'paket_ukk']);

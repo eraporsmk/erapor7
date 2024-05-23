@@ -251,4 +251,24 @@ class Pembelajaran extends Model
 	{
 		return $this->hasMany(Nilai_tp::class, 'pembelajaran_id', 'pembelajaran_id');
 	}
+	public function nilai_pts(){
+		return $this->hasManyThrough(
+            Nilai_pts::class,
+			Rapor_pts::class,
+			'pembelajaran_id',
+			'rapor_pts_id',
+			'pembelajaran_id',
+			'rapor_pts_id'
+        );
+	}
+	public function single_nilai_pts(){
+		return $this->hasOneThrough(
+            Nilai_pts::class,
+			Rapor_pts::class,
+			'pembelajaran_id',
+			'rapor_pts_id',
+			'pembelajaran_id',
+			'rapor_pts_id'
+        );
+	}
 }

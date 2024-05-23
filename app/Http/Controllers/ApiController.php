@@ -28,7 +28,7 @@ class ApiController extends Controller
             'semester' => Semester::whereHas('tahun_ajaran', function($query){
                 $query->where('periode_aktif', 1);
             })->orderBy('semester_id', 'DESC')->get(),
-            //'tanggal_rapor_uts' => get_setting('tanggal_rapor_uts', request()->sekolah_id, request()->semester_id),
+            'tanggal_rapor_pts' => get_setting('tanggal_rapor_pts', request()->sekolah_id, request()->semester_id),
             'tanggal_rapor' => get_setting('tanggal_rapor', request()->sekolah_id, request()->semester_id),
             'tanggal_rapor_kelas_akhir' => get_setting('tanggal_rapor_kelas_akhir', request()->sekolah_id, request()->semester_id),
             'kepala_sekolah' => ($sekolah->kasek) ? $sekolah->kasek->guru_id : $sekolah->guru_id,
@@ -47,6 +47,7 @@ class ApiController extends Controller
             'logo_sekolah' => $sekolah->logo_sekolah,
             'periode' => substr(request()->semester_id, -1),
             'sekolah' => $sekolah,
+            'rapor_pts' => config('erapor.rapor_pts'),
         ];
         return response()->json($data);
     }
@@ -80,6 +81,18 @@ class ApiController extends Controller
                 ],
                 [
                     'value' => $request->tanggal_rapor,
+                ]
+            );
+        }
+        if($request->tanggal_rapor_pts){
+            Setting::updateOrCreate(
+                [
+                    'key' => 'tanggal_rapor_pts',
+                    'sekolah_id' => $request->sekolah_id,
+                    'semester_id' => $request->semester_aktif,
+                ],
+                [
+                    'value' => $request->tanggal_rapor_pts,
                 ]
             );
         }

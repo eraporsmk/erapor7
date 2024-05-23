@@ -246,4 +246,8 @@ class Anggota_rombel extends Model
 	public function kd_inkompeten(){
 		return $this->hasMany(Kd_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompeten', 0);
 	}
+	public function nilai_pts()
+	{
+		return $this->hasOne(Nilai_pts::class, 'anggota_rombel_id', 'anggota_rombel_id');
+	}
 }

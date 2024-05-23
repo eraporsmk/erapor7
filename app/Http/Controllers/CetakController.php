@@ -35,6 +35,58 @@ class CetakController extends Controller
 		$pdf->getMpdf()->SetFooter('Nama Siswa - Nama Kelas |{PAGENO}|Dicetak dari '.config('app.name').' v.'.get_setting('app_version'));
         return $pdf->stream('document.pdf');
     }
+	public function rapor_tengah_semester(){
+		$tanggal_rapor = get_setting('tanggal_rapor_pts', request()->route('sekolah_id'), request()->route('semester_id'));
+		$pd = Peserta_didik::withWhereHas('anggota_rombel', function($query){
+			$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
+			$query->with([
+				'rombongan_belajar' => function($query){
+					$query->with([
+						'pembelajaran' => function($query){
+							$query->orderBy('kelompok_id');
+							$query->orderBy('no_urut');
+							$query->whereNotNull('kelompok_id');
+							$query->whereNotNull('no_urut');
+							$query->with([
+								'single_nilai_pts' => function($query){
+									$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
+								}
+							]);
+						},
+						'jurusan',
+						'kurikulum',
+						'sekolah.kasek' => function($query){
+							$query->where('semester_id', request()->route('semester_id'));
+						},
+					]);
+				},
+			]);
+		})->first();
+		$data = [
+			'pd' => $pd,
+			'tanggal_rapor' => $tanggal_rapor ? Carbon::parse($tanggal_rapor)->translatedFormat('d F Y') : Carbon::now()->translatedFormat('d F Y'),
+			'semester_id' => request()->route('semester_id'),
+		];
+		$pdf = PDF::loadView('cetak.rapor_nilai_pts', $data, [], [
+			'format' => 'A4',
+			'margin_left' => 5,
+			'margin_right' => 5,
+			'margin_top' => 5,
+			'margin_bottom' => 5,
+			'margin_header' => 5,
+			'margin_footer' => 5,
+		]);
+		$pdf->getMpdf()->defaultfooterfontsize=7;
+		$pdf->getMpdf()->defaultfooterline=0;
+		$general_title = $pd->nama.' - '.$pd->anggota_rombel->rombongan_belajar->nama;
+		$pdf->getMpdf()->SetFooter($general_title.'|{PAGENO}|Dicetak dari '.config('site.app_name').' v.'.get_setting('app_version'));
+		/*$pdf = PDF::loadView('cetak.blank');
+		$pdf->getMpdf()->AddPage('P','','','','',5,5,5,5,5,5,'', 'A4');
+		$rapor_nilai = view('cetak.rapor_nilai_pts', $data);
+		$pdf->getMpdf()->WriteHTML($rapor_nilai);*/
+		$filename = 'Rapor_PTS_'.str_replace(' ','_', Str::of($pd->anggota_rombel->rombongan_belajar->nama)->ascii()).'_TA_'.request()->route('semester_id');
+		return $pdf->stream($filename.'.pdf'); 
+	}
     public function rapor_uts(Request $request){
         $rombongan_belajar_id = $request->route('rombongan_belajar_id');
         $callback = function($query){
