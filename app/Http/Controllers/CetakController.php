@@ -48,6 +48,7 @@ class CetakController extends Controller
 							$query->whereNotNull('kelompok_id');
 							$query->whereNotNull('no_urut');
 							$query->with([
+								'kelompok',
 								'single_nilai_pts' => function($query){
 									$query->where('anggota_rombel_id', request()->route('anggota_rombel_id'));
 								}
@@ -62,8 +63,29 @@ class CetakController extends Controller
 				},
 			]);
 		})->first();
+		$get_pembelajaran = [];
+		foreach($pd->anggota_rombel->rombongan_belajar->pembelajaran as $pembelajaran){
+			if(in_array($pembelajaran->mata_pelajaran_id, mapel_agama())){
+				if(filter_pembelajaran_agama($pd->agama->nama, $pembelajaran->nama_mata_pelajaran)){
+					$get_pembelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran;
+				}
+			} else {
+				$get_pembelajaran[$pembelajaran->pembelajaran_id] = $pembelajaran;
+			}
+		}
+		$pembelajaran = [];
+		$i=1;
+		foreach($get_pembelajaran as $item){
+			$pembelajaran[$item->kelompok->nama_kelompok][] = [
+				'no' => $i++,
+				'nama'	=> $item->nama_mata_pelajaran,
+				'nilai'	=> $item->single_nilai_pts?->nilai,
+				'deskripsi' => $item->single_nilai_pts?->deskripsi,
+			];
+		}
 		$data = [
 			'pd' => $pd,
+			'pembelajaran' => $pembelajaran,
 			'tanggal_rapor' => $tanggal_rapor ? Carbon::parse($tanggal_rapor)->translatedFormat('d F Y') : Carbon::now()->translatedFormat('d F Y'),
 			'semester_id' => request()->route('semester_id'),
 		];

@@ -35,25 +35,29 @@
 <div class="text-bold text-center" style="vertical-align:middle"><strong>DAFTAR NILAI<br />UJIAN TENGAH SEMESTER</strong></div>
 <p>&nbsp;</p>
 <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th style="vertical-align:middle;width: 2px;vertical-align:middle">No</th>
-        <th style="vertical-align:middle;width: 300px;" class="text-center">Mata Pelajaran</th>
-        <th class="text-center" style="vertical-align:middle">Nilai</th>
-        <th style="vertical-align:middle" class="text-center">Deskripsi</th>
-      </tr>
-    </thead>
-    <tbody>
-    @foreach($pd->anggota_rombel->rombongan_belajar->pembelajaran as $pembelajaran)
-		<tr>
-			<td class="text-center">{{$loop->iteration}}</td>
-			<td>{{$pembelajaran->nama_mata_pelajaran}}</td>
-			<td class="text-center">{{$pembelajaran->single_nilai_pts?->nilai}}</td>
-			<td>{{$pembelajaran->single_nilai_pts?->deskripsi}}</td>
-			<td></td>
+  <thead>
+    <tr>
+      <th style="vertical-align:middle;" class="text-center" width="7%">No</th>
+			<th style="vertical-align:middle;" class="text-center" width="30%" >Mata Pelajaran</th>
+			<th style="vertical-align:middle;" class="text-center" width="10%" >Nilai</th>
+			<th style="vertical-align:middle;" class="text-center" width="48%" >Capaian Kompetensi</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($pembelajaran as $kelompok => $items)
+    <tr>
+      <td colspan="4" class="strong"><strong style="font-size: 13px;">{{$kelompok}}</strong></td>
+    </tr>
+    @foreach ($items as $item)
+    <tr>
+			<td class="text-center">{{$item['no']}}</td>
+			<td>{{$item['nama']}}</td>
+			<td class="text-center">{{$item['nilai']}}</td>
+			<td>{{$item['deskripsi']}}</td>
 		</tr>
-		@endforeach
-	</tbody>
+    @endforeach
+    @endforeach
+  </tbody>
 </table>
 <br>
 {{--
