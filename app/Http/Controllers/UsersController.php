@@ -14,6 +14,7 @@ use App\Models\Rombongan_belajar;
 use App\Models\Ekstrakurikuler;
 use App\Models\Pembelajaran;
 use App\Models\Pekerjaan;
+use App\Models\Semester;
 use Validator;
 use Hash;
 class UsersController extends Controller
@@ -420,38 +421,15 @@ class UsersController extends Controller
                         },
                      ]);
                 }])->find($user->peserta_didik_id),
+                'semester' => Semester::whereHas('anggota_rombel', function($query){
+                    $query->whereHas('rombongan_belajar', function($query){
+                       $query->where('jenis_rombel', 1);
+                    });
+                    $query->whereHas('peserta_didik', function($query){
+                       $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+                    });
+                 })->orderBy('semester_id')->get(),
         ];
-        return response()->json($data);
-    }
-    public function nilai_semester(){
-        $data = Rombongan_belajar::where(function($query){
-            $query->where('semester_id', request()->semester_id);
-            $query->where('jenis_rombel', 1);
-            $query->whereHas('anggota_rombel', function($query){
-                $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
-            });
-        })->with([
-            'kurikulum',
-            'wali_kelas' => function($query){
-               $query->select('guru_id', 'nama');
-            },
-            'pembelajaran' => function($query){
-                $query->whereNotNull('kelompok_id');
-                $query->whereNotNull('no_urut');
-                $query->orderBy('mata_pelajaran_id');
-                $query->with([
-                    'guru' => function($query){
-                        $query->select('guru_id', 'nama');
-                    }, 
-                    'pengajar' => function($query){
-                        $query->select('guru_id', 'nama');
-                    },
-                    'nilai_akhir_pengetahuan' => $this->callback(),
-                    'nilai_akhir_keterampilan' => $this->callback(),
-                    'nilai_akhir_kurmer' => $this->callback(),
-                ]);
-            },
-         ])->first();
         return response()->json($data);
     }
     public function update_profile(){
@@ -533,6 +511,52 @@ class UsersController extends Controller
             'title' => 'Berhasil!',
             'text' => 'Profil Pengguna berhasil diperbaharui',
         ];
+        return response()->json($data);
+    }
+    public function nilai_semester(){
+        $data = Rombongan_belajar::where(function($query){
+            $query->where('semester_id', request()->semester_id);
+            $query->where('jenis_rombel', 1);
+            $query->whereHas('anggota_rombel', function($query){
+                $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+            });
+        })->with([
+            'kurikulum',
+            'wali_kelas' => function($query){
+               $query->select('guru_id', 'nama');
+            },
+            'pembelajaran' => function($query){
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->orderBy('mata_pelajaran_id');
+                $query->with([
+                    'guru' => function($query){
+                        $query->select('guru_id', 'nama');
+                    }, 
+                    'pengajar' => function($query){
+                        $query->select('guru_id', 'nama');
+                    },
+                    'nilai_akhir_pengetahuan' => $this->callback(),
+                    'nilai_akhir_keterampilan' => $this->callback(),
+                    'nilai_akhir_kurmer' => $this->callback(),
+                ]);
+            },
+         ])->first();
+        return response()->json($data);
+    }
+    public function teman_sekelas(){
+        $data = Peserta_didik::where(function($query){
+            $query->whereHas('anggota_rombel', function($query){
+                $query->where('semester_id', request()->semester_id);
+                $query->whereHas('rombongan_belajar', function($query){
+                    $query->where('jenis_rombel', 1);
+                    $query->whereHas('anggota_rombel', function($query){
+                        $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
+                    });
+                });
+            });
+            $query->where('peserta_didik_id', '<>', request()->user()->peserta_didik_id);
+        })->orderBy('nama')->get();
         return response()->json($data);
     }
 }

@@ -53,7 +53,7 @@
       </b-card-body>
     </template>
     <template v-else>
-      <b-tabs v-model="tabIndex" @input="inputTab" content-class="mt-0">
+      <b-tabs fill v-model="tabIndex" @input="inputTab" content-class="mt-0">
         <template v-for="(item, index) in semester">
           <b-tab :title="item.nama">
             <template v-if="isBusy">
@@ -63,7 +63,7 @@
                 </div>
               </template>
               <template v-else>
-                <profile-pembelajaran :kelas="kelas" @nilai="handleNilai" />
+                <profile-pembelajaran :pd="pd" :kelas="kelas" @nilai="handleNilai" />
               </template>
           </b-tab>
         </template>
@@ -92,6 +92,14 @@ export default {
       type:String,
       required: true
     },
+    pd: {
+      type: Object,
+      default: () => {},
+    },
+    semester: {
+      type: Array,
+      default: () => [],
+    }
   },
   data() {
     return {
@@ -102,7 +110,6 @@ export default {
       capaian_kompetensi_p: '-',
       capaian_kompetensi_k: '',
       show: false,
-      semester: [],
       tabIndex: 0,
       kelas: null,
     }
@@ -111,12 +118,7 @@ export default {
     if(this.pembelajaran_id){
       this.loadPostsData(this.pembelajaran_id)
     } else {
-      this.show = false
-      this.isBusy = true
-      this.$http.get('/dashboard/get-semester').then(response => {
-        this.isBusy = false
-        this.semester = response.data
-      })
+      this.inputTab(this.tabIndex)
     }
   },
   methods: {

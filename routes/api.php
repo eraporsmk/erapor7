@@ -55,7 +55,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/detil-rencana', [DashboardController::class, 'detil_rencana']);
     Route::post('/generate-nilai', [DashboardController::class, 'generate_nilai']);
     Route::post('/detil-nilai', [DashboardController::class, 'detil_nilai']);
-    Route::get('/get-semester', [DashboardController::class, 'get_semester']);
   });
   Route::group(['prefix' => 'sinkronisasi'], function () {
     Route::post('/', [SinkronisasiController::class, 'index']);
@@ -81,6 +80,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/profil-pd', [UsersController::class, 'profil_pd']);
     Route::post('/nilai-semester', [UsersController::class, 'nilai_semester']);
     Route::post('/update-profile', [UsersController::class, 'update_profile']);
+    Route::post('/teman-sekelas', [UsersController::class, 'teman_sekelas']);
   });
   Route::group(['prefix' => 'setting'], function () {
     Route::post('/', [ApiController::class, 'index']);

@@ -8,10 +8,10 @@
           <profile-about :about-data="profileData.pd" />
         </b-col>
         <b-col lg="9" cols="12" order="1" order-lg="2">
-          <profile-pembelajaran :kelas="profileData.pd.kelas" v-if="activeTab === 0" @nilai="handleNilai" />
+          <profile-pembelajaran :pd="profileData.pd" :kelas="profileData.pd.kelas" v-if="activeTab === 0" @nilai="handleNilai" />
           <profile-biodata :bio-data="profileData.pd" v-if="activeTab === 1" :form="form" :pekerjaan="pekerjaan" />
-          <profile-nilai :posts="profileData.pd" v-if="activeTab === 2" :pembelajaran_id="pembelajaran_id" @kembali="handleKembali" />
-          <profile-teman :posts="profileData.pd" v-if="activeTab === 3" />
+          <profile-nilai :semester="semester" :pd="profileData.pd" v-if="activeTab === 2" :pembelajaran_id="pembelajaran_id" @kembali="handleKembali" />
+          <profile-teman :semester="semester" :pd="profileData.pd" v-if="activeTab === 3" />
         </b-col>
       </b-row>
     </section>
@@ -59,6 +59,7 @@ export default {
       },
       pekerjaan: [],
       pembelajaran_id: '',
+      semester: [],
     }
   },
   created() {
@@ -69,6 +70,7 @@ export default {
     }).then(res => {
       this.profileData = res.data
       this.pekerjaan = this.profileData.pekerjaan
+      this.semester = this.profileData.semester
       this.form.peserta_didik_id = this.profileData.pd.peserta_didik_id
       this.form.status = this.profileData.pd.status
       this.form.anak_ke = this.profileData.pd.anak_ke
