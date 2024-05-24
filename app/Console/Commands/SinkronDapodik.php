@@ -651,6 +651,9 @@ class SinkronDapodik extends Command
         $rombongan_belajar_id = [];
         foreach($dapodik as $data){
             $rombongan_belajar_id[] = $data->rombongan_belajar_id;
+            if($data->jurusan_sp){
+                $this->insert_jurusan($data->jurusan_sp->jurusan, $user, $semester);
+            }
             $this->insert_kurikulum($data->kurikulum, $user, $semester);
             $this->insert_rombel($data, $user, $semester, FALSE);
             $this->proses_sync('Memperoses', 'rombongan_belajar', $i, count($dapodik), $user->sekolah_id);
