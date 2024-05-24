@@ -37,7 +37,7 @@
     <b-col cols="12">
       <b-form-group label="Mata Pelajaran" label-for="pembelajaran_id" label-cols-md="3" :invalid-feedback="meta.pembelajaran_id_feedback" :state="meta.pembelajaran_id_state">
         <b-overlay :show="loading_mapel" opacity="0.6" size="md" spinner-variant="secondary">
-          <v-select id="pembelajaran_id" v-model="pembelajaran" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" :state="meta.pembelajaran_id_state" @input="changeMapel">
+          <v-select id="pembelajaran_id" v-model="pembelajaran" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" :state="meta.pembelajaran_id_state" @input="changeMapel" :disabled="show">
             <template #no-options="{ search, searching, loading }">
               Tidak ada data untuk ditampilkan
             </template>
@@ -45,11 +45,19 @@
         </b-overlay>
       </b-form-group>
     </b-col>
+    <b-col cols="12" v-if="show">
+      <b-alert variant="danger" show class="mb-0">
+        <div class="alert-body">
+          <feather-icon icon="InfoIcon" class="mr-50" />
+          Penilaian tidak aktif. Silahkan hubungi Wali Kelas!
+        </div>
+      </b-alert>
+    </b-col>
   </b-row>
 </template>
 
 <script>
-import { BRow, BCol, BOverlay, BFormGroup, BFormInput } from 'bootstrap-vue'
+import { BRow, BCol, BOverlay, BFormGroup, BFormInput, BAlert } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 
 export default {
@@ -59,6 +67,7 @@ export default {
     BOverlay, 
     BFormGroup, 
     BFormInput,
+    BAlert,
     vSelect
   },
   props: {
@@ -105,6 +114,7 @@ export default {
       ],
       data_rombel: [],
       data_mapel: [],
+      show: false,
     }
   },
   /*created() {
@@ -156,6 +166,11 @@ export default {
           let getData = response.data
           this.data_mapel = getData.data
           this.form.merdeka = getData.merdeka
+          this.show = getData.rombel.kunci_nilai ? true : false
+          this.$emit('show_form', this.show)
+          if(this.show){
+            this.data_mapel = []
+          }
         }).catch(error => {
           console.log(error);
         })
@@ -166,7 +181,7 @@ export default {
       if(val){
         this.form.pembelajaran_id = val.pembelajaran_id
         this.form.mata_pelajaran_id = val.mata_pelajaran_id
-        this.$emit('show_form')
+        this.$emit('show_form', true)
       }
     },
   },

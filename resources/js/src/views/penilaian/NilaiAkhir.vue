@@ -5,7 +5,7 @@
         <template v-if="status_penilaian">
           <b-form @submit="onSubmit">
             <formulir ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir>
-            <b-row>
+            <b-row v-if="!kunci_nilai">
               <b-col cols="12">
                 <b-form-group label="Bentuk Penilaian" label-for="bentuk_penilaian" label-cols-md="3" :invalid-feedback="meta.bentuk_penilaian_feedback" :state="meta.bentuk_penilaian_state">
                   <v-select id="bentuk_penilaian" v-model="form.bentuk_penilaian" :reduce="nama => nama.id" label="nama" :options="data_bentuk_penilaian" placeholder="== Pilih Bentuk Penilaian ==" :state="meta.bentuk_penilaian_state" @input="changeBentuk">
@@ -176,6 +176,7 @@ export default {
         }
       ],
       disabled: false,
+      kunci_nilai: false,
     }
   },
   created() {
@@ -268,8 +269,8 @@ export default {
         })
       }
     },
-    handleShowForm(){
-      console.log('show_form');
+    handleShowForm(val){
+      this.kunci_nilai = val
     },
     calculateAverage(array) {
       var total = 0;

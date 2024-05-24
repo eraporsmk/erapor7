@@ -77,7 +77,7 @@ class PenilaianController extends Controller
         $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
         $merdeka = (Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')) ? TRUE : FALSE;
         $data = Pembelajaran::where($this->kondisiPembelajaran())->orderBy('mata_pelajaran_id', 'asc')->get();
-        return response()->json(['status' => 'success', 'data' => $data, 'merdeka' => $merdeka]);
+        return response()->json(['status' => 'success', 'data' => $data, 'merdeka' => $merdeka, 'rombel' => $rombel]);
     }
     private function wherehas($query){
         if(request()->merdeka){

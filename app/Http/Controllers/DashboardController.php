@@ -232,24 +232,33 @@ class DashboardController extends Controller
       return response()->json($data);
    }
    public function status_penilaian(){
-      $insert = Status_penilaian::updateOrCreate(
-         [
-            'sekolah_id' => request()->sekolah_id,
-            'semester_id' => request()->semester_id,
-         ],
-         ['status' => (request()->status) ? 1 : 0]
-      );
+      $insert = 0;
+      if(request()->has('rombongan_belajar_id')){
+         $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
+         $rombel->kunci_nilai = (request()->status) ? 0 : 1;
+         $insert = $rombel->save();
+      } else {
+         $insert = Status_penilaian::updateOrCreate(
+            [
+               'sekolah_id' => request()->sekolah_id,
+               'semester_id' => request()->semester_id,
+            ],
+            ['status' => (request()->status) ? 1 : 0]
+         );
+      }
       if($insert){
          $data = [
              'icon' => 'success',
              'title' => 'Berhasil',
              'text' => 'Status Penilaian berhasil di simpan',
+             'status' => (request()->status) ? 0 : 1,
          ];
      } else {
          $data = [
              'icon' => 'error',
              'title' => 'Gagal',
              'text' => 'Status Penilaian gagal disimpan. Silahkan coba beberapa saat lagi!',
+             'status' => (request()->status) ? 0 : 1,
          ];
      }
      return response()->json($data);
@@ -265,7 +274,7 @@ class DashboardController extends Controller
       $result_pilihan = [];
       $rombel_pilihan = '';
       if($rombel){
-      $rombel = $rombel->nama;
+         //$rombel = $rombel->nama;
          $pembelajaran = Pembelajaran::where(function($query){
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
@@ -330,7 +339,7 @@ class DashboardController extends Controller
                'pd' => $item_pilihan->anggota_rombel_count,
                'pd_dinilai' => $this->anggota_dinilai($item_pilihan->pembelajaran_id),
             ];
-            $rombel_pilihan = $item_pilihan->rombongan_belajar->nama;
+            $rombel_pilihan = $item_pilihan->rombongan_belajar;
          }
       }
       return response()->json([

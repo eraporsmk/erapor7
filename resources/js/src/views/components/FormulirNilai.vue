@@ -37,7 +37,7 @@
     <b-col cols="12">
       <b-form-group label="Mata Pelajaran" label-for="pembelajaran_id" label-cols-md="3" :invalid-feedback="meta.pembelajaran_id_feedback" :state="meta.pembelajaran_id_state">
         <b-overlay :show="loading_mapel" opacity="0.6" size="md" spinner-variant="secondary">
-          <v-select id="pembelajaran_id" v-model="form.pembelajaran_id" :reduce="nama_mata_pelajaran => nama_mata_pelajaran.pembelajaran_id" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" :state="meta.pembelajaran_id_state" @input="changeMapel">
+          <v-select id="pembelajaran_id" v-model="form.pembelajaran_id" :reduce="nama_mata_pelajaran => nama_mata_pelajaran.pembelajaran_id" label="nama_mata_pelajaran" :options="data_mapel" placeholder="== Pilih Mata Pelajaran ==" :state="meta.pembelajaran_id_state" @input="changeMapel" :disabled="show">
             <template #no-options="{ search, searching, loading }">
               Tidak ada data untuk ditampilkan
             </template>
@@ -48,13 +48,21 @@
     <b-col cols="12">
       <b-form-group label="Jenis Asesmen" label-for="teknik_penilaian_id" label-cols-md="3" :invalid-feedback="meta.teknik_penilaian_id_feedback" :state="meta.teknik_penilaian_id_state">
         <b-overlay :show="loading_teknik" opacity="0.6" size="md" spinner-variant="secondary">
-          <v-select id="teknik_penilaian_id" v-model="form.teknik_penilaian_id" :reduce="nama => nama.teknik_penilaian_id" label="nama" :options="data_teknik" placeholder="== Pilih Jenis Asesmen ==" :state="meta.teknik_penilaian_id_state" @input="changeTeknik">
+          <v-select id="teknik_penilaian_id" v-model="form.teknik_penilaian_id" :reduce="nama => nama.teknik_penilaian_id" label="nama" :options="data_teknik" placeholder="== Pilih Jenis Asesmen ==" :state="meta.teknik_penilaian_id_state" @input="changeTeknik" :disabled="show">
             <template #no-options="{ search, searching, loading }">
               Tidak ada data untuk ditampilkan
             </template>
           </v-select>
         </b-overlay>
       </b-form-group>
+    </b-col>
+    <b-col cols="12" v-if="show">
+      <b-alert variant="danger" show class="mb-0">
+        <div class="alert-body">
+          <feather-icon icon="InfoIcon" class="mr-50" />
+          Penilaian tidak aktif. Silahkan hubungi Wali Kelas!
+        </div>
+      </b-alert>
     </b-col>
     <!--b-col cols="12" v-if="show_cp">
       <b-form-group label="Capaian Pembelajaran" label-for="cp_id" label-cols-md="3" :invalid-feedback="meta.cp_id_feedback" :state="meta.cp_id_state">
@@ -79,7 +87,7 @@
 </template>
 
 <script>
-import { BRow, BCol, BOverlay, BFormGroup, BFormInput } from 'bootstrap-vue'
+import { BRow, BCol, BOverlay, BFormGroup, BFormInput, BAlert } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 
 export default {
@@ -89,6 +97,7 @@ export default {
     BOverlay, 
     BFormGroup, 
     BFormInput,
+    BAlert,
     vSelect
   },
   props: {
@@ -143,6 +152,7 @@ export default {
       data_mapel: [],
       data_teknik: [],
       data_cp: [],
+      show: false,
     }
   },
   /*created() {
@@ -203,6 +213,10 @@ export default {
           let getData = response.data
           this.data_mapel = getData.data
           this.form.merdeka = getData.merdeka
+          this.show = getData.rombel.kunci_nilai ? true : false
+          if(this.show){
+            this.data_mapel = []
+          }
         }).catch(error => {
           console.log(error);
         })

@@ -9,9 +9,17 @@
       </b-card-body>
     </b-card>
     <b-card no-body v-if="rombel">
+      <b-card-header class="pb-1">
+        <b-card-title>
+          Anda adalah Wali Kelas Rombongan Belajar {{rombel.nama}}
+        </b-card-title>
+        <b-card-sub-title>
+          Status Penilaian di Rombongan Belajar ini :
+          <b-form-checkbox v-model="status_penilaian" name="check-button" switch inline @change="changeStatus">{{ status(status_penilaian).text }}</b-form-checkbox>
+        </b-card-sub-title>
+      </b-card-header>
       <b-card-body>
-        <h2>Anda adalah Wali Kelas Rombongan Belajar {{rombel}}</h2>
-        <h2>Daftar Mata Pelajaran di Rombongan Belajar {{rombel}}</h2>
+        <h3>Daftar Mata Pelajaran di Rombongan Belajar {{rombel.nama}}</h3>
         <b-table-simple bordered responsive>
           <b-thead>
             <b-tr>
@@ -56,8 +64,8 @@
           </div>
         </template>
         <template v-else>
-          <h2>Anda adalah Wali Kelas Rombongan Belajar (Matpel Pilihan) {{rombel_pilihan}}</h2>
-          <h2>Daftar Mata Pelajaran di Rombongan Belajar (Matpel Pilihan) {{rombel_pilihan}}</h2>
+          <h2>Anda adalah Wali Kelas Rombongan Belajar (Matpel Pilihan) {{(rombel_pilihan) ? rombel_pilihan.nama : ''}}</h2>
+          <h2>Daftar Mata Pelajaran di Rombongan Belajar (Matpel Pilihan) {{(rombel_pilihan ? rombel_pilihan.nama : '')}}</h2>
           <b-table-simple bordered responsive>
             <b-thead>
               <b-tr>
@@ -100,14 +108,18 @@
 </template>
 
 <script>
-import { BCard, BCardBody, BSpinner, BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton } from 'bootstrap-vue'
+import { BCard, BCardHeader, BCardTitle, BCardSubTitle, BCardBody, BSpinner, BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton, BBadge, BFormCheckbox } from 'bootstrap-vue'
 
 export default {
   components: {
     BCard,
+    BCardHeader, 
+    BCardTitle,
+    BCardSubTitle,
     BCardBody,
     BSpinner,
-    BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton
+    BTableSimple, BTbody, BThead, BTr, BTd, BTh, BButton, BBadge,
+    BFormCheckbox
   },
   data() {
     return {
@@ -116,6 +128,7 @@ export default {
       rombel_pilihan: '',
       pembelajaran: [],
       pembelajaran_pilihan: [],
+      status_penilaian: false,
     }
   },
   created() {
@@ -132,6 +145,7 @@ export default {
         this.isBusy = false
         let getData = response.data
         this.rombel = getData.rombel
+        this.status_penilaian = this.rombel.kunci_nilai ? false : true
         this.rombel_pilihan = getData.rombel_pilihan
         this.pembelajaran = getData.pembelajaran
         this.pembelajaran_pilihan = getData.pembelajaran_pilihan
@@ -142,6 +156,63 @@ export default {
     detil(pembelajaran_id){
       this.$emit('detil', pembelajaran_id)
     },
+    status(kunci_nilai){
+      if(kunci_nilai)
+        return {
+          color: 'success',
+          text: 'Aktif',
+          button: 'Non Aktifkan',
+        }
+      else
+        return {
+          color: 'danger',
+          text: 'Non Aktif',
+          button: 'Aktifkan',
+        }
+    },
+    changeStatus(val){
+      var text;
+      if(val){
+        text = 'Penilaian akan di aktifkan'
+      } else {
+        text = 'Penilaian akan di nonaktifkan'
+      }
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => !this.$swal.isLoading(),
+      }).then(result => {
+        if (result.value) {
+          this.$http.post('/dashboard/status-penilaian', {
+            status: val,
+            rombongan_belajar_id: this.rombel.rombongan_belajar_id,
+          }).then(response => {
+            let data = response.data
+            console.log(val);
+            this.status(data.status)
+            this.$swal({
+              icon: data.icon,
+              title: data.title,
+              text: data.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            })
+          });
+        }
+      })
+    }
   }
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+</style>
