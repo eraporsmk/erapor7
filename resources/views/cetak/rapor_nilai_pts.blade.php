@@ -50,10 +50,10 @@
     </tr>
     @foreach ($items as $item)
     <tr>
-			<td class="text-center">{{$item['no']}}</td>
-			<td>{{$item['nama']}}</td>
-			<td class="text-center">{{$item['nilai']}}</td>
-			<td>{{$item['deskripsi']}}</td>
+			<td style="vertical-align:middle;" class="text-center">{{$item['no']}}</td>
+			<td style="vertical-align:middle;">{{$item['nama']}}</td>
+			<td style="vertical-align:middle;" class="text-center">{{$item['nilai']}}</td>
+			<td style="vertical-align:middle;">{{$item['deskripsi']}}</td>
 		</tr>
     @endforeach
     @endforeach
