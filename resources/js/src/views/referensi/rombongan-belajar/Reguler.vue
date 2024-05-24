@@ -1,21 +1,8 @@
 <template>
   <b-card>
     <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @getAnggota="handleAnggota" @getPembelajaran="handlePembelajaran"  />
-    <b-modal ref="anggota-modal" modal-class="modal-fullscreen" :scrollable="true" :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
-      <anggota-rombel :loading_modal="loading_modal" :list_anggota="list_anggota" @keluarkan="keluarkan"></anggota-rombel>
-    </b-modal>
-    <b-modal ref="pembelajaran-modal" modal-class="modal-fullscreen" :title="title" :scrollable="true">
-      <pembelajaran :loading_modal="loading_modal" :list_pembelajaran="list_pembelajaran" :form="form" :data_guru="data_guru" :data_kelompok="data_kelompok" @hapus="handleHapus"></pembelajaran>
-      <template #modal-footer="{ ok, cancel }">
-        <b-overlay :show="loading_modal" rounded opacity="0.6" size="sm" spinner-variant="secodary">
-          <b-button @click="cancel()">Tutup</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_modal" rounded opacity="0.6" size="sm" spinner-variant="primary">
-          <b-button variant="primary" @click="handleSubmit()">Simpan</b-button>
-        </b-overlay>
-      </template>
-      
-    </b-modal>
+    <anggota-rombel :title="title":loading_modal="loading_modal" :list_anggota="list_anggota" @keluarkan="keluarkan"></anggota-rombel>
+    <pembelajaran :title="title" :loading_modal="loading_modal" :list_pembelajaran="list_pembelajaran" :form="form" :data_guru="data_guru" :data_kelompok="data_kelompok" @hapus="handleHapus" @getPembelajaran="handlePembelajaran"></pembelajaran>
   </b-card>
 </template>
 
@@ -25,7 +12,8 @@ import { BCard, BOverlay, BButton } from 'bootstrap-vue'
 import Datatable from './Datatable.vue'
 import Pembelajaran from './../modal/Pembelajaran.vue'
 import AnggotaRombel from './../modal/AnggotaRombel.vue'
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import eventBus from '@core/utils/eventBus';
+//import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 export default {
   components: {
     BCard,
@@ -181,7 +169,8 @@ export default {
         var getData = response.data
         this.list_anggota = getData.data
         this.title = 'Anggota Rombel Kelas '+getData.rombel.nama
-        this.$refs['anggota-modal'].show()
+        //this.$refs['anggota-modal'].show()
+        eventBus.$emit('open-modal-anggota-rombel')
       }).catch(error => {
         console.log(error);
       })
@@ -216,32 +205,10 @@ export default {
         this.data_guru = getData.guru
         this.data_kelompok = getData.Kelompok
         this.title = 'Pembelajaran Kelas '+getData.rombel.nama
-        this.$refs['pembelajaran-modal'].show()
+        eventBus.$emit('open-modal-pembelajaran', val)
       }).catch(error => {
         console.log(error);
       })
-    },
-    handleOk(bvModalEvent) {
-      bvModalEvent.preventDefault()
-      this.handleSubmit()
-    },
-    handleSubmit() {
-      this.loading_modal = true
-      this.$http.post('/rombongan-belajar/simpan-pembelajaran', this.form).then(response => {
-        this.loading_modal = false
-        let getData = response.data
-        this.$swal({
-          icon: getData.icon,
-          title: getData.title,
-          text: getData.text,
-          customClass: {
-            confirmButton: 'btn btn-success',
-          },
-        }).then(result => {
-          this.loading_modal = true
-          this.handlePembelajaran(this.rombongan_belajar_id)
-        })
-      });
     },
     hitung(aksi = null){
       if(aksi == 'start'){
