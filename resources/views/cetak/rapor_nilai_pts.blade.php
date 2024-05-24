@@ -38,9 +38,9 @@
   <thead>
     <tr>
       <th style="vertical-align:middle;" class="text-center" width="7%">No</th>
-			<th style="vertical-align:middle;" class="text-center" width="30%" >Mata Pelajaran</th>
-			<th style="vertical-align:middle;" class="text-center" width="10%" >Nilai</th>
-			<th style="vertical-align:middle;" class="text-center" width="48%" >Catatan</th>
+			<th style="vertical-align:middle;" class="text-center" width="50%" >Mata Pelajaran</th>
+			<th style="vertical-align:middle;" class="text-center" width="8%" >Nilai</th>
+			<th style="vertical-align:middle;" class="text-center" width="35%" >Catatan</th>
     </tr>
   </thead>
   <tbody>
@@ -71,25 +71,26 @@
 --}}
 <table width="100%">
   <tr>
+    <td style="width:10%"></td>
     <td style="width:40%;">
-		<p>Mengetahui,<br>{{ get_setting('jabatan', $pd->sekolah_id, $semester_id) }}</p>
-	<br>
-<br>
-<br>
-<br>
-<p><u>{{ $pd->anggota_rombel->rombongan_belajar->sekolah->kasek->nama_lengkap }}</u><br>
-NIP. {{$pd->anggota_rombel->rombongan_belajar->sekolah->kasek->nip}}
-</p>
-	</td>
-	<td style="width:20%"></td>
-    <td style="width:40%;"><p>{{str_replace('Kab. ','',$pd->anggota_rombel->rombongan_belajar->sekolah->kabupaten)}}, {{$tanggal_rapor}}<br>Wali Kelas</p><br>
-<br>
-<br>
-<br>
-<p>
-<u>{{$pd->anggota_rombel->rombongan_belajar->wali_kelas->nama_lengkap}}</u><br>
-NIP. {{$pd->anggota_rombel->rombongan_belajar->wali_kelas->nip}}
-</td>
+		  <p>Mengetahui,<br>{{ get_setting('jabatan', $pd->sekolah_id, $semester_id) }}</p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <p><u>{{ $pd->anggota_rombel->rombongan_belajar->sekolah->kasek->nama_lengkap }}</u><br>
+      NIP. {{$pd->anggota_rombel->rombongan_belajar->sekolah->kasek->nip}}</p>
+    </td>
+    <td style="width:10%"></td>
+    <td style="width:40%;">
+      <p>{{str_replace('Kab. ','',$pd->anggota_rombel->rombongan_belajar->sekolah->kabupaten)}}, {{$tanggal_rapor}}<br>Wali Kelas</p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <p><u>{{$pd->anggota_rombel->rombongan_belajar->wali_kelas->nama_lengkap}}</u><br>
+      NIP. {{$pd->anggota_rombel->rombongan_belajar->wali_kelas->nip}}</p>
+    </td>
   </tr>
 </table>
 @endsection
