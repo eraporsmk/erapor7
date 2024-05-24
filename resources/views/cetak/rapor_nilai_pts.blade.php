@@ -32,7 +32,7 @@
     <td>{{$pd->anggota_rombel->rombongan_belajar->nama}}</td>
   </tr>
 </table><br />
-<div class="text-bold text-center" style="vertical-align:middle"><strong>DAFTAR NILAI<br />UJIAN TENGAH SEMESTER</strong></div>
+<div class="text-bold text-center" style="vertical-align:middle"><strong>DAFTAR NILAI<br />SUMATIF TENGAH SEMESTER</strong></div>
 <p>&nbsp;</p>
 <table class="table table-bordered">
   <thead>
