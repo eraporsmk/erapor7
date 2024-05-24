@@ -40,7 +40,7 @@
       <th style="vertical-align:middle;" class="text-center" width="7%">No</th>
 			<th style="vertical-align:middle;" class="text-center" width="30%" >Mata Pelajaran</th>
 			<th style="vertical-align:middle;" class="text-center" width="10%" >Nilai</th>
-			<th style="vertical-align:middle;" class="text-center" width="48%" >Capaian Kompetensi</th>
+			<th style="vertical-align:middle;" class="text-center" width="48%" >Catatan</th>
     </tr>
   </thead>
   <tbody>
