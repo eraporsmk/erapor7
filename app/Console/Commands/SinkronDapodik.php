@@ -69,6 +69,12 @@ class SinkronDapodik extends Command
      */
     public function handle()
     {
+        if(jam_sinkron()){
+            $this->info('Penyesuaian Waktu Layanan Sinkronisasi Dapodik');
+            $this->info('Dikarenakan adanya proses rutin sinkronisasi data Dapodik antara Server PUSDATIN dan Server Direktorat SMK, maka layanan sinkronisasi hanya dapat diakses antara pukul:');
+            $this->error('03.00 s/d 24.00 (WIB)');
+            return false;
+        }
         $semester = Semester::where(function($query){
             if($this->argument('semester_id')){
                 $query->where('semester_id', $this->argument('semester_id'));
@@ -76,15 +82,23 @@ class SinkronDapodik extends Command
                 $query->where('periode_aktif', 1);
             }
         })->first();
-        $list_data = [
+        $general = [
             'semua_data',
-            /*'jurusan', 
-            'kurikulum', 
-            'mata_pelajaran', 
-            'mata_pelajaran_kurikulum',
-            'wilayah', 
-            'kd', 
-            'cp',*/
+            'sekolah', 
+            'ptk', 
+            'rombongan_belajar', 
+            'peserta_didik_aktif', 
+            'peserta_didik_keluar', 
+            'anggota_rombel_pilihan',
+            'pembelajaran', 
+            'ekstrakurikuler', 
+            'anggota_ekskul', 
+        ];
+        $smk = [
+            'dudi'
+        ];
+        /*$list_data = [
+            'semua_data',
             'sekolah', 
             'ptk', 
             'rombongan_belajar', 
@@ -95,7 +109,7 @@ class SinkronDapodik extends Command
             'ekstrakurikuler', 
             'anggota_ekskul', 
             'dudi'
-        ];
+        ];*/
         if($this->argument('satuan')){
             $satuan = $this->argument('satuan');
             $sekolah = Sekolah::with(['user' => function($query) use ($semester){
@@ -110,6 +124,12 @@ class SinkronDapodik extends Command
                     $sekolah = Sekolah::with(['user' => function($query) use ($user){
                         $query->where('email', $user->email);
                     }])->find($user->sekolah_id);
+                    $list_data = array_merge($general, $smk);
+                    if($sekolah->bentuk_pendidikan_id){
+                        if($sekolah->bentuk_pendidikan_id !== 15){
+                            $list_data = $general;
+                        }
+                    }
                     $satuan = $this->choice(
                         'Pilih data untuk di sinkronisasi!',
                         $list_data
@@ -124,6 +144,12 @@ class SinkronDapodik extends Command
             }
         }
         if($sekolah){
+            $list_data = array_merge($general, $smk);
+            if($sekolah->bentuk_pendidikan_id){
+                if($sekolah->bentuk_pendidikan_id !== 15){
+                    $list_data = $general;
+                }
+            }
             $data = collect($list_data);
             if($satuan != 'semua_data'){
                 if($data->contains($satuan)){
@@ -625,6 +651,7 @@ class SinkronDapodik extends Command
         $rombongan_belajar_id = [];
         foreach($dapodik as $data){
             $rombongan_belajar_id[] = $data->rombongan_belajar_id;
+            $this->insert_kurikulum($data->kurikulum, $user, $semester);
             $this->insert_rombel($data, $user, $semester, FALSE);
             $this->proses_sync('Memperoses', 'rombongan_belajar', $i, count($dapodik), $user->sekolah_id);
             $bar->advance();
@@ -798,6 +825,9 @@ class SinkronDapodik extends Command
 		$sekolah->last_sync = now();
         $sekolah->guru_id = ($kepala_sekolah) ? $kepala_sekolah->guru_id : NULL;
 		$sekolah->sinkron = 1;
+        if (Schema::hasColumn('sekolah', 'bentuk_pendidikan_id')) {
+            $sekolah->bentuk_pendidikan_id = $data->bentuk_pendidikan_id;
+        }
 		$sekolah->save();
         $this->simpan_jurusan_sp($data->jurusan_sp, $user, $semester);
     }

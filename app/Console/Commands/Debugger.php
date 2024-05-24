@@ -46,6 +46,7 @@ class Debugger extends Command
      */
     public function handle()
     {
+        dd(config('erapor.bentuk_pendidikan'));
         $data_pd = Peserta_didik::whereHas('anggota_rombel', function($query){
             $query->whereHas('rombongan_belajar', function($query){
                 $query->where('tingkat', 10);

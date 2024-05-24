@@ -119,7 +119,6 @@ export default {
         this.dapodik = getData.data_sinkron
         this.show = false
         this.syncText = ''
-        console.log(getData);
       })
     },
     syncSatuan(server, satuan){
@@ -127,8 +126,6 @@ export default {
         this.show = true
         this.syncText = 'Menyiapkan proses sinkronisasi'
         this.loading = true
-        console.log(server);
-        console.log(satuan);
         var myInterval;
         myInterval = setInterval(this.myTimer, 500);
         this.$http.post('/sinkronisasi/dapodik', {
@@ -141,8 +138,6 @@ export default {
         }).then(response => {
           this.loading = false
           this.show = false
-          console.log(myInterval);
-          console.log('selesai');
           clearInterval(myInterval);
           this.syncText = 'Proses sinkronisasi selesai'
           this.$swal({

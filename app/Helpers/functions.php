@@ -1,4 +1,5 @@
 <?php 
+use Carbon\Carbon;
 use App\Models\Setting;
 use App\Models\Peserta_didik;
 use App\Models\Agama;
@@ -498,4 +499,12 @@ function check_2018($semester_id){
     } else {
         return false;
     }
+}
+function jam_sinkron(){
+    $timezone = config('app.timezone');
+    $start = Carbon::create(date('Y'), date('m'), date('d'), '00', '00', '01', 'Asia/Jakarta');
+    $end = Carbon::create(date('Y'), date('m'), date('d'), '03', '00', '00', 'Asia/Jakarta');
+    $now = Carbon::now()->timezone($timezone);
+    $jam_sinkron = Carbon::now()->timezone($timezone)->isBetween($start, $end, false);
+    return $jam_sinkron;
 }

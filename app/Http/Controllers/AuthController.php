@@ -369,7 +369,18 @@ class AuthController extends Controller
             ]);
         }
         $set_data = $data->data->sekolah;
-        if($set_data->bentuk_pendidikan_id == '15'){
+        $bentuk_pendidikan = config('erapor.bentuk_pendidikan');
+        $allowed = FALSE;
+        if($bentuk_pendidikan){
+            if(in_array($set_data->bentuk_pendidikan_id, $bentuk_pendidikan)){
+                $allowed = TRUE;
+            }
+        } else {
+            if($set_data->bentuk_pendidikan_id == '15'){
+                $allowed = TRUE;
+            }
+        }
+        if($allowed){
             $get_kode_wilayah = $set_data->wilayah;
             $kode_wilayah = $set_data->kode_wilayah;
             $kecamatan = '-';
@@ -455,6 +466,7 @@ class AuthController extends Controller
                     'email' 				=> $set_data->email,
                     'website' 				=> $set_data->website,
                     'status_sekolah'		=> $set_data->status_sekolah,
+                    'bentuk_pendidikan_id'  => $set_data->bentuk_pendidikan_id,
                     'last_sync'				=> now(),
                 ]
             );
