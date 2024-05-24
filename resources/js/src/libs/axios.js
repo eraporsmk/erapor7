@@ -23,6 +23,7 @@ axiosIns.interceptors.request.use(function (config) {
 axiosIns.interceptors.response.use(
   response => response,
   error => {
+    console.log(error.response.status);
     if (error.response.status === 401) {
       // ℹ️ Logout user and redirect to login page
       // Remove "userData" from localStorage

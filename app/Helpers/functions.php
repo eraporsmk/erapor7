@@ -90,6 +90,7 @@ function terbilang($angka){
     }
 }
 function predikat($kkm, $nilai, $produktif = NULL){
+    $nilai = strtoupper($nilai);
     if ($produktif) {
         $result = array(
             'A+'	=> 100, // 95 - 100
@@ -151,23 +152,23 @@ function konversi_huruf($kkm, $nilai, $produktif = NULL, $semester_id = NULL){
         $b = predikat($kkm, 'b') + 1;
         $c = predikat($kkm, 'c') + 1;
         $d = predikat($kkm, 'd') + 1;
-        if ($n == 0) {
+        if ($nilai == 0) {
             $predikat 	= '-';
             $sikap		= '-';
             $sikap_full	= '-';
-        } elseif ($n >= $b) { //$settings->a_min){ //86
+        } elseif ($nilai >= $b) { //$settings->a_min){ //86
             $predikat 	= 'A';
             $sikap		= 'SB';
             $sikap_full	= 'Sangat Baik';
-        } elseif ($n >= $c) { //71
+        } elseif ($nilai >= $c) { //71
             $predikat 	= 'B';
             $sikap		= 'B';
             $sikap_full	= 'Baik';
-        } elseif ($n >= $d) { //56
+        } elseif ($nilai >= $d) { //56
             $predikat 	= 'C';
             $sikap		= 'C';
             $sikap_full	= 'Cukup';
-        } elseif ($n < $d) { //56
+        } elseif ($nilai < $d) { //56
             $predikat 	= 'D';
             $sikap		= 'K';
             $sikap_full	= 'Kurang';

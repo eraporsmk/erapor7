@@ -233,6 +233,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/nilai-ekskul', [ProgressController::class, 'nilai_ekskul']);
     Route::get('/nilai-ukk', [ProgressController::class, 'nilai_ukk']);
     Route::get('/nilai-pkl', [ProgressController::class, 'nilai_pkl']);
+    Route::get('/peserta-didik', [ProgressController::class, 'peserta_didik']);
   });
   Route::group(['prefix' => 'praktik-kerja-lapangan'], function () {
     Route::get('/', [PklController::class, 'index']);

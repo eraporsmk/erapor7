@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException ;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +37,12 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (Throwable $e) {
+            if ($e instanceof AuthenticationException) {
+                $data = [
+                    'message' => $e->getMessage(),
+                ];
+                return response()->json($data, 401);
+            }
             if (!$e instanceof ValidationException) {
                 $data = [
                     'icon' => 'error',

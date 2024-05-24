@@ -30,6 +30,7 @@ Route::group(['prefix' => 'cetak'], function () {
     Route::get('/rapor-pelengkap/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_pelengkap'])->name('rapor-pelengkap');
     Route::get('/sertifikat/{anggota_rombel_id}/{rencana_ukk_id}', [CetakController::class, 'sertifikat'])->name('sertifikat');
     Route::get('/rapor-pkl/{peserta_didik_id}/{pkl_id}/{guru_id}/{semester_id}', [CetakController::class, 'rapor_pkl'])->name('rapor_pkl');
+    Route::get('/buku-induk/{peserta_didik_id}/{semester_id}', [CetakController::class, 'buku_induk'])->name('buku_induk');
 });
 Route::group(['prefix' => 'downloads'], function () {
     Route::get('/template-excel/{sekolah_id}', [DownloadController::class, 'template_excel']);

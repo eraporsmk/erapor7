@@ -132,4 +132,23 @@ export default [
       ],
     },
   },
+  {
+    path: '/progress/buku-induk',
+    name: 'progress-buku-induk',
+    component: () => import('@/views/progress/buku-induk/Index.vue'),
+    meta: {
+      resource: 'Waka',
+      action: 'read',
+      pageTitle: 'Buku Induk',
+      breadcrumb: [
+        {
+          text: 'Monitoring',
+        },
+        {
+          text: 'Buku Induk',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
