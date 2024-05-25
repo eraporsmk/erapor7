@@ -145,49 +145,52 @@ export default {
     })
   },
   methods: {
-    handleShowForm(){
-      this.isBusy = true
-      this.$http.post('/penilaian/get-capaian-kompetensi', this.form).then(response => {
-        this.show = true
-        this.isBusy = false
-        let getData = response.data
-        this.show_reset = getData.data.show_reset
-        this.data_siswa = getData.data.data_siswa
-        var nilai = {}
-        var kompeten = {}
-        var inkompeten = {}
-        var _this = this
-        this.data_siswa.forEach(function(value, key) {
-          nilai[value.anggota_rombel.anggota_rombel_id] = (value.anggota_rombel.nilai_akhir_mapel) ? value.anggota_rombel.nilai_akhir_mapel.nilai : ''
-          if(value.anggota_rombel.single_deskripsi_mata_pelajaran){
-            kompeten[value.anggota_rombel.anggota_rombel_id] = value.anggota_rombel.single_deskripsi_mata_pelajaran.deskripsi_pengetahuan
-            inkompeten[value.anggota_rombel.anggota_rombel_id] = value.anggota_rombel.single_deskripsi_mata_pelajaran.deskripsi_keterampilan
-          } else {
-            var tempTpKompeten = []
-            var tempTpInKompeten = []
-            if(value.anggota_rombel.tp_kompeten.length){
-              value.anggota_rombel.tp_kompeten.forEach(function(tp_kompeten, index_kompeten) {
-                tempTpKompeten.push(_this.convertUTF7toUTF8(_this.lcfirst(tp_kompeten.tp.deskripsi)))
-              })
-              kompeten[value.anggota_rombel.anggota_rombel_id] = 'Menunjukkan penguasaan yang baik dalam '+tempTpKompeten.join(', ')
-            } else {
-              kompeten[value.anggota_rombel.anggota_rombel_id] = null
-            }
-            if(value.anggota_rombel.tp_inkompeten.length){
-              value.anggota_rombel.tp_inkompeten.forEach(function(tp_inkompeten, index_inkompeten) {
-                tempTpInKompeten.push(_this.convertUTF7toUTF8(_this.lcfirst(tp_inkompeten.tp.deskripsi)))
-              })
-              inkompeten[value.anggota_rombel.anggota_rombel_id] = 'Perlu ditingkatkan dalam '+tempTpInKompeten.join(', ')
-            } else {
-              inkompeten[value.anggota_rombel.anggota_rombel_id] = null
-            }
+    handleShowForm(val){
+      if(val){
+        this.isBusy = true
+        this.$http.post('/penilaian/get-capaian-kompetensi', this.form).then(response => {
+          this.isBusy = false
+          let getData = response.data
+          this.show_reset = getData.data.show_reset
+          this.data_siswa = getData.data.data_siswa
+          if(this.data_siswa.length){
+            this.show = true
           }
+          var nilai = {}
+          var kompeten = {}
+          var inkompeten = {}
+          var _this = this
+          this.data_siswa.forEach(function(value, key) {
+            nilai[value.anggota_rombel.anggota_rombel_id] = (value.anggota_rombel.nilai_akhir_mapel) ? value.anggota_rombel.nilai_akhir_mapel.nilai : ''
+            if(value.anggota_rombel.single_deskripsi_mata_pelajaran){
+              kompeten[value.anggota_rombel.anggota_rombel_id] = value.anggota_rombel.single_deskripsi_mata_pelajaran.deskripsi_pengetahuan
+              inkompeten[value.anggota_rombel.anggota_rombel_id] = value.anggota_rombel.single_deskripsi_mata_pelajaran.deskripsi_keterampilan
+            } else {
+              var tempTpKompeten = []
+              var tempTpInKompeten = []
+              if(value.anggota_rombel.tp_kompeten.length){
+                value.anggota_rombel.tp_kompeten.forEach(function(tp_kompeten, index_kompeten) {
+                  tempTpKompeten.push(_this.convertUTF7toUTF8(_this.lcfirst(tp_kompeten.tp.deskripsi)))
+                })
+                kompeten[value.anggota_rombel.anggota_rombel_id] = 'Menunjukkan penguasaan yang baik dalam '+tempTpKompeten.join(', ')
+              } else {
+                kompeten[value.anggota_rombel.anggota_rombel_id] = null
+              }
+              if(value.anggota_rombel.tp_inkompeten.length){
+                value.anggota_rombel.tp_inkompeten.forEach(function(tp_inkompeten, index_inkompeten) {
+                  tempTpInKompeten.push(_this.convertUTF7toUTF8(_this.lcfirst(tp_inkompeten.tp.deskripsi)))
+                })
+                inkompeten[value.anggota_rombel.anggota_rombel_id] = 'Perlu ditingkatkan dalam '+tempTpInKompeten.join(', ')
+              } else {
+                inkompeten[value.anggota_rombel.anggota_rombel_id] = null
+              }
+            }
+          })
+          this.form.nilai = nilai
+          this.form.kompeten = kompeten
+          this.form.inkompeten = inkompeten
         })
-        console.log(nilai);
-        this.form.nilai = nilai
-        this.form.kompeten = kompeten
-        this.form.inkompeten = inkompeten
-      })
+      }
     },
     lcfirst(string){
       return string.charAt(0).toLowerCase() + string.slice(1);
