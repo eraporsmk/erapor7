@@ -181,7 +181,7 @@ export default {
       if(val){
         this.form.pembelajaran_id = val.pembelajaran_id
         this.form.mata_pelajaran_id = val.mata_pelajaran_id
-        this.$emit('show_form', true)
+        this.$emit('show_form', this.show)
       }
     },
   },

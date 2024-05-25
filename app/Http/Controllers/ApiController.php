@@ -20,6 +20,17 @@ class ApiController extends Controller
         $sekolah = Sekolah::with(['kasek' => function($query){
             $query->where('semester_id', request()->semester_id);
         }])->find(request()->sekolah_id);
+        if($sekolah->logo_sekolah && !get_setting('logo_sekolah', request()->sekolah_id)){
+            Setting::updateOrCreate(
+                [
+                    'key' => 'logo_sekolah',
+                    'sekolah_id' => request()->sekolah_id,
+                ],
+                [
+                    'value' => '/storage/images/'.$sekolah->logo_sekolah,
+                ]
+            );
+        }
         $get_rombel_4_tahun = Rombel_empat_tahun::with(['rombongan_belajar'])->where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->get();
         $rombel_4_tahun = Rombel_empat_tahun::where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->get();
         $plucked = $rombel_4_tahun->pluck('rombongan_belajar_id');
@@ -44,7 +55,8 @@ class ApiController extends Controller
             'rombel_4_tahun' => $plucked->all(),
             'url_dapodik' => get_setting('url_dapodik', request()->sekolah_id, request()->semester_id),
             'token_dapodik' => get_setting('token_dapodik', request()->sekolah_id, request()->semester_id),
-            'logo_sekolah' => $sekolah->logo_sekolah,
+            //'logo_sekolah' => $sekolah->logo_sekolah,
+            'logo_sekolah' => get_setting('logo_sekolah', request()->sekolah_id),
             'periode' => substr(request()->semester_id, -1),
             'sekolah' => $sekolah,
             'rapor_pts' => config('erapor.rapor_pts'),
@@ -181,6 +193,15 @@ class ApiController extends Controller
             $logo_sekolah = $request->photo->store('public/images');
             $sekolah->logo_sekolah = basename($logo_sekolah);
             $sekolah->save();
+            Setting::updateOrCreate(
+                [
+                    'key' => 'logo_sekolah',
+                    'sekolah_id' => request()->sekolah_id,
+                ],
+                [
+                    'value' => '/storage/images/'.basename($logo_sekolah),
+                ]
+            );
         }
         //$sekolah->guru_id = $request->kepala_sekolah;
         Kasek::updateOrCreate(

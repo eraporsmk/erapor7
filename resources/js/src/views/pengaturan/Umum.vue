@@ -69,7 +69,7 @@
                 <b-row>
                   <b-col cols="12" class="text-center">
                     <p>Logo Sekolah</p>
-                    <b-img thumbnail fluid :src="`/storage/images/${logo_sekolah}`" alt="Logo Sekolah" class="mb-1" v-if="logo_sekolah"></b-img>
+                    <b-img thumbnail fluid :src="logo_sekolah" alt="Logo Sekolah" class="mb-1" v-if="logo_sekolah"></b-img>
                     <b-form-file v-model="form.file" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange" :state="state.file" />
                     <p v-show="feedback.file" class="text-danger">{{feedback.file}}</p>
                   </b-col>
