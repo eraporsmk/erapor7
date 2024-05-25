@@ -133,6 +133,17 @@ class Peserta_didik extends Model
         )->where('kompetensi_id', 1);
 		//return $this->hasOne(Nilai_akhir::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompetensi_id', 1);
 	}
+	public function nilai_akhir_keterampilan(){
+		return $this->hasOneThrough(
+            Nilai_akhir::class,
+            Anggota_rombel::class,
+            'peserta_didik_id',
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
+        )->where('kompetensi_id', 2);
+		//return $this->hasOne(Nilai_akhir::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompetensi_id', 1);
+	}
 	public function nilai_akhir_kurmer(){
 		return $this->hasOneThrough(
             Nilai_akhir::class,

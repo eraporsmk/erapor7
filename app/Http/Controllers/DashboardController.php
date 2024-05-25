@@ -125,6 +125,9 @@ class DashboardController extends Controller
                'wali_kelas' => ($rombel->wali_kelas) ? $rombel->wali_kelas->nama_lengkap : '-',
                'pd' => $pembelajaran->anggota_rombel_count,
                'pd_dinilai' => $this->anggota_dinilai($pembelajaran->pembelajaran_id),
+               'kkm' => $pembelajaran->kkm,
+               'kelompok_id' => $pembelajaran->kelompok_id,
+               'semester_id' => $pembelajaran->semester_id,
             ];
          }
       }
@@ -189,19 +192,22 @@ class DashboardController extends Controller
    public function detil_penilaian(){
       $pembelajaran = Pembelajaran::with(['rombongan_belajar' => function($query){
          $query->with(['pd' => function($query){
-             $query->orderBy('nama');
-             $query->with([
-                 'nilai_akhir_kurmer' => function($query){
+            $query->orderBy('nama');
+            $query->with([
+               'nilai_akhir_kurmer' => function($query){
+                  $query->where('pembelajaran_id', request()->pembelajaran_id);
+               },
+               'nilai_akhir_pengetahuan' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
-                 },
-                 'nilai_akhir_pengetahuan' => function($query){
+               },
+               'nilai_akhir_keterampilan' => function($query){
+                  $query->where('pembelajaran_id', request()->pembelajaran_id);
+               },
+               'deskripsi_mapel' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
-                 },
-                 'deskripsi_mapel' => function($query){
-                     $query->where('pembelajaran_id', request()->pembelajaran_id);
-                 },
-                 'agama',
-             ]);
+               },
+               'agama',
+            ]);
          }]);
       }])->withCount('tema')->find(request()->pembelajaran_id);
       return response()->json([
@@ -303,6 +309,9 @@ class DashboardController extends Controller
                'guru' => ($item->pengajar) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
                'pd' => $item->anggota_rombel_count,
                'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id),
+               'kkm' => $item->kkm,
+               'kelompok_id' => $item->kelompok_id,
+               'semester_id' => $item->semester_id,
             ];
          }
          $pembelajaran_pilihan = Pembelajaran::where(function($query){
@@ -338,6 +347,9 @@ class DashboardController extends Controller
                'wali_kelas' => ($item_pilihan->rombongan_belajar->wali_kelas) ? $item_pilihan->rombongan_belajar->wali_kelas->nama_lengkap : '-',
                'pd' => $item_pilihan->anggota_rombel_count,
                'pd_dinilai' => $this->anggota_dinilai($item_pilihan->pembelajaran_id),
+               'kkm' => $item->kkm,
+               'kelompok_id' => $item->kelompok_id,
+               'semester_id' => $item->semester_id,
             ];
             $rombel_pilihan = $item_pilihan->rombongan_belajar;
          }

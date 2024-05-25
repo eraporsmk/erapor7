@@ -41,7 +41,7 @@
                   <b-td class="text-center">{{item.pd}}</b-td>
                   <b-td class="text-center">{{item.pd_dinilai}}</b-td>
                   <b-td class="text-center">
-                    <b-button variant="success" size="sm" @click="detil(item.pembelajaran_id)">Detil</b-button>
+                    <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                   </b-td>
                 </b-tr>
               </template>
@@ -153,8 +153,13 @@ export default {
         console.log(error)
       })
     },
-    detil(pembelajaran_id){
-      this.$emit('detil', pembelajaran_id)
+    detil(item){
+      this.$emit('detil', {
+        pembelajaran_id: item.pembelajaran_id,
+        kkm: item.kkm,
+        kelompok_id: item.kelompok_id,
+        semester_id: item.semester_id,
+      })
     },
     status(kunci_nilai){
       if(kunci_nilai)

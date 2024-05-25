@@ -12,29 +12,83 @@
       <b-overlay :show="loading_table" opacity="0.6" size="md" spinner-variant="secondary"></b-overlay>
       <b-table-simple bordered striped responsive v-if="show">
         <b-thead>
-          <b-tr>
-            <b-th class="text-center">Nama Peserta Didik</b-th>
-            <b-th class="text-center">NISN</b-th>
-            <template v-for="(pembelajaran, index) in data_pembelajaran">
-              <b-th class="text-center">{{pembelajaran.nama_mata_pelajaran}}</b-th>
-            </template>
-            <b-th class="text-center">S</b-th>
-            <b-th class="text-center">I</b-th>
-            <b-th class="text-center">A</b-th>
-          </b-tr>
+          <template v-if="merdeka">
+            <b-tr>
+              <b-th class="text-center">Nama Peserta Didik</b-th>
+              <b-th class="text-center">NISN</b-th>
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center">{{pembelajaran.nama_mata_pelajaran}}</b-th>
+              </template>
+              <b-th class="text-center">S</b-th>
+              <b-th class="text-center">I</b-th>
+              <b-th class="text-center">A</b-th>
+            </b-tr>
+          </template>
+          <template v-else>
+            <b-tr>
+              <b-th class="text-center align-middle" rowspan="3">Nama Peserta Didik</b-th>
+              <b-th class="text-center align-middle" rowspan="3">NISN</b-th>
+              <!--b-th class="text-center" :colspan="data_pembelajaran.length">Nilai Pengetahuan</b-th>
+              <b-th class="text-center" :colspan="data_pembelajaran.length">Nilai Keterampilan</b-th-->
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center" colspan="3">{{pembelajaran.nama_mata_pelajaran}}</b-th>
+              </template>
+              <b-th class="text-center align-middle" rowspan="3">S</b-th>
+              <b-th class="text-center align-middle" rowspan="3">I</b-th>
+              <b-th class="text-center align-middle" rowspan="3">A</b-th>
+            </b-tr>
+            <b-tr>
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center">P</b-th>
+                <b-th class="text-center">K</b-th>
+                <b-th class="text-center align-middle" rowspan="2">R</b-th>
+              </template>
+            </b-tr>
+            <b-tr>
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center">Rasio P: {{ getRasio(pembelajaran.rasio_p) }}</b-th>
+                <b-th class="text-center">Rasio K: {{ getRasio(pembelajaran.rasio_k) }}</b-th>
+              </template>
+            </b-tr>
+            <!--b-tr>
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center">{{pembelajaran.nama_mata_pelajaran}}</b-th>
+              </template>
+              <template v-for="(pembelajaran, index) in data_pembelajaran">
+                <b-th class="text-center">{{pembelajaran.nama_mata_pelajaran}}</b-th>
+              </template>
+            </b-tr-->
+          </template>
         </b-thead>
         <b-tbody>
           <template v-for="(item, index) in data_siswa">
             <b-tr>
               <b-td>{{item.nama}}</b-td>
               <b-td class="text-center">{{item.nisn}}</b-td>
-              <template v-for="(pembelajaran, index) in data_pembelajaran">
-                <template v-if="pembelajaran.rombongan_belajar.jenis_rombel == '1'">
-                  <b-td class="text-center" v-if="merdeka">{{getNilai(pembelajaran.all_nilai_akhir_kurmer, item.anggota_rombel.anggota_rombel_id)}}</b-td>
-                  <b-td class="text-center" v-else>{{getNilai(pembelajaran.all_nilai_akhir_pengetahuan, item.anggota_rombel.anggota_rombel_id)}}</b-td>
+              <template v-if="merdeka">
+                <template v-for="(pembelajaran, index) in data_pembelajaran">
+                  <template v-if="pembelajaran.rombongan_belajar.jenis_rombel == '1'">
+                    <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_kurmer, item.anggota_rombel.anggota_rombel_id)}}</b-td>
+                    <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_pengetahuan, item.anggota_rombel.anggota_rombel_id)}}</b-td>
+                  </template>
+                  <template v-else>
+                    <b-td class="text-center">{{getNilaiPilihan(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan)}}</b-td>
+                  </template>
                 </template>
-                <template v-else>
-                  <b-td class="text-center">{{getNilaiPilihan(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan)}}</b-td>
+              </template>
+              <template v-else>
+                <template v-for="(pembelajaran, index) in data_pembelajaran">
+                  <template v-if="pembelajaran.rombongan_belajar.jenis_rombel == '1'">
+                    <!--getRerata(nilai_p, nilai_k, rasio_p, rasio_k)-->
+                    <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_pengetahuan, item.anggota_rombel.anggota_rombel_id)}}</b-td>
+                    <b-td class="text-center">{{getNilai(pembelajaran.all_nilai_akhir_keterampilan, item.anggota_rombel.anggota_rombel_id)}}</b-td>
+                    <b-td class="text-center">
+                      {{getRerata(getNilai(pembelajaran.all_nilai_akhir_pengetahuan, item.anggota_rombel.anggota_rombel_id), getNilai(pembelajaran.all_nilai_akhir_keterampilan, item.anggota_rombel.anggota_rombel_id), getRasio(pembelajaran.rasio_p), getRasio(pembelajaran.rasio_k))}}
+                    </b-td>
+                  </template>
+                  <template v-else>
+                    <b-td class="text-center">{{getNilaiPilihan(pembelajaran.all_nilai_akhir_kurmer, item.anggota_pilihan)}}</b-td>
+                  </template>
                 </template>
               </template>
               <b-td class="text-center">{{(item.anggota_rombel.absensi) ? item.anggota_rombel.absensi.sakit : '-'}}</b-td>
@@ -89,7 +143,12 @@ export default {
   },
   methods: {
     unduhLegger(){
-      var url = `/downloads/leger-nilai-kurmer/${this.form.rombongan_belajar_id}/${this.form.sekolah_id}/${this.form.semester_id}`
+      if(this.merdeka){
+        var url = `/downloads/leger-nilai-kurmer/${this.form.rombongan_belajar_id}/${this.form.sekolah_id}/${this.form.semester_id}`
+      } else {
+        var url = `/downloads/leger-nilai-rapor/${this.form.rombongan_belajar_id}`
+      }
+      console.log(url);
       window.open(url, '_blank').focus();
     },
     /*handleEvent(){
@@ -147,6 +206,20 @@ export default {
         nilai_akhir = nilai[0].nilai
       }
       return nilai_akhir;
+    },
+    getRerata(nilai_p, nilai_k, rasio_p, rasio_k){
+      nilai_p = nilai_p * this.getRasio(rasio_p);
+      nilai_k = nilai_k * this.getRasio(rasio_k);
+      var nilai_akhir	= (nilai_p + nilai_k) / 100;
+      if(isNaN(nilai_akhir)){
+        nilai_akhir = '-'
+      } else {
+			  nilai_akhir	= Math.ceil(nilai_akhir);
+      }
+      return nilai_akhir
+    },
+    getRasio(rasio){
+      return (rasio) ? rasio : 50
     },
     getNilaiPilihan(arr, anggota_pilihan){
       var nilai_akhir = '-';

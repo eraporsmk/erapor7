@@ -65,6 +65,10 @@ class ProgressController extends Controller
             'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
             'pd' => $item->anggota_rombel_count,
             'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id),
+            'kkm' => $item->kkm,
+            'kelompok_id' => $item->kelompok_id,
+            'semester_id' => $item->semester_id,
+            'rombongan_belajar_id' => $item->rombongan_belajar_id,
          ];
       }
       $data = [
@@ -93,6 +97,9 @@ class ProgressController extends Controller
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
                   },
                   'nilai_akhir_pengetahuan' => function($query){
+                     $query->where('pembelajaran_id', request()->pembelajaran_id);
+                  },
+                  'nilai_akhir_keterampilan' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
                   },
                   'deskripsi_mapel' => function($query){

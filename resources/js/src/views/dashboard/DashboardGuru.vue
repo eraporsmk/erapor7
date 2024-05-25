@@ -31,7 +31,8 @@
                     <b-td class="text-center">{{item.pd}}</b-td>
                     <b-td class="text-center">{{item.pd_dinilai}}</b-td>
                     <b-td class="text-center">
-                      <b-button variant="success" size="sm" @click="detil(item.pembelajaran_id)">Detil</b-button>
+                      <!--kkm, angka, kelompok_id, semester_id-->
+                      <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                     </b-td>
                   </b-tr>
                 </template>
@@ -45,7 +46,7 @@
           </b-table-simple>
         </div>
       </b-card-body>
-      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :sub_mapel="sub_mapel"></detil-nilai>
+      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :sub_mapel="sub_mapel" :meta="meta"></detil-nilai>
     </b-card>
     <dashboard-walas v-if="hasRole('wali')" @detil="HandleDetil"></dashboard-walas>
   </div>
@@ -88,6 +89,7 @@ export default {
       sub_mapel: 0,
       pembelajaran_id: null,
       rombongan_belajar_id: null,
+      meta: {}
     }
   },
   created() {
@@ -108,11 +110,16 @@ export default {
         console.log(error)
       })
     },
-    detil(pembelajaran_id){
-      this.pembelajaran_id = pembelajaran_id
+    detil(item){
+      this.pembelajaran_id = item.pembelajaran_id
+      this.meta = {
+        kkm: item.kkm,
+        kelompok_id: item.kelompok_id,
+        semester_id: item.semester_id,
+      }
       this.loading_modal = true
       this.$http.post('/dashboard/detil-penilaian', {
-        pembelajaran_id: pembelajaran_id,
+        pembelajaran_id: this.pembelajaran_id,
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
@@ -125,7 +132,7 @@ export default {
         eventBus.$emit('open-modal-detil-nilai', {
           data: {
             rombongan_belajar_id: this.rombongan_belajar_id,
-            pembelajaran_id: pembelajaran_id,
+            pembelajaran_id: this.pembelajaran_id,
           }
         })
       }).catch(error => {

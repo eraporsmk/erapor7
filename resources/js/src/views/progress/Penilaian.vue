@@ -9,23 +9,22 @@
         <datatable :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @detil="HandleDetil" />
       </div>
     </b-card-body>
-    <b-modal ref="detil-modal" size="xl" scrollable :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
-        <detil-modal :data_siswa="data_siswa"></detil-modal>
-    </b-modal>
+    <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :sub_mapel="sub_mapel" :meta="detil_meta"></detil-nilai>
   </b-card>
 </template>
 
 <script>
 import { BCard, BCardBody, BSpinner } from 'bootstrap-vue'
 import Datatable from './Datatable.vue'
-import DetilModal from './modal/DetilModal.vue'
+import DetilNilai from './../components/modal/dashboard/DetilNilai.vue'
+import eventBus from '@core/utils/eventBus';
 export default {
   components: {
     BCard,
     BCardBody,
     BSpinner,
     Datatable,
-    DetilModal
+    DetilNilai,
   },
   data() {
     return {
@@ -83,6 +82,8 @@ export default {
       data_siswa: [],
       merdeka: false,
       title: '',
+      sub_mapel: 0,
+      detil_meta: {},
     }
   },
   created() {
@@ -140,19 +141,30 @@ export default {
         this.loadPostsData()
       }
     },
-    detil(pembelajaran_id){
+    detil(item){
+      this.detil_meta = {
+        kkm: item.kkm,
+        kelompok_id: item.kelompok_id,
+        semester_id: item.semester_id,
+      }
       this.loading = true
       this.$http.post('/progress/detil', {
         aksi: 'pembelajaran',
-        pembelajaran_id: pembelajaran_id,
+        pembelajaran_id: item.pembelajaran_id,
       }).then(response => {
         this.loading = false
         let getData = response.data
         this.title = getData.title
         this.data_siswa = getData.data_siswa
         this.merdeka = getData.merdeka
-        this.$refs['detil-modal'].show()
-        console.log(getData);
+        //this.$refs['detil-modal'].show()
+        //console.log(getData);
+        eventBus.$emit('open-modal-detil-nilai', {
+          data: {
+            rombongan_belajar_id: item.rombongan_belajar_id,
+            pembelajaran_id: item.pembelajaran_id,
+          }
+        })
       }).catch(error => {
         console.log(error)
       })

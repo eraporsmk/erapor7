@@ -2,14 +2,32 @@
   <b-modal v-model="showDetilModal" size="xl" scrollable :title="title" cancel-title="Tutup" @ok="handleOk" ok-variant="primary">
     <b-table-simple bordered responsive>
       <b-thead>
-        <b-tr>
-          <b-th class="text-center">No</b-th>
-          <b-th class="text-center">Nama</b-th>
-          <b-th class="text-center">NISN</b-th>
-          <b-th class="text-center">Agama</b-th>
-          <b-th class="text-center">Nilai Akhir</b-th>
-          <b-th class="text-center">Capaian Kompetensi</b-th>
-        </b-tr>
+        <template v-if="merdeka">
+          <b-tr>
+            <b-th class="text-center">No</b-th>
+            <b-th class="text-center">Nama</b-th>
+            <b-th class="text-center">NISN</b-th>
+            <b-th class="text-center">Agama</b-th>
+            <b-th class="text-center">Nilai Akhir</b-th>
+            <b-th class="text-center">Capaian Kompetensi</b-th>
+          </b-tr>
+        </template>
+        <template v-else>
+          <b-tr>
+            <b-th class="text-center align-middle" rowspan="2">No</b-th>
+            <b-th class="text-center align-middle" rowspan="2">Nama</b-th>
+            <b-th class="text-center align-middle" rowspan="2">NISN</b-th>
+            <b-th class="text-center align-middle" rowspan="2">Agama</b-th>
+            <b-th class="text-center align-middle" colspan="2">Nilai Pengetahuan</b-th>
+            <b-th class="text-center align-middle" colspan="2">Nilai Keterampilan</b-th>
+          </b-tr>
+          <b-tr>
+            <b-th class="text-center">Angka</b-th>
+            <b-th class="text-center">Predikat</b-th>
+            <b-th class="text-center">Angka</b-th>
+            <b-th class="text-center">Predikat</b-th>
+          </b-tr>
+        </template>
       </b-thead>
       <b-tbody>
         <template v-if="data_siswa.length">
@@ -19,26 +37,40 @@
               <b-td>{{pd.nama}}</b-td>
               <b-td class="text-center">{{pd.nisn}}</b-td>
               <b-td class="text-center">{{pd.agama.nama}}</b-td>
-              <b-td class="text-center" v-if="merdeka">
-                {{(pd.nilai_akhir_kurmer) ? pd.nilai_akhir_kurmer.nilai : '-'}}
-              </b-td>
-              <b-td class="text-center" v-else>
-                {{(pd.nilai_akhir_pengetahuan) ? pd.nilai_akhir_pengetahuan.nilai : '-'}}
-              </b-td>
-              <b-td v-if="pd.deskripsi_mapel">
-                <template v-if="pd.deskripsi_mapel.deskripsi_pengetahuan && pd.deskripsi_mapel.deskripsi_keterampilan">
-                  {{pd.deskripsi_mapel.deskripsi_pengetahuan}}
-                  <hr>
-                  {{pd.deskripsi_mapel.deskripsi_keterampilan}}
-                </template>
-                <template v-if="pd.deskripsi_mapel.deskripsi_pengetahuan && !pd.deskripsi_mapel.deskripsi_keterampilan">
-                  {{pd.deskripsi_mapel.deskripsi_pengetahuan}}
-                </template>
-                <template v-if="!pd.deskripsi_mapel.deskripsi_pengetahuan && pd.deskripsi_mapel.deskripsi_keterampilan">
-                  {{pd.deskripsi_mapel.deskripsi_keterampilan}}
-                </template>
-              </b-td>
-              <b-td v-else>-</b-td>
+              <template v-if="merdeka">
+                <b-td class="text-center">
+                  {{(pd.nilai_akhir_kurmer) ? pd.nilai_akhir_kurmer.nilai : '-'}}
+                </b-td>
+                <b-td v-if="pd.deskripsi_mapel">
+                  <template v-if="pd.deskripsi_mapel.deskripsi_pengetahuan && pd.deskripsi_mapel.deskripsi_keterampilan">
+                    {{pd.deskripsi_mapel.deskripsi_pengetahuan}}
+                    <hr>
+                    {{pd.deskripsi_mapel.deskripsi_keterampilan}}
+                  </template>
+                  <template v-if="pd.deskripsi_mapel.deskripsi_pengetahuan && !pd.deskripsi_mapel.deskripsi_keterampilan">
+                    {{pd.deskripsi_mapel.deskripsi_pengetahuan}}
+                  </template>
+                  <template v-if="!pd.deskripsi_mapel.deskripsi_pengetahuan && pd.deskripsi_mapel.deskripsi_keterampilan">
+                    {{pd.deskripsi_mapel.deskripsi_keterampilan}}
+                  </template>
+                </b-td>
+                <b-td v-else>-</b-td>
+              </template>
+              <template v-else>
+                <b-td class="text-center">
+                  {{(pd.nilai_akhir_pengetahuan) ? pd.nilai_akhir_pengetahuan.nilai : '-'}}
+                </b-td>
+                <b-td class="text-center">
+                  <!--predikatOld(item.kkm, item.nilai_akhir_pengetahuan.nilai, item.kelompok_id, item.semester_id)-->
+                  {{(pd.nilai_akhir_pengetahuan) ? predikatOld(meta.kkm, pd.nilai_akhir_pengetahuan.nilai, meta.kelompok_id, meta.semester_id) : '-'}}
+                </b-td>
+                <b-td class="text-center">
+                  {{(pd.nilai_akhir_keterampilan) ? pd.nilai_akhir_keterampilan.nilai : '-'}}
+                </b-td>
+                <b-td class="text-center">
+                  {{(pd.nilai_akhir_keterampilan) ? predikatOld(meta.kkm, pd.nilai_akhir_keterampilan.nilai, meta.kelompok_id, meta.semester_id) : '-'}}
+                </b-td>
+              </template>
             </b-tr>
           </template>
         </template>
@@ -58,6 +90,7 @@
 <script>
 import { BOverlay, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton } from 'bootstrap-vue'
 import eventBus from '@core/utils/eventBus';
+import { konversi_huruf } from '@core/utils/utils'
 export default {
   components: {
     BOverlay, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton
@@ -70,6 +103,10 @@ export default {
     title: {
       type: String,
       default: () => '',
+    },
+    meta: {
+      type: Object,
+      default: () => {},
     },
     merdeka: {
       type: Boolean,
@@ -93,7 +130,7 @@ export default {
   },
   methods: {
     handleEvent(data){
-      console.log(data);
+      console.log(this.meta);
       this.pembelajaran_id = data.pembelajaran_id
       this.rombongan_belajar_id = data.rombongan_belajar_id
       this.showDetilModal = true
@@ -127,6 +164,10 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    predikatOld(kkm, angka, kelompok_id, semester_id){
+      const produktif = [4,5,9,10,13];
+      return konversi_huruf(kkm, angka, produktif.includes(kelompok_id), semester_id)
     },
   },
 }

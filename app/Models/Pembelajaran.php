@@ -241,6 +241,12 @@ class Pembelajaran extends Model
 	public function all_nilai_akhir_pengetahuan(){
 		return $this->hasMany(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 1);
 	}
+	public function all_nilai_akhir_keterampilan(){
+		return $this->hasMany(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 2);
+	}
+	public function all_nilai_akhir_pk(){
+		return $this->hasMany(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 3);
+	}
 	public function all_nilai_akhir_kurmer(){
 		return $this->hasMany(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 4);
 	}

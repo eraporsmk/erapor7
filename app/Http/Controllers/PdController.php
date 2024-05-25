@@ -173,8 +173,10 @@ class PdController extends Controller
             $query->where('sekolah_id', request()->sekolah_id);
             $query->where('guru_id', $rombel->guru_id);
         })->with([
+            'all_nilai_akhir_pengetahuan',
+            'all_nilai_akhir_keterampilan',
+            'all_nilai_akhir_pk',
             'all_nilai_akhir_kurmer',
-            'all_nilai_akhir_pengetahuan'
         ])->where(function($query){
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Anggota_rombel extends Model
 {
-	//use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
+	use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 	//use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
     use HasFactory, SoftDeletes;
     public $incrementing = false;

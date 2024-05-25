@@ -26,7 +26,7 @@
           {{row.item.akt_pd.judul_akt_pd}}
         </template>
         <template v-slot:cell(detil)="row">
-          <b-button variant="success" size="sm" @click="getDetilNilai(row.item.pembelajaran_id)">Detil</b-button>
+          <b-button variant="success" size="sm" @click="getDetilNilai(row.item)">Detil</b-button>
         </template>
         <template v-slot:cell(detil_pkl)="row">
           <b-button variant="success" size="sm" @click="detilPkl(row.item.pkl_id)">Detil</b-button>
@@ -129,8 +129,8 @@ export default {
         ekstrakurikuler_id: ekstrakurikuler_id,
       })
     },
-    getDetilNilai(pembelajaran_id){
-      this.$emit('detil', pembelajaran_id);
+    getDetilNilai(item){
+      this.$emit('detil', item);
     },
     detilPkl(pkl_id){
       this.$emit('detil', pkl_id)

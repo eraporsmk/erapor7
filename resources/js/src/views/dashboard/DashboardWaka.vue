@@ -97,7 +97,6 @@
           </template>
         </b-tbody>
       </b-table-simple>
-      {{data_rencana}}
     </b-modal>
   </div>
 </template>
