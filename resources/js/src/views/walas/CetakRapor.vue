@@ -26,9 +26,21 @@
                 <b-td class="text-center">
                   <b-button variant="success" :href="`/cetak/rapor-cover/${item.anggota_rombel.anggota_rombel_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file" size="2xl" /></b-button>
                 </b-td>
-                <b-td class="text-center">
-                  <b-button variant="warning" :href="`/cetak/rapor-nilai-akhir/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
-                </b-td>
+                <template v-if="merdeka">
+                  <b-td class="text-center">
+                    <b-button variant="warning" :href="`/cetak/rapor-nilai-akhir/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
+                  </b-td>
+                </template>
+                <template v-else-if="is_ppa">
+                  <b-td class="text-center">
+                    <b-button variant="warning" :href="`/cetak/rapor-nilai-akhir/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
+                  </b-td>
+                </template>
+                <template v-else>
+                  <b-td class="text-center">
+                    <b-button variant="warning" :href="`/cetak/rapor-semester/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
+                  </b-td>
+                </template>
                 <b-td class="text-center" v-if="rapor_pts">
                   <b-button variant="primary" :href="`/cetak/rapor-tengah-semester/${item.anggota_rombel.anggota_rombel_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
                 </b-td>
@@ -62,6 +74,7 @@ export default {
     return {
       isBusy: true,
       merdeka: false,
+      is_ppa: false,
       form: {
         aksi: 'cetak-rapor',
         user_id: '',
@@ -89,6 +102,7 @@ export default {
         let getData = response.data
         this.data_siswa = getData.data_siswa
         this.merdeka = getData.merdeka
+        this.is_ppa = getData.is_ppa
         this.rapor_pts = getData.rapor_pts
       })
     },

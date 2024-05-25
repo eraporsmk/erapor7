@@ -24,7 +24,7 @@ Route::group(['prefix' => 'cetak'], function () {
     Route::get('/rapor-uts/{rombongan_belajar_id}', [CetakController::class, 'rapor_uts'])->name('rapor-uts');
     Route::get('/rapor-tengah-semester/{anggota_rombel_id}/{semester_id}', [CetakController::class, 'rapor_tengah_semester'])->name('rapor-tengah-semester');
     Route::get('/rapor-cover/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_cover'])->name('rapor-cover');
-    Route::get('/rapor-semester/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_semester'])->name('rapor-semester');
+    Route::get('/rapor-semester/{anggota_rombel_id}/{sekolah_id}/{semester_id}', [CetakController::class, 'rapor_semester'])->name('rapor-semester');
     Route::get('/rapor-nilai-akhir/{anggota_rombel_id}/{sekolah_id}/{semester_id}', [CetakController::class, 'rapor_nilai_akhir'])->name('rapor-nilai-akhir');
     Route::get('/rapor-p5/{anggota_rombel_id}/{semester_id}', [CetakController::class, 'rapor_p5'])->name('rapor-p5');
     Route::get('/rapor-pelengkap/{anggota_rombel_id}/{rombongan_belajar_id?}', [CetakController::class, 'rapor_pelengkap'])->name('rapor-pelengkap');

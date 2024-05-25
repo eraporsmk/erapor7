@@ -146,13 +146,16 @@ class PdController extends Controller
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->orderBy('nama')->get();
         $merdeka = FALSE;
+        $rombel = NULL;
         if(request()->aksi == 'cetak-rapor'){
             $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
             $merdeka = Str::of($rombel->kurikulum->nama_kurikulum)->contains('Merdeka');
         }
         return response()->json([
             'data_siswa' => $data,
-            'merdeka' => $merdeka
+            'merdeka' => $merdeka,
+            'rapor_pts' => config('erapor.rapor_pts'),
+            'is_ppa' => ($rombel && $rombel->semester_id >= 20221),
         ]);
     }
     public function unduh_legger(){

@@ -300,19 +300,6 @@ class CetakController extends Controller
                     $query->where('jenis_rombel', 51);
                 });
 				$query->withWhereHas('single_nilai_ekstrakurikuler');
-                /*$query->whereHas('rombongan_belajar', function($query){
-                    $query->where('sekolah_id', request()->route('sekolah_id'));
-                    $query->where('semester_id', request()->route('semester_id'));
-                    $query->where('jenis_rombel', 51);
-                });
-                $query->with([
-                    'rombongan_belajar' => function($query){
-                        $query->where('sekolah_id', request()->route('sekolah_id'));
-                        $query->where('semester_id', request()->route('semester_id'));
-                        $query->where('jenis_rombel', 51);
-                    },
-                    'single_nilai_ekstrakurikuler'
-                ]);*/
             },
 		])->find($request->route('anggota_rombel_id'));
 		$budaya_kerja = Budaya_kerja::with(['catatan_budaya_kerja' => function($query){
@@ -465,31 +452,52 @@ class CetakController extends Controller
 					}]);
 				},
 				'kenaikan', 
-				'all_nilai_ekskul' => function($query){
+				/*'all_nilai_ekskul' => function($query){
 					$query->whereHas('ekstrakurikuler', function($query){
 						$query->where('semester_id', request()->route('semester_id'));
 					});
 					$query->with(['ekstrakurikuler']);
-				},
+				},*/
 				'kehadiran',
 				'all_prakerin',
-				'single_catatan_wali'
+				'single_catatan_wali',
+				'anggota_ekskul' => function($query){
+					$query->withWhereHas('rombongan_belajar', function($query){
+						$query->where('sekolah_id', request()->route('sekolah_id'));
+						$query->where('semester_id', request()->route('semester_id'));
+						$query->where('jenis_rombel', 51);
+					});
+					$query->withWhereHas('single_nilai_ekstrakurikuler');
+				},
 			])->find($request->route('anggota_rombel_id'));
-			$tanggal_rapor = get_setting('tanggal_rapor', request()->route('sekolah_id'), request()->route('semester_id'));
-			if($tanggal_rapor) {
-				$tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');
-			} else {
-				$tanggal_rapor = Carbon::now()->translatedFormat('d F Y');
+			//$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
+			$rombel_4_tahun = Rombel_empat_tahun::with(['rombongan_belajar'])->where('sekolah_id', $get_siswa->sekolah_id)->where('semester_id', request()->route('semester_id'))->get();
+			$jurusan_sp_id = [];
+			foreach($rombel_4_tahun as $r4){
+				$jurusan_sp_id[] = $r4->rombongan_belajar->jurusan_sp_id;
 			}
-			$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
+			$tanggal_rapor = Carbon::now();
+			if($get_siswa->kenaikan){
+				if($get_siswa->kenaikan->status == 3){
+					$tanggal_rapor = get_setting('tanggal_rapor_kelas_akhir', $get_siswa->sekolah_id, $get_siswa->semester_id);
+				} else {
+					$tanggal_rapor = get_setting('tanggal_rapor', $get_siswa->sekolah_id, $get_siswa->semester_id);
+				}
+			}
+			$opsi = 'naik';
+			if($get_siswa->rombongan_belajar->tingkat >= 12 || $get_siswa->rombongan_belajar->tingkat == 12 && !$get_siswa->rombongan_belajar->rombel_empat_tahun){
+				$opsi = 'lulus';
+			}
+			if($get_siswa->rombongan_belajar->tingkat == 12 && in_array($get_siswa->rombongan_belajar->jurusan_sp_id, $jurusan_sp_id)){
+				$opsi = 'naik';
+			}
 			$params = array(
 				'get_siswa'	=> $get_siswa,
-				'tanggal_rapor'	=> $tanggal_rapor,
+				'tanggal_rapor' => Carbon::parse($tanggal_rapor)->translatedFormat('d F Y'),
 				'cari_tingkat_akhir'	=> $cari_tingkat_akhir,
 				'rombel_4_tahun' => $rombel_4_tahun,
+				'opsi' => $opsi,
 			);
-			//return view('cetak.rapor_nilai', $params);
-			//return view('cetak.rapor_catatan', $params);
 			if(!$get_siswa->peserta_didik){
 				return view('cetak.no_pd');
 			}

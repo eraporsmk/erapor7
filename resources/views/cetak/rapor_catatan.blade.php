@@ -39,68 +39,44 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 		$huruf_kenaikan = 'D';
 	} else {
 		if($get_siswa->all_prakerin->count()){
+			$huruf_ekskul = 'D';
+			$huruf_absen = 'E';
+			$huruf_kenaikan = 'F';
+		} else {
 			$huruf_ekskul = 'C';
 			$huruf_absen = 'D';
 			$huruf_kenaikan = 'E';
-		} else {
-			$huruf_ekskul = 'B';
-			$huruf_absen = 'C';
-			$huruf_kenaikan = 'D';
 		}
 	}
-	/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
-		$huruf_ekskul = 'C';
-		$huruf_absen = 'D';
-		$huruf_kenaikan = 'E';
-	} else {
-		$huruf_ekskul = 'B';
-		$huruf_absen = 'C';
-		$huruf_kenaikan = 'D';
-	}*/
 } else {
 	if(merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum)){
 		if($get_siswa->all_prakerin->count()){
+			$huruf_ekskul = 'D';
+			$huruf_absen = 'E';
+			$huruf_kenaikan = 'F';
+		} else {
 			$huruf_ekskul = 'C';
 			$huruf_absen = 'D';
 			$huruf_kenaikan = 'E';
-		} else {
-			$huruf_ekskul = 'B';
-			$huruf_absen = 'C';
-			$huruf_kenaikan = 'D';
 		}
 	} else {
 		if($get_siswa->all_prakerin->count()){
-			/*$huruf_ekskul = 'D';
+			$huruf_ekskul = 'D';
 			$huruf_absen = 'E';
-			$huruf_kenaikan = 'F';*/
+			$huruf_kenaikan = 'F';
+		} else {
 			$huruf_ekskul = 'C';
 			$huruf_absen = 'D';
 			$huruf_kenaikan = 'E';
-		} else {
-			/*$huruf_ekskul = 'D';
-			$huruf_absen = 'E';
-			$huruf_kenaikan = 'F';*/
-			$huruf_ekskul = 'B';
-			$huruf_absen = 'C';
-			$huruf_kenaikan = 'D';
 		}
 	}
-	/*if (strpos($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') == false){
-		$huruf_ekskul = 'D';
-		$huruf_absen = 'E';
-		$huruf_kenaikan = 'F';
-	} else {
-		$huruf_ekskul = 'C';
-		$huruf_absen = 'D';
-		$huruf_kenaikan = 'E';
-	}*/
 }
 ?>
 @if($get_siswa->rombongan_belajar->tingkat != 10 && $get_siswa->all_prakerin->count())
-@if(!merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
+@if(merdeka($get_siswa->rombongan_belajar->kurikulum->nama_kurikulum))
 <div class="strong"><strong>B.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
 @else
-<div class="strong"><strong>B.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
+<div class="strong"><strong>C.&nbsp;&nbsp;Praktik Kerja Lapangan</strong></div>
 @endif
 <table class="table table-bordered">
 	<thead>
@@ -119,7 +95,7 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 			<td style="vertical-align: middle;">{{$loop->iteration}}</td>
 			<td>{{$prakerin->mitra_prakerin}}</td>
 			<td style="vertical-align: middle;">{{$prakerin->lokasi_prakerin}}</td>
-			<td style="vertical-align: middle;">{{$prakerin->lama_prakerin}}</td>
+			<td style="vertical-align: middle;" class="text-center">{{$prakerin->lama_prakerin}}</td>
 			<td>{{$prakerin->keterangan_prakerin}}</td>
 		</tr>
 		@endforeach

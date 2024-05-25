@@ -480,6 +480,7 @@ class WalasController extends Controller
             'merdeka' => ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE,
             'data_siswa' => $data_siswa,
             'rapor_pts' => config('erapor.rapor_pts'),
+            'is_ppa' => ($rombel->semester_id >= 20221),
         ];
         return response()->json($data);
     }
