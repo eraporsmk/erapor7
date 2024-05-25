@@ -409,10 +409,8 @@ export default {
           this.$refs['edit-modal'].show()
         })
       }
-      console.log(val);
-    },
-    deleteUnit(unit_ukk_id){
-      this.$swal({
+      if(val.aksi === 'hapus'){
+        this.$swal({
           title: 'Apakah Anda yakin?',
           text: 'Tindakan ini tidak dapat dikembalikan!',
           icon: 'warning',
@@ -426,11 +424,11 @@ export default {
           allowOutsideClick: () => false,
         }).then(result => {
           if (result.value) {
-            this.loading_form = true
-            this.$http.post('/ukk/delete-unit-ukk', {
-              unit_ukk_id: unit_ukk_id
+            this.loading = false
+            this.$http.post('/ukk/delete-paket-ukk', {
+              paket_ukk_id: val.id,
             }).then(response => {
-              this.loading_form = false
+              this.loading = false
               let getData = response.data
               this.$swal({
                 icon: getData.icon,
@@ -440,11 +438,47 @@ export default {
                   confirmButton: 'btn btn-success',
                 },
               }).then(result => {
-                this.handeleAksi({aksi: 'edit', id: this.form.paket_ukk_id})
+                this.loadPostsData()
               })
             });
           }
         })
+      }
+    },
+    deleteUnit(unit_ukk_id){
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: 'Tindakan ini tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => false,
+      }).then(result => {
+        if (result.value) {
+          this.loading_form = true
+          this.$http.post('/ukk/delete-unit-ukk', {
+            unit_ukk_id: unit_ukk_id
+          }).then(response => {
+            this.loading_form = false
+            let getData = response.data
+            this.$swal({
+              icon: getData.icon,
+              title: getData.title,
+              text: getData.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            }).then(result => {
+              this.handeleAksi({aksi: 'edit', id: this.form.paket_ukk_id})
+            })
+          });
+        }
+      })
     }
   },
 }

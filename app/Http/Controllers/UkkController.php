@@ -210,7 +210,14 @@ class UkkController extends Controller
     public function paket_ukk(){
         $data = Paket_ukk::where(function($query){
             $query->where('sekolah_id', request()->sekolah_id);
-        })->with(['jurusan'])->withCount('unit_ukk')
+        })->with(['jurusan'])->withCount([
+            'unit_ukk',
+            'rencana_ukk' => function($query){
+                $query->whereHas('nilai_ukk', function($query){
+                    $query->where('nilai', '>', 0);
+                });
+            }
+        ])
         ->orderBy('jurusan_id', 'asc')
         ->orderBy('kurikulum_id', 'asc')
         ->orderBy('nomor_paket', 'asc')
@@ -467,6 +474,31 @@ class UkkController extends Controller
                 'icon' => 'error',
                 'title' => 'Gagal!',
                 'text' => 'Unit UKK gagal dihapus. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function delete_paket_ukk(){
+        $find = Paket_ukk::find(request()->paket_ukk_id);
+        if($find){
+            if($find->delete()){
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Paket UKK berhasil dihapus',
+                ];
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Gagal!',
+                    'text' => 'Paket UKK gagal dihapus. Silahkan coba beberapa saat lagi!',
+                ];
+            }
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Paket UKK tidak ditemukan. Silahkan muat ulang laman ini!',
             ];
         }
         return response()->json($data);

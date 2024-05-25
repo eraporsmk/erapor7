@@ -203,6 +203,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/siswa-ukk', [UkkController::class, 'siswa_ukk']);
     Route::post('/simpan-nilai-ukk', [UkkController::class, 'simpan_nilai_ukk']);
     Route::post('/delete-unit-ukk', [UkkController::class, 'delete_unit_ukk']);
+    Route::post('/delete-paket-ukk', [UkkController::class, 'delete_paket_ukk']);
   });
   Route::group(['prefix' => 'waka'], function () {
     Route::post('/nilai-sikap', [WakaController::class, 'nilai_sikap']);

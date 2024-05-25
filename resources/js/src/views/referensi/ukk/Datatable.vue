@@ -30,6 +30,7 @@
             <b-dropdown-item href="javascript:" @click="aksi(row.item, 'status')" v-if="row.item.status"><font-awesome-icon icon="fa-solid fa-xmark" /> Non Aktifkan</b-dropdown-item>
             <b-dropdown-item href="javascript:" @click="aksi(row.item, 'status')" v-else><font-awesome-icon icon="fa-solid fa-check" /> Aktifkan</b-dropdown-item>
             <b-dropdown-item href="javascript:" @click="aksi(row.item.paket_ukk_id, 'edit')"><font-awesome-icon icon="fa-solid fa-pencil" /> Ubah</b-dropdown-item>
+            <b-dropdown-item href="javascript:" @click="aksi(row.item.paket_ukk_id, 'hapus')" v-if="!row.item.rencana_ukk_count"><font-awesome-icon icon="fa-solid fa-trash" /> Hapus</b-dropdown-item>
           </b-dropdown>
         </template>
       </b-table>
