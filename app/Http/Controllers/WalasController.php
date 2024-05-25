@@ -515,7 +515,8 @@ class WalasController extends Controller
             }
         })->with([
             'all_nilai_akhir_kurmer',
-            'all_nilai_akhir_pengetahuan'
+            'all_nilai_akhir_pengetahuan',
+            'all_nilai_akhir_keterampilan'
         ])->where(function($query){
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
@@ -526,6 +527,7 @@ class WalasController extends Controller
             'rombel' => $rombel,
             'data_siswa' => $data_siswa,
             'pembelajaran' => $pembelajaran,
+            'is_ppa' => ($rombel->semester_id >= 20221),
         ];
         return response()->json($data);
     }

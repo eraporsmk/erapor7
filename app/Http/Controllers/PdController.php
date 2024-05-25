@@ -187,6 +187,7 @@ class PdController extends Controller
             'rombel' => $rombel,
             'data_siswa' => $data_siswa,
             'pembelajaran' => $pembelajaran,
+            'is_ppa' => ($rombel->semester_id >= 20221),
         ];
         return response()->json($data);
     }
