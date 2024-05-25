@@ -393,7 +393,7 @@ class UkkController extends Controller
             $query->where('sekolah_id', request()->sekolah_id);
             $query->where('semester_id', request()->semester_id);
             $query->where('internal', request()->guru_id);
-        })->with(['paket_ukk'])->get();
+        })->withWhereHas('paket_ukk')->get();
         foreach($get as $val){
             $rencana_ukk[] = [
                 'rencana_ukk_id' => $val->rencana_ukk_id,

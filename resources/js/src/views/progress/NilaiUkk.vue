@@ -81,7 +81,7 @@ export default {
       per_page_nilai: 25,
       search: '',
       search_nilai: '',
-      sortBy: 'nama',
+      sortBy: 'created_at',
       sortBy_nilai: 'nama',
       sortByDesc: false,
       sortByDesc_nilai: false,

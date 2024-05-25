@@ -268,8 +268,7 @@ class ProgressController extends Controller
       $data = Rencana_ukk::where(function($query){
          $query->where('sekolah_id', request()->sekolah_id);
          $query->where('semester_id', request()->semester_id);
-     })->with([
-         'paket_ukk',
+     })->withWhereHas('paket_ukk')->with([
          'guru_internal' => function($query){
              $query->select('guru_id', 'nama');
          },
