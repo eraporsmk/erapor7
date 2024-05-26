@@ -149,8 +149,8 @@ export default {
   methods: {
     handleEvent(){
       if(this.rombongan_belajar_id){
-        if(this.merdeka){
-          var url = `/downloads/leger-nilai-kurmer/${this.form.rombongan_belajar_id}/${this.form.sekolah_id}/${this.form.semester_id}`
+        if(this.merdeka || this.is_ppa){
+          var url = `/downloads/leger-nilai-kurmer/${this.rombongan_belajar_id}/${this.form.sekolah_id}/${this.form.semester_id}`
         } else {
           var url = `/downloads/leger-nilai-rapor/${this.rombongan_belajar_id}`
         }

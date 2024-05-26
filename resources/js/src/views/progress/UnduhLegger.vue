@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     unduhLegger(){
-      if(this.merdeka){
+      if(this.merdeka || this.is_ppa){
         var url = `/downloads/leger-nilai-kurmer/${this.form.rombongan_belajar_id}/${this.form.sekolah_id}/${this.form.semester_id}`
       } else {
         var url = `/downloads/leger-nilai-rapor/${this.form.rombongan_belajar_id}`
@@ -186,6 +186,7 @@ export default {
           this.data_siswa = getData.data_siswa
           this.data_pembelajaran = getData.pembelajaran
           this.merdeka = getData.merdeka
+          this.is_ppa = getData.is_ppa
           this.show = true
         }).catch(error => {
           console.log(error);
