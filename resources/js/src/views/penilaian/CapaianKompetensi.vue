@@ -50,6 +50,13 @@
                 </b-form-group>
               </b-col>
             </b-row>
+            <template v-if="nonAktif">
+              <b-alert show variant="danger">
+                <div class="alert-body">
+                  <p>Penilaian tidak aktif. Silahkan hubungi administrator!</p>
+                </div>
+              </b-alert>
+            </template>
           </b-form>
         </template>
         <template v-else>
@@ -130,6 +137,7 @@ export default {
           nama: 'Tercapai',
         }
       ],
+      nonAktif: false,
     }
   },
   created() {
@@ -146,7 +154,7 @@ export default {
   },
   methods: {
     handleShowForm(val){
-      if(val){
+      if(!val){
         this.isBusy = true
         this.$http.post('/penilaian/get-capaian-kompetensi', this.form).then(response => {
           this.isBusy = false
@@ -190,6 +198,8 @@ export default {
           this.form.kompeten = kompeten
           this.form.inkompeten = inkompeten
         })
+      } else {
+        this.nonAktif = true
       }
     },
     lcfirst(string){
