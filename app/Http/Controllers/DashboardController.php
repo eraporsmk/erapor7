@@ -347,9 +347,9 @@ class DashboardController extends Controller
                'wali_kelas' => ($item_pilihan->rombongan_belajar->wali_kelas) ? $item_pilihan->rombongan_belajar->wali_kelas->nama_lengkap : '-',
                'pd' => $item_pilihan->anggota_rombel_count,
                'pd_dinilai' => $this->anggota_dinilai($item_pilihan->pembelajaran_id),
-               'kkm' => $item->kkm,
-               'kelompok_id' => $item->kelompok_id,
-               'semester_id' => $item->semester_id,
+               'kkm' => $item_pilihan->kkm,
+               'kelompok_id' => $item_pilihan->kelompok_id,
+               'semester_id' => $item_pilihan->semester_id,
             ];
             $rombel_pilihan = $item_pilihan->rombongan_belajar;
          }
