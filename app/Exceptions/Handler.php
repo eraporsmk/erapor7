@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
                 ];
                 return response()->json($data, 401);
             }
-            if (!$e instanceof ValidationException) {
+            if (!$e instanceof ValidationException && !$e->getStatusCode() == 503) {
                 $data = [
                     'icon' => 'error',
                     'title' => 'ERROR 500!',
