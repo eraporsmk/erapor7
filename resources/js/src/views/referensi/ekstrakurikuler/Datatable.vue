@@ -35,6 +35,7 @@
         <b-pagination v-model="meta.current_page" :total-rows="meta.total" :per-page="meta.per_page" align="right" @change="changePage" aria-controls="dw-datatable"></b-pagination>
       </b-col>
     </b-row>
+    <anggota-rombel :title="title":loading_modal="loading_modal" :list_anggota="list_anggota" @keluarkan="keluarkan"></anggota-rombel>
     <b-modal ref="anggota-modal" size="xl" :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
       <b-overlay :show="loading_modal" rounded opacity="0.6" size="lg" spinner-variant="danger">
         <b-table-simple hover bordered responsive>
@@ -74,6 +75,8 @@
 import _ from 'lodash' //IMPORT LODASH, DIMANA AKAN DIGUNAKAN UNTUK MEMBUAT DELAY KETIKA KOLOM PENCARIAN DIISI
 import { BRow, BCol, BFormInput, BTable, BSpinner, BPagination, BButton, BOverlay, BBadge, BTableSimple, BThead, BTbody, BTh, BTr, BTd } from 'bootstrap-vue'
 import vSelect from 'vue-select'
+import eventBus from '@core/utils/eventBus';
+import AnggotaRombel from './../modal/AnggotaRombel.vue'
 export default {
   components: {
     BRow,
@@ -87,6 +90,7 @@ export default {
     BBadge,
     BTableSimple, BThead, BTbody, BTh, BTr, BTd,
     vSelect,
+    AnggotaRombel,
   },
   props: {
     items: {
@@ -139,7 +143,8 @@ export default {
         var getData = response.data
         this.list_anggota = getData.data
         this.title = 'Anggota Ekstrakurikuler Kelas '+getData.rombel.nama
-        this.$refs['anggota-modal'].show()
+        //this.$refs['anggota-modal'].show()
+        eventBus.$emit('open-modal-anggota-rombel')
       }).catch(error => {
         console.log(error);
       })
@@ -178,6 +183,57 @@ export default {
     search: _.debounce(function (e) {
       this.$emit('search', e)
     }, 500),
+    keluarkan(id){
+      var text = 'Tindakan ini tidak dapat dikembalikan!'
+      var aksi = '/rombongan-belajar/keluarkan'
+      var params = {anggota_rombel_id: id}
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: () => false,
+      }).then(result => {
+        if (result.value) {
+          this.loading_modal = true
+          this.$http.post(aksi, params).then(response => {
+            let getData = response.data
+            this.$swal({
+              icon: getData.icon,
+              title: getData.title,
+              text: getData.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            }).then(result => {
+              this.anggota(this.rombongan_belajar_id)
+              this.loadPerPage(this.meta.per_page)
+            })
+          });
+        }
+      })
+    },
   },
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+.modal-fullscreen .modal-dialog {
+    max-width: 100%;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    display: flex;
+    position: fixed;
+    z-index: 100000;
+}
+</style>

@@ -78,7 +78,7 @@ class ReferensiController extends Controller
             'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
             'semester_id'		=> $semester->semester_id,
             'sekolah_id'		=> request()->sekolah_id,
-            'satuan'			=> request()->rombongan_belajar_id,
+            'rombongan_belajar_id' => request()->rombongan_belajar_id,
         ];
         $return = http_client('anggota_ekskul_by_rombel', $data_sync);
         if($return){
