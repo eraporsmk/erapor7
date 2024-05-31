@@ -9,7 +9,9 @@
         <datatable :isBusy="isBusy" :loading="loading" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @detil="handleDetil" @hapus="handleHapus" />
       </div>
     </b-card-body>
-    <b-modal ref="add-rencana" :title="title" size="xl">
+    <add-rencana @reload="handleReload"></add-rencana>
+    <detil-rencana></detil-rencana>
+    <!--b-modal ref="add-rencana" :title="title" size="xl">
       <add-rencana :loading_form="loading_form" :form="form" :state="state" :feedback="feedback"></add-rencana>
       <template #modal-footer>
         <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="primary">
@@ -22,7 +24,7 @@
     </b-modal>
     <b-modal ref="detil-rencana" :title="title" size="xl" ok-only ok-variant="secondary" ok-title="Tutup">
       <detil-rencana :rencana="rencana" :data_siswa="data_siswa"></detil-rencana>
-    </b-modal>
+    </b-modal-->
   </b-card>
 </template>
 
@@ -85,71 +87,23 @@ export default {
       search: '',
       sortBy: 'created_at', //DEFAULT SORTNYA ADALAH CREATED_AT
       sortByDesc: true, //ASCEDING
-      form: {
-        aksi: 'rencana-ukk',
-        user_id: '',
-        guru_id: '',
-        sekolah_id: '',
-        semester_id: '',
-        periode_aktif: '',
-        tingkat: '',
-        rombongan_belajar_id: '',
-        jurusan_id: '',
-        penguji_internal: '',
-        penguji_eksternal: '',
-        paket_ukk_id: '',
-        tanggal: '',
-        rencana_ukk_id: '',
-        siswa_dipilih: {},
-      },
-      state: {
-        /*tingkat: '',
-        tingkat: null,
-        rombongan_belajar_id: '',
-        rombongan_belajar_id: null,
-        tanggal: '',
-        tanggal: null,
-        penguji_internal: '',
-        penguji_internal: null,
-        penguji_eksternal: '',
-        penguji_eksternal: null,
-        paket_ukk_id: '',
-        paket_ukk_id: null,*/
-        tingkat: null,
-        rombongan_belajar_id: null,
-        jurusan_id: null,
-        penguji_internal: null,
-        penguji_eksternal: null,
-        paket_ukk_id: null,
-        tanggal: null,
-      },
-      feedback: {
-        tingkat: '',
-        rombongan_belajar_id: '',
-        jurusan_id: '',
-        penguji_internal: '',
-        penguji_eksternal: '',
-        paket_ukk_id: '',
-        tanggal: '',
-      },
       loading_form: false,
       rencana: null,
       data_siswa: [],
     }
   },
   created() {
-    this.form.user_id = this.user.user_id
-    this.form.guru_id = this.user.guru_id
-    this.form.sekolah_id = this.user.sekolah_id
-    this.form.semester_id = this.user.semester.semester_id
-    this.form.periode_aktif = this.user.semester.nama
-    eventBus.$on('add-rencana', (val) => {
-      this.$refs['add-rencana'].show()
+    eventBus.$on('add-rencana', () => {
+      eventBus.$emit('open-modal-add-rencana-ukk');
+      //this.$refs['add-rencana'].show()
       //this.$router.push({ name: 'penilaian-input-sikap' })
     })
     this.loadPostsData()
   },
   methods: {
+    handleReload(){
+      this.loadPostsData()
+    },
     loadPostsData() {
       this.isBusy = true
       //let current_page = this.search == '' ? this.current_page : this.current_page != 1 ? 1 : this.current_page
@@ -210,10 +164,11 @@ export default {
         rencana_ukk_id: val,
       }).then(response => {
         this.loading = false
-        let getData = response.data
+        /*let getData = response.data
         this.rencana = getData.rencana
         this.data_siswa = getData.data_siswa
-        this.$refs['detil-rencana'].show()
+        this.$refs['detil-rencana'].show()*/
+        eventBus.$emit('open-modal-detil-rencana-ukk', response.data);
       }).catch(error => {
         console.log(error);
       })
@@ -250,54 +205,6 @@ export default {
           });
         }
       })
-    },
-    handleSubmit(){
-      console.log(this.form);
-      this.loading_form = true
-      this.$http.post('/ukk/simpan-rencana-ukk', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        if(getData.errors){
-          this.feedback.tingkat = (getData.errors.tingkat) ? getData.errors.tingkat.join(', ') : ''
-          this.state.tingkat = (getData.errors.tingkat) ? false : null
-          this.feedback.rombongan_belajar_id = (getData.errors.rombongan_belajar_id) ? getData.errors.rombongan_belajar_id.join(', ') : ''
-          this.state.rombongan_belajar_id = (getData.errors.rombongan_belajar_id) ? false : null
-          this.feedback.penguji_internal = (getData.errors.penguji_internal) ? getData.errors.penguji_internal.join(', ') : ''
-          this.state.penguji_internal = (getData.errors.penguji_internal) ? false : null
-          this.feedback.penguji_eksternal = (getData.errors.deskripsi) ? getData.errors.deskripsi.join(', ') : ''
-          this.state.penguji_eksternal = (getData.errors.deskripsi) ? false : null
-          this.feedback.tanggal = (getData.errors.tanggal) ? getData.errors.tanggal.join(', ') : ''
-          this.state.tanggal = (getData.errors.tanggal) ? false : null
-          this.feedback.paket_ukk_id = (getData.errors.paket_ukk_id) ? getData.errors.paket_ukk_id.join(', ') : ''
-          this.state.paket_ukk_id = (getData.errors.paket_ukk_id) ? false : null
-        } else {
-          this.$swal({
-            icon: getData.icon,
-            title: getData.title,
-            text: getData.text,
-            customClass: {
-              confirmButton: 'btn btn-success',
-            },
-          }).then(result => {
-            this.$refs['add-rencana'].hide()
-            this.resetForm()
-            this.loadPostsData()
-          })
-        }
-      }).catch(error => {
-        console.log(error);
-      })
-    },
-    resetForm(){
-      this.form.tingkat = ''
-      this.form.rombongan_belajar_id = ''
-      this.form.jurusan_id = ''
-      this.form.penguji_internal = ''
-      this.form.penguji_eksternal = ''
-      this.form.paket_ukk_id = ''
-      this.form.tanggal = ''
-      this.form.rencana_ukk_id = ''
-      this.form.siswa_dipilih = {}
     },
   },
 }

@@ -17,11 +17,10 @@ use App\Models\Rombongan_belajar;
 class UkkController extends Controller
 {
     public function index(){
-        $data = Rencana_ukk::where(function($query){
+        $data = Rencana_ukk::withWhereHas('paket_ukk')->where(function($query){
             $query->where('sekolah_id', request()->sekolah_id);
             $query->where('semester_id', request()->semester_id);
         })->with([
-            'paket_ukk',
             'guru_internal' => function($query){
                 $query->select('guru_id', 'nama');
             },
@@ -259,8 +258,7 @@ class UkkController extends Controller
             ]
         );
         foreach(request()->nomor_paket as $key => $nomor_paket){
-            $insert++;
-            Paket_ukk::create([
+            $insert = Paket_ukk::create([
                 'paket_ukk_id'      => Str::uuid(),
                 'sekolah_id'        => request()->sekolah_id,
                 'jurusan_id'		=> request()->jurusan_id,
@@ -320,7 +318,8 @@ class UkkController extends Controller
                 'unit_ukk_id'   => Str::uuid(),
                 'paket_ukk_id' 	=> request()->paket_ukk_id,
                 'kode_unit'		=> $kode_unit,
-                'nama_unit'		=> request()->nama_unit[$key],
+                'nama_unit_id'		=> request()->nama_unit_id[$key],
+                'nama_unit_en'		=> request()->nama_unit_en[$key],
                 'last_sync'		=> now(),
             ]);
         }
@@ -367,7 +366,8 @@ class UkkController extends Controller
         foreach(request()->kode_unit as $unit_ukk_id => $kode_unit){
             Unit_ukk::where('unit_ukk_id', $unit_ukk_id)->update([
                 'kode_unit' => $kode_unit,
-                'nama_unit' => request()->nama_unit[$unit_ukk_id],
+                'nama_unit_id' => request()->nama_unit_id[$unit_ukk_id],
+                'nama_unit_en' => request()->nama_unit_en[$unit_ukk_id],
             ]);
         }
         $insert = 1;

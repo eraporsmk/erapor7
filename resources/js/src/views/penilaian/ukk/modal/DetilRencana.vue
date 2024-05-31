@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-modal v-model="showModal" :title="title" size="xl" ok-only ok-variant="secondary" ok-title="Tutup">
     <b-table-simple bordered responsive v-if="rencana">
       <b-tr>
         <b-td>Paket UKK</b-td>
@@ -42,16 +42,17 @@
         </template>
       </b-tbody>
     </b-table-simple>
-  </div>
+  </b-modal>
 </template>
 
 <script>
 import { BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton } from 'bootstrap-vue'
+import eventBus from '@core/utils/eventBus'
 export default {
   components: {
     BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton
   },
-  props: {
+  /*props: {
     rencana: {
       type: Object,
       required: true
@@ -60,13 +61,25 @@ export default {
       type: Array,
       required: true
     },
-  },
+  },*/
   data() {
     return {
+      showModal: false,
+      title: 'Detil Rencana Penilaian UKK',
+      rencana: null,
+      data_siswa: [],
       loading_guru: false,
     }
   },
+  created() {
+    eventBus.$on('open-modal-detil-rencana-ukk', this.handleEvent);
+  },
   methods: {
+    handleEvent(data){
+      this.showModal = true
+      this.rencana = data.rencana
+      this.data_siswa = data.data_siswa
+    },
     kesimpulan_ukk(item){
       var predikat = ''
       if(item.nilai_ukk && item.nilai_ukk.nilai){

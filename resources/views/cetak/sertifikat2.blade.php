@@ -7,9 +7,9 @@
 <table border="1" width="100%">
 	<thead>
 		<tr>
-			<th width="10" class="text-center">No</th>
-			<th align="center">Kode Kompetensi<br /><i>Code of Competency</i></th>
-			<th align="center">Judul Kompetensi<br /><i>Title of Competency</i></th>
+			<th width="5%" class="text-center">No</th>
+			<th class="text-center" width="20%">Kode Kompetensi<br /><i>Code of Competency</i></th>
+			<th class="text-center" width="75%">Judul Kompetensi<br /><i>Title of Competency</i></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,8 +17,14 @@
 	@foreach($paket->unit_ukk as $unit_ukk)
 		<tr>
 			<td class="text-center">{{$loop->iteration}}</td>
-			<td>{{$unit_ukk->kode_unit}}</td>
-			<td>{{$unit_ukk->nama_unit}}</td>
+			<td class="text-center">{{$unit_ukk->kode_unit}}</td>
+			<td>
+				{{$unit_ukk->nama_unit_id}}
+				@if($unit_ukk->nama_unit_en)
+				<br>
+				<i>{{$unit_ukk->nama_unit_en}}</i>
+				@endif
+			</td>
 		</tr>
 	@endforeach
 	@else

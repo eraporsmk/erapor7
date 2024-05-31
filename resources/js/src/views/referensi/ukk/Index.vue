@@ -9,42 +9,10 @@
         <datatable :isBusy="isBusy" :loading="loading" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @aksi="handeleAksi" />
       </div>
     </b-card-body>
-    <b-modal ref="add-ukk" title="Tambah Paket Uji Kompetensi Keahlian" size="xl" @hidden="resetModal" @ok="handleOk">
-      <add-ukk :form="form" :state="state" :jumlah_form="jumlah_form" :data_jurusan="data_jurusan" @reload="handleReload"></add-ukk>
-      <template #modal-footer="{ ok, cancel }">
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="danger" class="d-inline-block">
-          <b-button variant="danger" @click="addForm">Tambah Form</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="secondary" class="d-inline-block">
-          <b-button @click="cancel()">Tutup</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="success" class="d-inline-block">
-          <b-button variant="success" @click="ok()">Simpan</b-button>
-        </b-overlay>
-      </template>
-    </b-modal>
-    <b-modal ref="add-unit" title="Tambah Data Unit Kompetensi" size="xl" @hidden="resetModalUnit" @ok="handleOkUnit">
-      <add-unit :data="detil_ukk" :form="form" :loading_form="loading_form" :jumlah_form="jumlah_form"></add-unit>
-      <template #modal-footer="{ ok, cancel }">
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="danger" class="d-inline-block">
-          <b-button variant="danger" @click="addForm">Tambah Form</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="secondary" class="d-inline-block">
-          <b-button @click="cancel()">Tutup</b-button>
-        </b-overlay>
-        <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="success" class="d-inline-block">
-          <b-button variant="success" @click="ok()">Simpan</b-button>
-        </b-overlay>
-      </template>
-    </b-modal>
-    <b-modal ref="detil-modal" title="Detil Data UKK" size="xl" ok-only ok-title="Tutup" ok-variant="secondary">
-      <detil-ukk :data="detil_ukk"></detil-ukk>
-    </b-modal>
-    <b-modal ref="edit-modal" title="Perbaharui Data" size="lg" ok-title="Perbaharui" cancel-title="Tutup" @ok="handleUpdate">
-      <b-overlay :show="loading_form" rounded opacity="0.6" spinner-small spinner-variant="danger" class="d-inline-block">
-        <edit-ukk :data="detil_ukk" :form="form" :loading_form="loading_form" @deleteUnit="deleteUnit"></edit-ukk>
-      </b-overlay>
-    </b-modal>
+    <add-unit @reload="handleReload"></add-unit>
+    <edit-ukk @reload="handleReload" @reload-unit="reloadUnit"></edit-ukk>
+    <add-ukk @reload="handleReload"></add-ukk>
+    <detil-ukk></detil-ukk>
   </b-card>
 </template>
 
@@ -119,50 +87,21 @@ export default {
       search: '',
       sortBy: 'nama',
       sortByDesc: false,
-      //form
-      form: {
-        user_id: '',
-        sekolah_id: '',
-        semester_id: '',
-        periode_aktif: '',
-        paket_ukk_id: '',
-        jurusan_id: '',
-        kurikulum_id: '',
-        nomor_paket: {},
-        nama_paket_id: {},
-        nama_paket_en: {},
-        status: {},
-        kode_unit: {},
-        nama_unit: {},
-      },
-      state: {
-        jurusan_id_feedback: '',
-        jurusan_id_state: null,
-        kurikulum_id_feedback: '',
-        kurikulum_id_state: null,
-      },
-      data_jurusan: [],
     }
   },
   created() {
-    this.form.user_id = this.user.user_id
-    this.form.sekolah_id = this.user.sekolah_id
-    this.form.semester_id = this.user.semester.semester_id
-    this.form.periode_aktif = this.user.semester.nama
     eventBus.$on('add-ukk', this.handleEvent);
     this.loadPostsData()
   },
   methods: {
     handleEvent(){
       eventBus.$emit('loading', true);
-      this.$http.post('/ukk/get-jurusan', this.form).then(response => {
-        let getData = response.data
-        this.data_jurusan = getData.data_jurusan
-        for (var i = 1; i < this.jumlah_form + 1; i++) {
-          this.form.status[i] = null
-        }
+      this.$http.post('/ukk/get-jurusan', {
+        sekolah_id: this.user.sekolah_id,
+        semester_id: this.user.semester.semester_id,
+      }).then(response => {
         eventBus.$emit('loading', false);
-        this.$refs['add-ukk'].show()
+        eventBus.$emit('open-modal-add-ukk', response.data);
       });
     },
     handleReload(){
@@ -223,117 +162,17 @@ export default {
         this.loadPostsData() //DAN LOAD DATA BARU BERDASARKAN SORT
       }
     },
-    addForm(){
-      this.jumlah_form = this.jumlah_form + 1
-      this.form.status[this.jumlah_form] = null
-      console.log('addForm');
-    },
-    resetModal(){
-      this.form.jurusan_id = ''
-      this.state.jurusan_id_feedback = ''
-      this.state.jurusan_id_state = null
-      this.form.kurikulum_id = ''
-      this.state.kurikulum_id_feedback = ''
-      this.state.kurikulum_id_state = null
-      this.form.nomor_paket = {}
-      this.form.nama_paket_id = {}
-      this.form.nama_paket_en = {}
-      this.form.status = {}
-      this.jumlah_form = 5
-      this.data_jurusan = []
-      this.data_kurikulum = []
-    },
-    handleOk(bvModalEvent){
-      bvModalEvent.preventDefault()
-      this.handleSubmit()
-    },
-    handleSubmit(){
-      this.loading_form = true
-      this.$http.post('/ukk/simpan-ukk', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        if(getData.errors){
-          this.state.jurusan_id_feedback = (getData.errors.jurusan_id) ? getData.errors.jurusan_id.join(', ') : ''
-          this.state.jurusan_id_state = (getData.errors.jurusan_id) ? false : null
-          this.state.kurikulum_id_feedback = (getData.errors.kurikulum_id) ? getData.errors.kurikulum_id.join(', ') : ''
-          this.state.kurikulum_id_state = (getData.errors.kurikulum_id) ? false : null
-        } else {
-          this.$swal({
-            icon: getData.icon,
-            title: getData.title,
-            text: getData.text,
-            customClass: {
-              confirmButton: 'btn btn-success',
-            },
-          }).then(result => {
-            this.$refs['add-ukk'].hide()
-            this.resetModal()
-            this.loadPostsData()
-          })
-        }
-      }).catch(error => {
-        console.log(error);
-      })
-    },
-    resetModalUnit(){
-      console.log('resetModalUnit');
-      this.jumlah_form = 5
-    },
-    handleOkUnit(bvModalEvent){
-      bvModalEvent.preventDefault()
-      this.handleSubmitUnit()
-    },
-    handleSubmitUnit(){
-      this.loading_form = true
-      this.$http.post('/ukk/add-unit-ukk', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        this.$swal({
-          icon: getData.icon,
-          title: getData.title,
-          text: getData.text,
-          customClass: {
-            confirmButton: 'btn btn-success',
-          },
-        }).then(result => {
-          this.$refs['add-unit'].hide()
-          this.loadPostsData()
-        })
-      })
-    },
-    handleUpdate(bvModalEvent){
-      bvModalEvent.preventDefault()
-      this.handleSubmitUpdate()
-    },
-    handleSubmitUpdate(){
-      this.loading_form = true
-      this.$http.post('/ukk/update-ukk', this.form).then(response => {
-        this.loading_form = false
-        let getData = response.data
-        this.$swal({
-          icon: getData.icon,
-          title: getData.title,
-          text: getData.text,
-          customClass: {
-            confirmButton: 'btn btn-success',
-          },
-        }).then(result => {
-          this.$refs['edit-modal'].hide()
-          this.loadPostsData()
-        })
-      })
+    reloadUnit(paket_ukk_id){
+      this.handeleAksi({aksi: 'edit', id: paket_ukk_id})
     },
     handeleAksi(val){
       this.loading = true
       if(val.aksi === 'add_unit'){
-        this.form.paket_ukk_id = val.id
         this.$http.post('/ukk/detil-ukk', {
           paket_ukk_id: val.id,
         }).then(response => {
           this.loading = false
-          let getData = response.data
-          this.detil_ukk = getData
-          this.$refs['add-unit'].show()
+          eventBus.$emit('open-modal-add-unit-ukk', response.data);
         })
       }
       if(val.aksi === 'detil'){
@@ -341,9 +180,7 @@ export default {
           paket_ukk_id: val.id,
         }).then(response => {
           this.loading = false
-          let getData = response.data
-          this.detil_ukk = getData
-          this.$refs['detil-modal'].show()
+          eventBus.$emit('open-modal-detil-ukk', response.data);
         })
       }
       if(val.aksi === 'status'){
@@ -390,23 +227,7 @@ export default {
           paket_ukk_id: val.id,
         }).then(response => {
           this.loading = false
-          this.loading_form = false
-          let getData = response.data
-          this.detil_ukk = getData
-          this.form.paket_ukk_id = getData.paket_ukk_id
-          this.form.nomor_paket = getData.nomor_paket
-          this.form.nama_paket_id = getData.nama_paket_id
-          this.form.nama_paket_en = getData.nama_paket_en
-          this.form.status = getData.status
-          var kode_unit = {}
-          var nama_unit = {}
-          this.detil_ukk.unit_ukk.forEach(function(value, key) {
-            kode_unit[value.unit_ukk_id] = value.kode_unit
-            nama_unit[value.unit_ukk_id] = value.nama_unit
-          })
-          this.form.kode_unit = kode_unit
-          this.form.nama_unit = nama_unit
-          this.$refs['edit-modal'].show()
+          eventBus.$emit('open-modal-edit-ukk', response.data);
         })
       }
       if(val.aksi === 'hapus'){
@@ -445,41 +266,6 @@ export default {
         })
       }
     },
-    deleteUnit(unit_ukk_id){
-      this.$swal({
-        title: 'Apakah Anda yakin?',
-        text: 'Tindakan ini tidak dapat dikembalikan!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yakin!',
-        customClass: {
-          confirmButton: 'btn btn-primary',
-          cancelButton: 'btn btn-outline-danger ml-1',
-        },
-        buttonsStyling: false,
-        allowOutsideClick: () => false,
-      }).then(result => {
-        if (result.value) {
-          this.loading_form = true
-          this.$http.post('/ukk/delete-unit-ukk', {
-            unit_ukk_id: unit_ukk_id
-          }).then(response => {
-            this.loading_form = false
-            let getData = response.data
-            this.$swal({
-              icon: getData.icon,
-              title: getData.title,
-              text: getData.text,
-              customClass: {
-                confirmButton: 'btn btn-success',
-              },
-            }).then(result => {
-              this.handeleAksi({aksi: 'edit', id: this.form.paket_ukk_id})
-            })
-          });
-        }
-      })
-    }
   },
 }
 </script>

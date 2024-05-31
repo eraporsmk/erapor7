@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-modal v-model="showModal" title="Tambah Paket Uji Kompetensi Keahlian" size="xl" @hidden="resetModal" @ok="handleOk">
     <b-overlay :show="loading_form" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-form ref="form" @submit.stop.prevent="handleSubmit">
         <b-row>
@@ -64,39 +64,35 @@
         </b-row>
       </b-form>
     </b-overlay>
-  </div>
+    <template #modal-footer="{ ok, cancel }">
+      <b-overlay rounded opacity="0.6" spinner-small spinner-variant="danger" class="d-inline-block">
+        <b-button variant="danger" @click="addForm">Tambah Form</b-button>
+      </b-overlay>
+      <b-overlay rounded opacity="0.6" spinner-small spinner-variant="secondary" class="d-inline-block">
+        <b-button @click="cancel()">Tutup</b-button>
+      </b-overlay>
+      <b-overlay rounded opacity="0.6" spinner-small spinner-variant="success" class="d-inline-block">
+        <b-button variant="success" @click="ok()">Simpan</b-button>
+      </b-overlay>
+    </template>
+  </b-modal>
 </template>
 
 <script>
 import { BOverlay, BForm, BFormInput, BRow, BCol, BFormGroup, BFormSelect, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton } from 'bootstrap-vue'
+import eventBus from '@core/utils/eventBus'
 import vSelect from 'vue-select'
 export default {
   components: {
     BOverlay, BForm, BFormInput, BRow, BCol, BFormGroup, BFormSelect, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BButton,
     vSelect,
   },
-  props: {
-    form: {
-      type: Object,
-      required: true,
-    },
-    state: {
-      type: Object,
-      required: true,
-    },
-    data_jurusan: {
-      type: Array,
-      required: true
-    },
-    jumlah_form: {
-      type: Number,
-      default: () => 5,
-    }
-  },
   data() {
     return {
+      showModal: false,
       loading_form: false,
       loading_kurikulum: false,
+      data_jurusan: [],
       data_kurikulum: [],
       data_status: [
         {
@@ -109,9 +105,47 @@ export default {
           value: '0', text: 'Tidak Aktif',
         },
       ],
+      form: {
+        user_id: '',
+        sekolah_id: '',
+        semester_id: '',
+        periode_aktif: '',
+        paket_ukk_id: '',
+        jurusan_id: '',
+        kurikulum_id: '',
+        nomor_paket: {},
+        nama_paket_id: {},
+        nama_paket_en: {},
+        status: {},
+        kode_unit: {},
+        nama_unit: {},
+      },
+      state: {
+        jurusan_id_feedback: '',
+        jurusan_id_state: null,
+        kurikulum_id_feedback: '',
+        kurikulum_id_state: null,
+      },
+      jumlah_form: 5,
     }
   },
+  created() {
+    this.form.user_id = this.user.user_id
+    this.form.sekolah_id = this.user.sekolah_id
+    this.form.semester_id = this.user.semester.semester_id
+    this.form.periode_aktif = this.user.semester.nama
+    eventBus.$on('open-modal-add-ukk', this.handleEvent);
+  },
   methods: {
+    handleEvent(data){
+      this.showModal = true
+      this.data_jurusan = data.data_jurusan
+    },
+    addForm(){
+      this.jumlah_form = this.jumlah_form + 1
+      this.form.status[this.jumlah_form] = null
+      console.log('addForm');
+    },
     changeJurusan(val){
       this.form.kurikulum_id = ''
       if(val){
@@ -130,6 +164,53 @@ export default {
         this.state.kurikulum_id_feedback = ''
         this.state.kurikulum_id_state = true
       }
+    },
+    resetModal(){
+      this.form.jurusan_id = ''
+      this.state.jurusan_id_feedback = ''
+      this.state.jurusan_id_state = null
+      this.form.kurikulum_id = ''
+      this.state.kurikulum_id_feedback = ''
+      this.state.kurikulum_id_state = null
+      this.form.nomor_paket = {}
+      this.form.nama_paket_id = {}
+      this.form.nama_paket_en = {}
+      this.form.status = {}
+      this.jumlah_form = 5
+      this.data_jurusan = []
+      this.data_kurikulum = []
+    },
+    handleOk(bvModalEvent){
+      bvModalEvent.preventDefault()
+      this.handleSubmit()
+    },
+    handleSubmit(){
+      this.loading_form = true
+      this.$http.post('/ukk/simpan-ukk', this.form).then(response => {
+        this.loading_form = false
+        let getData = response.data
+        if(getData.errors){
+          this.state.jurusan_id_feedback = (getData.errors.jurusan_id) ? getData.errors.jurusan_id.join(', ') : ''
+          this.state.jurusan_id_state = (getData.errors.jurusan_id) ? false : null
+          this.state.kurikulum_id_feedback = (getData.errors.kurikulum_id) ? getData.errors.kurikulum_id.join(', ') : ''
+          this.state.kurikulum_id_state = (getData.errors.kurikulum_id) ? false : null
+        } else {
+          this.$swal({
+            icon: getData.icon,
+            title: getData.title,
+            text: getData.text,
+            customClass: {
+              confirmButton: 'btn btn-success',
+            },
+          }).then(result => {
+            this.showModal = false
+            this.$emit('reload')
+            this.resetModal()
+          })
+        }
+      }).catch(error => {
+        console.log(error);
+      })
     },
   },
 }
