@@ -47,7 +47,7 @@
                       </b-td>
                       <b-td>
                         <b-form-group :state="skala_state[item.anggota_rombel.anggota_rombel_id]" style="margin-bottom: 0">
-                          <v-select id="dudi_id" v-model="form.skala[item.anggota_rombel.anggota_rombel_id]" :options="[1,2,3,4,5,6,7,8,9,10]" placeholder="== Pilih Skala ==" :searchable="false" :disabled="disabled"></v-select>
+                          <v-select id="dudi_id" v-model="form.skala[item.anggota_rombel.anggota_rombel_id]" :options="[1,2,3,4,5,6,7,8,9,10]" placeholder="== Pilih Skala ==" :searchable="false" :disabled="disabled" appendToBody></v-select>
                         </b-form-group>
                       </b-td>
                       <b-td>

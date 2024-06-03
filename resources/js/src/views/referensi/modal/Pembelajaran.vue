@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="showPembelajaranModal" modal-class="modal-fullscreen" :title="title" scrollable :body-class="table_class" @ok="handleOk">
+  <b-modal v-model="showPembelajaranModal" size="xl" :title="title" :body-class="table_class" @ok="handleOk">
     <b-overlay :show="loading_modal" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-table-simple hover bordered :class="table_class">
         <b-thead>
