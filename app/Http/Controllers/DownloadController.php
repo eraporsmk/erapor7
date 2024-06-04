@@ -61,28 +61,69 @@ class DownloadController extends Controller
 		$nama_file = $nama_file . '.xlsx';
 		return (new LeggerNilaiRaporExport)->query(request()->route('rombongan_belajar_id'))->download($nama_file);
     }
+	private function wherehas($query, $merdeka){
+        if($merdeka){
+            $query->whereHas('tp', function($query){
+                $query->whereHas('cp', function($query){
+                    $query->whereHas('pembelajaran', function($query){
+                        $query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+                    });
+                });
+            });
+        } else {
+            $query->whereHas('kd', function($query){
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+                });
+            });
+        }
+    }
 	public function template_nilai_akhir(){
 		if(request()->route('pembelajaran_id')){
-			$pembelajaran = Pembelajaran::find(request()->route('pembelajaran_id'));
-			$merdeka = Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
+			$pembelajaran = Pembelajaran::with([
+				'rombongan_belajar' => function($query){
+					$query->select('rombongan_belajar_id', 'nama', 'kurikulum_id');
+					$query->with(['kurikulum' => function($query){
+						$query->select('kurikulum_id', 'nama_kurikulum');
+					}]);
+				},
+			])->find(request()->route('pembelajaran_id'));
+			$merdeka = merdeka($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum);
+			$data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($merdeka){
+					$query->withWhereHas('rombongan_belajar', function($query){
+						$query->whereHas('mapel', function($query){
+							$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+						});
+					});
+					$query->with([
+						'nilai_akhir_mapel' => function($query) use ($merdeka){
+							if($merdeka){
+								$query->where('kompetensi_id', 4);
+							} else {
+								$query->where('kompetensi_id', 1);
+							}
+							$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+						},
+						'tp_nilai' => function($query) use ($merdeka){
+							$this->wherehas($query, $merdeka);
+						}
+					]);
+				}
+			)->orderBy('nama')->get();
+			$data_tp = Tujuan_pembelajaran::where(function($query){
+				$query->whereHas('tp_mapel', function($query){
+					$query->where('tp_mapel.pembelajaran_id', request()->route('pembelajaran_id'));
+				});
+			})->orderBy('created_at')->get();
 			$nama_file = 'Template Nilai Akhir Mata Pelajaran ' . $pembelajaran->nama_mata_pelajaran. ' Kelas '.$pembelajaran->rombongan_belajar->nama;
 			$nama_file = clean($nama_file);
 			$data = [
-				'pembelajaran_id' => request()->route('pembelajaran_id'), 
-				'rombongan_belajar_id' => $pembelajaran->rombongan_belajar_id, 
-				'merdeka' => $merdeka, 
-				'nama_mata_pelajaran' => $pembelajaran->nama_mata_pelajaran,
-				'kelas' => $pembelajaran->rombongan_belajar->nama,
+				'data_siswa' => $data_siswa, 
+				'data_tp' => $data_tp, 
+				'pembelajaran' => $pembelajaran,
 			];
 			$export = new TemplateNilaiAkhir($data);
 			return Excel::download($export, $nama_file . '.xlsx');
-			return (new TemplateNilaiAkhir)->query([
-				'pembelajaran_id' => request()->route('pembelajaran_id'), 
-				'rombongan_belajar_id' => $pembelajaran->rombongan_belajar_id, 
-				'merdeka' => $merdeka, 
-				'nama_mata_pelajaran' => $pembelajaran->nama_mata_pelajaran,
-				'kelas' => $pembelajaran->rombongan_belajar->nama,
-			])->download($nama_file . '.xlsx');
 		} else {
 			echo 'Akses tidak sah!';
 		}

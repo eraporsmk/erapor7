@@ -379,7 +379,25 @@ class PenilaianController extends Controller
                 $list[] = $siswa;
             }    
         } else {
-            Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
+            //Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
+            $collection = (new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka))->toCollection(storage_path('/app/public/'.$file_path));
+            if($collection->count() == 1){
+                $this->simpan_nilai_import($collection->first());
+                $data = [
+                    'success' => TRUE,
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Nilai Akhir berhasil disimpan',
+                ];
+            } else {
+                $data = [
+                    'success' => FALSE,
+                    'icon' => 'error',
+                    'title' => 'Gagal!',
+                    'text' => 'Format Import salah. Silahkan Unduh Template ulang!',
+                ];
+            }
+            return response()->json($data);
         }
         Storage::disk('public')->delete($file_path);
         
@@ -391,6 +409,59 @@ class PenilaianController extends Controller
             'data_nilai' => $list,
         ];
         return response()->json($data);
+    }
+    private function simpan_nilai_import($rows){
+        if(is_bool(request()->merdeka)){
+            $merdeka = request()->merdeka;
+        } else {
+            $merdeka = (request()->merdeka == 'true') ? TRUE : FALSE;
+        }
+        foreach ($rows as $row)
+        {
+            if($row[0]){
+                if(is_numeric($row[4])) {
+                    $a = Nilai_akhir::updateOrCreate(
+                        [
+                            'sekolah_id' => request()->sekolah_id,
+                            'anggota_rombel_id' => $row[1],
+                            'pembelajaran_id' => request()->pembelajaran_id,
+                            'kompetensi_id' => ($merdeka) ? 4 : 1,
+                        ],
+                        [
+                            'nilai' => ($row[4] >= 0 && $row[4] <= 100) ? number_format($row[4], 0) : 0,
+                        ]
+                    );
+                }
+                $this->insertTpNilai($row, $merdeka);
+            } else {
+                $this->insertTpNilai($row, $merdeka);
+            }
+        }
+    }
+    private function insertTpNilai($row, $merdeka){
+        $tp = Tujuan_pembelajaran::find($row[5]);
+        if ($merdeka) {
+            $update = [
+                'cp_id' => $tp->cp_id,
+            ];
+        } else {
+            $update = [
+                'kd_id' => $tp->kd_id,
+            ];
+        }
+        if(!is_null($row[6])){
+            Tp_nilai::updateOrCreate(
+                [
+                    'sekolah_id' => request()->sekolah_id,
+                    'anggota_rombel_id' => $row[1],
+                    'tp_id' => $row[5],
+                    'kompeten' => $row[6],
+                ],
+                $update
+            );
+        } else {
+            Tp_nilai::where('anggota_rombel_id', $row[1])->where('tp_id', $row[5])->delete();
+        }
     }
     public function get_capaian_kompetensi(){
         $callback = function($query){

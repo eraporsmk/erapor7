@@ -234,6 +234,9 @@ class Anggota_rombel extends Model
 	public function capaian_kompeten(){
 		return $this->hasMany(Tp_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id');
 	}
+	public function tp_nilai(){
+		return $this->hasMany(Tp_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id');
+	}
 	public function tp_kompeten(){
 		return $this->hasMany(Tp_nilai::class, 'anggota_rombel_id', 'anggota_rombel_id')->where('kompeten', 1);
 	}

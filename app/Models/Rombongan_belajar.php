@@ -33,6 +33,10 @@ class Rombongan_belajar extends Model
 	{
 		return $this->hasMany(Pembelajaran::class, 'rombongan_belajar_id', 'rombongan_belajar_id');
 	}
+	public function mapel()
+	{
+		return $this->hasOne(Pembelajaran::class, 'rombongan_belajar_id', 'rombongan_belajar_id');
+	}
 	public function projek()
 	{
 		return $this->hasOne(Pembelajaran::class, 'rombongan_belajar_id', 'rombongan_belajar_id')->where(function($query){

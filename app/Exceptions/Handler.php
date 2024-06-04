@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException ;
+use Illuminate\Database\QueryException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -42,6 +43,14 @@ class Handler extends ExceptionHandler
                     'message' => $e->getMessage(),
                 ];
                 return response()->json($data, 401);
+            }
+            if($e instanceof QueryException){
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'ERROR 500!',
+                    'text' => $e->getMessage(),
+                ];
+                return response()->json($data, 500);
             }
             if (!$e instanceof ValidationException && !$e->getStatusCode() == 503) {
                 $data = [
