@@ -142,7 +142,6 @@ export default {
       window.open(`/cetak/rapor-pkl/${peserta_didik_id}/${pkl_id}/${this.user.guru_id}/${this.user.semester.semester_id}`, `_blank`);
     },
     changeRombel(val){
-      //console.log(val);
       this.rombongan_belajar_id = val
       this.$emit('rombel', val)
     }

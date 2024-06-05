@@ -213,8 +213,9 @@ class DashboardController extends Controller
       return response()->json([
          'pembelajaran' => $pembelajaran,
          'data_siswa' => $pembelajaran->rombongan_belajar->pd,
-         'merdeka' => Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka'),
+         'merdeka' => merdeka($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum),
          'title' => 'Detil Penilaian Mata Pelajaran '.$pembelajaran->nama_mata_pelajaran,
+         'is_ppa' => is_ppa($pembelajaran->semester_id),
       ]);
    }
    public function anggota_dinilai($pembelajaran_id){

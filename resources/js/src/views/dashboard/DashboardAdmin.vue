@@ -195,7 +195,6 @@ export default {
   },
   methods: {
     changeStatus(val){
-      console.log(val);
       var text;
       if(val){
         text = 'Penilaian akan di aktifkan'

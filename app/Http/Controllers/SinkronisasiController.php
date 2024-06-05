@@ -296,6 +296,22 @@ class SinkronisasiController extends Controller
         return response()->json($data);
     }
     public function erapor(){
+        $user = auth()->user();
+        $semester = Semester::find(request()->semester_id);
+        $data_sync = [
+            'username_dapo'		=> $user->email,
+            'password_dapo'		=> $user->password,
+            'npsn'				=> $user->sekolah->npsn,
+            'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
+            'semester_id'		=> $semester->semester_id,
+            'sekolah_id'		=> $user->sekolah->sekolah_id,
+        ];
+        $response = NULL;
+        try {
+            $response = http_client('status', $data_sync);
+        } catch (\Exception $e){
+            //
+        }
         $last_sync = Sync_log::where('user_id', request()->user_id)->first();
         $table_sync = [];
         $jumlah = 0;
@@ -311,6 +327,7 @@ class SinkronisasiController extends Controller
             'last_sync' => ($last_sync) ? $last_sync->updated_at->translatedFormat('d F Y H:i:s') : '-',
             'table_sync' => $table_sync,
             'jumlah' => $jumlah,
+            'response' => $response,
         ];
         return response()->json($data);
     }

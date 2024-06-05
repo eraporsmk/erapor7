@@ -145,7 +145,6 @@ export default {
       this.$router.push({ name: 'auth-login' })
     },
     linkClass(idx) {
-      //console.log(this.tabIndex);
       return this.tabIndex === idx
     },
   },

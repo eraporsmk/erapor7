@@ -162,7 +162,6 @@ export default {
       }
     },
     handleAksi(val){
-      console.log(val);
       if(val.aksi == 'edit'){
         eventBus.$emit('open-modal-edit-tp', val.item);
       }
@@ -237,7 +236,6 @@ export default {
         let getData = response.data
         this.data_tingkat_tp = getData.tingkat
         this.$refs['tp-mapel'].show()
-        console.log(getData);
       });
     },
     changeTingkatTp(val){

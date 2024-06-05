@@ -220,10 +220,8 @@ export default {
       })
     },
     handleAksi(val){
-      console.log(val);
       if(val.aksi){
         this.handleAktifkan(val.id)
-        //eventBus.$emit('open-modal-edit-tp', val.item);
       } else {
         this.handleNonAktifkan(val.id)
       }

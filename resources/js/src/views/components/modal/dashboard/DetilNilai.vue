@@ -2,7 +2,7 @@
   <b-modal v-model="showDetilModal" size="xl" scrollable :title="title" cancel-title="Tutup" @ok="handleOk" ok-variant="primary">
     <b-table-simple bordered responsive>
       <b-thead>
-        <template v-if="merdeka">
+        <template v-if="merdeka || is_ppa">
           <b-tr>
             <b-th class="text-center">No</b-th>
             <b-th class="text-center">Nama</b-th>
@@ -37,7 +37,7 @@
               <b-td>{{pd.nama}}</b-td>
               <b-td class="text-center">{{pd.nisn}}</b-td>
               <b-td class="text-center">{{pd.agama.nama}}</b-td>
-              <template v-if="merdeka">
+              <template v-if="merdeka || is_ppa">
                 <b-td class="text-center">
                   {{(pd.nilai_akhir_kurmer) ? pd.nilai_akhir_kurmer.nilai : '-'}}
                 </b-td>
@@ -112,6 +112,10 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    is_ppa: {
+      type: Boolean,
+      default: () => false,
+    },
     sub_mapel: {
       type: Number,
       default: () => 0,
@@ -130,7 +134,6 @@ export default {
   },
   methods: {
     handleEvent(data){
-      console.log(this.meta);
       this.pembelajaran_id = data.pembelajaran_id
       this.rombongan_belajar_id = data.rombongan_belajar_id
       this.showDetilModal = true
@@ -149,7 +152,6 @@ export default {
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
-        console.log(getData);
         this.$swal({
           icon: getData.icon,
           title: getData.title,

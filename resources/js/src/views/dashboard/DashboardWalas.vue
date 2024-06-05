@@ -201,7 +201,6 @@ export default {
             rombongan_belajar_id: this.rombel.rombongan_belajar_id,
           }).then(response => {
             let data = response.data
-            console.log(val);
             this.status(data.status)
             this.$swal({
               icon: data.icon,

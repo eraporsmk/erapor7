@@ -75,7 +75,7 @@ class PenilaianController extends Controller
     }
     public function get_mapel(){
         $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
-        $merdeka = (Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')) ? TRUE : FALSE;
+        $merdeka = (merdeka($rombel->kurikulum->nama_kurikulum)) ? TRUE : FALSE;
         $data = Pembelajaran::where($this->kondisiPembelajaran())->orderBy('mata_pelajaran_id', 'asc')->get();
         return response()->json(['status' => 'success', 'data' => $data, 'merdeka' => $merdeka, 'rombel' => $rombel]);
     }

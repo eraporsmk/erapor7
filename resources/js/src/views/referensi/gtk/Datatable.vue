@@ -136,7 +136,6 @@ export default {
       }).then(response => {
         this.loading = false
         let getData = response.data
-        console.log(getData);
         this.data = getData.guru
         var gelar_depan = []
         getData.guru.gelar_depan.forEach(function(value, key) {

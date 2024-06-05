@@ -508,3 +508,6 @@ function jam_sinkron(){
     $jam_sinkron = Carbon::now()->timezone($timezone)->isBetween($start, $end, false);
     return $jam_sinkron;
 }
+function is_ppa($semester_id){
+    return ($semester_id >= 20221);
+}

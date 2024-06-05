@@ -111,7 +111,7 @@ class ProgressController extends Controller
          }])->find(request()->pembelajaran_id);
          $data = [
             'data_siswa' => $pembelajaran->rombongan_belajar->pd,
-            'merdeka' => Str::contains($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka'),
+            'merdeka' => merdeka($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum),
             'title' => 'Detil Penilaian Mata Pelajaran '.$pembelajaran->nama_mata_pelajaran,
          ];
       } elseif(request()->aksi == 'projek'){

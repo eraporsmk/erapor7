@@ -100,7 +100,6 @@ export default {
           semester_id: smt.semester_id
         }).then(response => {
           this.isBusy = false
-          console.log(response.data);
           this.items = response.data
         })
       }

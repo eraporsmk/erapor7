@@ -87,7 +87,6 @@ export default {
       this.activeTab = idx
     },
     handleNilai(pembelajaran_id){
-      console.log('pembelajaran_id');
       this.pembelajaran_id = pembelajaran_id
       this.activeTab = 2
     },

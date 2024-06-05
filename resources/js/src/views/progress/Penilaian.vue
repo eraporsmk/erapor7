@@ -157,8 +157,6 @@ export default {
         this.title = getData.title
         this.data_siswa = getData.data_siswa
         this.merdeka = getData.merdeka
-        //this.$refs['detil-modal'].show()
-        //console.log(getData);
         eventBus.$emit('open-modal-detil-nilai', {
           data: {
             rombongan_belajar_id: item.rombongan_belajar_id,
@@ -170,8 +168,6 @@ export default {
       })
     },
     HandleDetil(pembelajaran_id){
-      console.log('HandleDetil');
-      console.log(pembelajaran_id);
       this.detil(pembelajaran_id)
     },
   },

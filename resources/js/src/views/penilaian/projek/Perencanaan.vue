@@ -223,20 +223,12 @@ export default {
       this.$http.post('/penilaian/detil-projek', {
         rencana_budaya_kerja_id: val.rencana_budaya_kerja_id
       }).then(response => {
-        /*this.data = response.data
-        this.form.rencana_budaya_kerja_id = this.data.rencana_budaya_kerja_id
-        this.form.nama_projek = this.data.nama
-        this.form.deskripsi = this.data.deskripsi
-        this.form.no_urut = this.data.no_urut
-        this.$refs['edit-modal'].show()*/
         eventBus.$emit('open-modal-edit-projek', response.data)
       }).catch(error => {
         console.log(error);
       })
     },
     handleHapus(val){
-      //console.log('handleHapus');
-      //console.log(val);
       this.$swal({
         title: 'Apakah Anda yakin?',
         text: 'Tindakan ini tidak dapat dikembalikan!',

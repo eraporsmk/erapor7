@@ -45,28 +45,6 @@
             <b-tab title="Mata Evaluasi Rapor" @click="getMatev">
               <matev-rapor :form="form" :loading="loading" :isBusy="false" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort"  />
             </b-tab>
-            <!--b-tab title="Rekapitulasi" @click="getRekap">
-              <b-card-text>
-                <b-table-simple bordered responsive>
-                  <b-thead>
-                    <b-tr variant="light">
-                      <b-th class="text-center">No</b-th>
-                      <b-th class="text-center">Data</b-th>
-                      <b-th class="text-center">Jml Data e-Rapor</b-th>
-                      <b-th class="text-center">Jml Data Dapodik</b-th>
-                    </b-tr>
-                  </b-thead>
-                  <b-tbody>
-                    <b-tr>
-                      <b-td class="text-center">1</b-td>
-                      <b-td>Rombongan Belajar</b-td>
-                      <b-td class="text-center">2</b-td>
-                      <b-td class="text-center">3</b-td>
-                    </b-tr>
-                  </b-tbody>
-                </b-table-simple>
-              </b-card-text>
-            </b-tab-->
           </b-tabs>
         </template>
       </div>
@@ -235,15 +213,10 @@ export default {
             this.loadPostsData()
           })
         }
-        console.log(getData);
       })
     },
     getMatev(){
-      console.log('getMatev');
       this.getMatevRapor()
-    },
-    getRekap(){
-      console.log('getRekap');
     },
     handlePerPage(val) {
       this.per_page = val

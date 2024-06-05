@@ -174,7 +174,6 @@ export default {
             data_tingkat.push(tingkat_13);
           }
           this.data_tingkat = data_tingkat
-          console.log(this.data_tingkat);
         }
       }).catch(error => {
         console.log(error);

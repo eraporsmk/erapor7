@@ -151,8 +151,6 @@ export default {
             this.loadPostData()
           })
         })
-      } else {
-        console.log('ga ketemu');
       }
     },
     myTimer() {

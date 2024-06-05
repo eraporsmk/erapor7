@@ -184,22 +184,6 @@ export default {
     }
   },
   created() {
-    /*
-    if(!app_registration){
-      this.$router.replace({name: 'misc-not-authorized'})
-    }
-    this.$http.get('/sekolah', {
-    }).then(response => {
-      let getData = response.data
-      if(getData.data >= 10){
-        console.log('redirect');
-        this.$router.replace({name: 'error-404'})
-      }
-      console.log(response.data);
-    }).catch(error => {
-      console.log(error);
-    })
-    */
     this.$http.get('/auth/allow-register').then(response => {
       let getData = response.data
       if(getData.sekolah){
@@ -226,7 +210,6 @@ export default {
           }).then(response => {
             this.loading = false
             let getData = response.data
-            console.log(getData);
             if(getData.errors){
               this.$refs.registerForm.setErrors(getData.errors)
             } else if(getData.error){

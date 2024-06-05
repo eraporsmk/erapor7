@@ -258,7 +258,6 @@ export default {
           this.data_internal = getData.data_internal
           this.data_eksternal = getData.data_eksternal
           this.form.jurusan_id = getData.rombel.jurusan_sp.jurusan_id
-          console.log(getData);
         }).catch(error => {
           console.log(error);
         })
@@ -271,7 +270,6 @@ export default {
           this.loading_paket = false
           let getData = response.data
           this.data_paket = getData.paket_ukk
-          console.log(getData);
         }).catch(error => {
           console.log(error);
         })
@@ -308,7 +306,6 @@ export default {
       this.handleSubmit()
     },
     handleSubmit(){
-      console.log(this.form);
       this.loading_form = true
       this.$http.post('/ukk/simpan-rencana-ukk', this.form).then(response => {
         this.loading_form = false

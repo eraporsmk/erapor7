@@ -71,7 +71,6 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params.pembelajaran_id);
     this.$http.post('/dashboard/detil-nilai', {
       sekolah_id: this.user.sekolah_id,
       semester_id: this.user.semester.semester_id,

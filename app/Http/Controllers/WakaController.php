@@ -14,7 +14,7 @@ class WakaController extends Controller
 {
     public function nilai_sikap(){
         $rombel = Rombongan_belajar::with(['kurikulum'])->find(request()->rombongan_belajar_id);
-        $merdeka = Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka');
+        $merdeka = merdeka($rombel->kurikulum->nama_kurikulum);
         $data = [
             'rombel' => $rombel,
             'merdeka' => $merdeka,
@@ -42,7 +42,7 @@ class WakaController extends Controller
         $data_dudi = [];
         if(Str::contains($rombel->kurikulum->nama_kurikulum, '2013')){
             $tingkat_allowed = 11;
-        } elseif(Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka')){
+        } elseif(merdeka($rombel->kurikulum->nama_kurikulum)){
             $tingkat_allowed = 12;
             $semester_aktif = Str::substr(request()->semester_id, 4, 1);
             if($semester_aktif == 2){
@@ -112,7 +112,7 @@ class WakaController extends Controller
     }
     public function cetak_rapor(){
         $rombel = Rombongan_belajar::with(['kurikulum'])->find(request()->rombongan_belajar_id);
-        $merdeka = ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE;
+        $merdeka = ($rombel) ? merdeka($rombel->kurikulum->nama_kurikulum) : FALSE;
         $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->orderBy('nama')->get();
@@ -128,7 +128,7 @@ class WakaController extends Controller
     }
     public function unduh_legger(){
         $rombel = Rombongan_belajar::with(['kurikulum'])->find(request()->rombongan_belajar_id);
-        $merdeka = ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE;
+        $merdeka = ($rombel) ? merdeka($rombel->kurikulum->nama_kurikulum) : FALSE;
         $data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
         })->with(['anggota_pilihan' => function($query) use ($rombel){

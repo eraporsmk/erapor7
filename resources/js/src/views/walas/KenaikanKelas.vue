@@ -110,7 +110,6 @@ export default {
         this.$http.post('/walas/get-next-rombel', this.form).then(response => {
           this.loadingForm = false
           let getData = response.data
-          console.log(getData);
           this.$swal({
             title: 'Pilih Rombongan Belajar',
             input: 'select',
