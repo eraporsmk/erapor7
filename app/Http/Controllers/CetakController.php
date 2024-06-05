@@ -355,7 +355,7 @@ class CetakController extends Controller
             $tanggal_rapor = Carbon::parse($tanggal_rapor)->translatedFormat('d F Y');
         } else {
             $tanggal_rapor = Carbon::now()->translatedFormat('d F Y');
-        }
+        } 
 		//$rombel_4_tahun = Rombel_empat_tahun::select('rombongan_belajar_id')->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get()->keyBy('rombongan_belajar_id')->keys()->toArray();
 		$rombel_4_tahun = Rombel_empat_tahun::with(['rombongan_belajar'])->where('sekolah_id', request()->route('sekolah_id'))->where('semester_id', request()->route('semester_id'))->get();
 		$jurusan_sp_id = [];
