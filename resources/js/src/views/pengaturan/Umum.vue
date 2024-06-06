@@ -143,6 +143,7 @@ export default {
       jabatan: [
         { value: 'Kepala Sekolah', text: 'Kepala Sekolah' },
         { value: 'Plt. Kepala Sekolah', text: 'PLT Kepala Sekolah'},
+        { value: 'Plh. Kepala Sekolah', text: 'PLH Kepala Sekolah'},
       ],
       logo_sekolah: null,
       rapor_pts: false,
