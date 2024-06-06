@@ -92,7 +92,6 @@ export default {
         let getData = response.data
         this.tersedia = getData.tersedia
         this.os = getData.os
-        console.log(getData);
       })
     },
   },

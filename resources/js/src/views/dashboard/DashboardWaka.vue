@@ -336,9 +336,6 @@ export default {
       }
     },
     HandleDetilProjek(val){
-      //this.data_projek = val
-      //console.log(val);
-      //this.$emit('p5_detil', val)
       this.$http.post('/dashboard/detil-projek', {
         pembelajaran_id: val,
       }).then(response => {
@@ -354,7 +351,6 @@ export default {
         rencana_budaya_kerja_id: item.projek.rencana_budaya_kerja_id,
       }).then(response => {
         let getData = response.data
-        console.log(getData);
         this.data_rencana = getData.rencana
         this.data_siswa = getData.data_siswa
         this.opsi_budaya_kerja = getData.opsi_budaya_kerja
@@ -367,10 +363,8 @@ export default {
     isGanjil(number){
       if(number % 2 == 0) {
         return 'secondary';
-          //console.log("The number is even.");
       } else {
         return 'warning'
-          //console.log("The number is odd.");
       }
     },
   }

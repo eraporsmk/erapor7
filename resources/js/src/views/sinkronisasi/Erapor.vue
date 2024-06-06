@@ -111,6 +111,7 @@ export default {
   },
   data() {
     return {
+      online: null,
       loading: false,
       isBusy: true,
       table_sync: [],
@@ -139,7 +140,9 @@ export default {
         this.last_sync = getData.last_sync
         this.table_sync = getData.table_sync
         this.jumlah = getData.jumlah
-        this.aktif = (this.jumlah) ? false : true
+        //this.aktif = (this.jumlah) ? false : true
+        this.online = getData.response
+        this.aktif = (this.online) ? false : true
       })
     },
     kirimData(){

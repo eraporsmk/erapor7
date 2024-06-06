@@ -211,7 +211,6 @@ export default {
       this.$http.post('/praktik-kerja-lapangan/simpan', this.form).then(response => {
         this.loading_modal = false
         var data = response.data
-        console.log(data);
         if(data.errors){
           this.state.tingkat = (data.errors.tingkat) ? false : null
           this.state.rombongan_belajar_id = (data.errors.rombongan_belajar_id) ? false : null

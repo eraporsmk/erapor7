@@ -157,16 +157,6 @@ export default {
         this.title = getData.title
         this.data_siswa = getData.data_siswa
         this.$refs['detil-modal'].show()
-        console.log(getData);
-        /*
-        this.meta_nilai = {
-          total: getData.data_siswa.total,
-          current_page: getData.data_siswa.current_page,
-          per_page: getData.data_siswa.per_page,
-          from: getData.data_siswa.from,
-          to: getData.data_siswa.to,
-        }
-        */
       }).catch(error => {
         console.log(error)
       })

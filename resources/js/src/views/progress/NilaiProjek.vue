@@ -146,9 +146,6 @@ export default {
       }
     },
     HandleDetil(val){
-      //this.data_projek = val
-      //console.log(val);
-      //this.$emit('detil', val)
       this.$http.post('/progress/detil', {
         aksi: 'projek',
         pembelajaran_id: val,

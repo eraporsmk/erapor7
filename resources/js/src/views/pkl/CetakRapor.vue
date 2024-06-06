@@ -168,8 +168,6 @@ export default {
       this.swalConfirm(text, aksi, params, 'keluar')
     },
     handleRombel(val){
-      console.log('handleRombel');
-      console.log(val);
       this.rombongan_belajar_id = val
       this.loadPostsData()
     }

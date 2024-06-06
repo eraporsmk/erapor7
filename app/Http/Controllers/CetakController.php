@@ -126,13 +126,6 @@ class CetakController extends Controller
 				$query->where('semester_id', semester_id());
 			}]);
 		}])->find($rombongan_belajar_id);
-        /*if(Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka') || Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'REV')){
-            $kur = 2017;
-        } elseif(Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, '2013')){
-            $kur = 2013;
-		} else {
-			$kur = 2006;
-		}*/
         $kur = 2017;
 		$pdf = PDF::loadView('cetak.blank');
 		$pdf->getMpdf()->defaultfooterfontsize=7;

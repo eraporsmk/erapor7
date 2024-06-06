@@ -187,7 +187,6 @@ export default {
           to: getData.data_siswa.to,
         }
         this.$refs['detil-modal'].show()
-        console.log(getData);
       }).catch(error => {
         console.log(error)
       })

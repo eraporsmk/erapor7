@@ -223,7 +223,6 @@ export default {
         this.data = getData.user
         this.options = getData.roles
         this.judul = 'DETIL '+getData.user.name
-        console.log(getData);
         this.$refs['detil-modal'].show()
       });
     },

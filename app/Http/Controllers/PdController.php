@@ -155,7 +155,7 @@ class PdController extends Controller
             'data_siswa' => $data,
             'merdeka' => $merdeka,
             'rapor_pts' => config('erapor.rapor_pts'),
-            'is_ppa' => ($rombel && $rombel->semester_id >= 20221),
+            'is_ppa' => ($rombel) ? is_ppa($rombel->semester_id) : false,
         ]);
     }
     public function unduh_legger(){
@@ -186,11 +186,11 @@ class PdController extends Controller
             $query->whereNull('induk_pembelajaran_id');
         })->orderBy('kelompok_id', 'asc')->orderBy('no_urut', 'asc')->get();
         $data = [
-            'merdeka' => ($rombel) ? Str::contains($rombel->kurikulum->nama_kurikulum, 'Merdeka') : FALSE,
+            'merdeka' => ($rombel) ? merdeka($rombel->kurikulum->nama_kurikulum) : FALSE,
             'rombel' => $rombel,
             'data_siswa' => $data_siswa,
             'pembelajaran' => $pembelajaran,
-            'is_ppa' => ($rombel->semester_id >= 20221),
+            'is_ppa' => is_ppa($rombel->semester_id),
         ];
         return response()->json($data);
     }

@@ -144,7 +144,6 @@ export default {
     addForm(){
       this.jumlah_form = this.jumlah_form + 1
       this.form.status[this.jumlah_form] = null
-      console.log('addForm');
     },
     changeJurusan(val){
       this.form.kurikulum_id = ''

@@ -121,7 +121,6 @@ export default {
           })
           this.form.nilai = nilai
         }
-        console.log(getData);
       })
     },
     onSubmit(event){

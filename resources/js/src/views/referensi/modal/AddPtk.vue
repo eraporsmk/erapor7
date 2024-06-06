@@ -380,7 +380,6 @@ export default {
         this.loading = false
         let data = response.data
         if(data.errors){
-          console.log(data.errors);
           var nama_state = {}
           var nik_state = {}
           var tanggal_lahir_state = {}

@@ -42,7 +42,7 @@ class DownloadController extends Controller
     }
 	public function unduh_leger_nilai_kurmer(){
         $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
-		$merdeka = Str::contains($rombongan_belajar->kurikulum->nama_kurikulum, 'Merdeka');
+		$merdeka = merdeka($rombongan_belajar->kurikulum->nama_kurikulum);
 		$nama_file = 'Leger Nilai Akhir Kelas ' . $rombongan_belajar->nama;
 		$nama_file = clean($nama_file);
 		$nama_file = $nama_file . '.xlsx';

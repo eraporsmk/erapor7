@@ -221,7 +221,6 @@ export default {
       }
     },
     changePkl(val){
-      console.log(val);
       this.show = false
       this.data_siswa = []
       this.data_tp = []

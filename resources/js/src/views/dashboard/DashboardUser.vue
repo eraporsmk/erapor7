@@ -19,7 +19,6 @@ export default {
   },
   computed: {
     username(){
-      console.log(this.user);
       return (this.user) ? this.user.name : ''
     }
   },
