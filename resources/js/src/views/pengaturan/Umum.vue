@@ -42,7 +42,7 @@
                         </template>
                       </v-select>
                     </b-form-group>
-                    <b-form-group label="Jabatan Kepala Sekolah" label-for="jabatan">
+                    <b-form-group label="Jabatan Kepala Sekolah" label-for="jabatan" :invalid-feedback="feedback.jabatan" :state="state.jabatan">
                       <v-select id="jabatan" v-model="form.jabatan" :options="jabatan" :reduce="text => text.value" label="text" placeholder="== Pilih Jabatan Kepala Sekolah ==" :clearable="true">
                         <template #no-options="{ search, searching, loading }">
                           Tidak ada data untuk ditampilkan
@@ -125,11 +125,13 @@ export default {
         tanggal_rapor: '',
         zona: '',
         file: '',
+        jabatan: '',
       },
       state: {
         tanggal_rapor: null,
         zona: null,
         file: null,
+        jabatan: null,
       },
       periode: null,
       data_zona: [
@@ -216,9 +218,11 @@ export default {
           this.state.tanggal_rapor = (data.errors.tanggal_rapor) ? false : null
           this.state.zona = (data.errors.zona) ? false : null
           this.state.file = (data.errors.photo) ? false : null
+          this.state.jabatan = (data.errors.jabatan) ? false : null
           this.feedback.tanggal_rapor = (data.errors.tanggal_rapor) ? data.errors.tanggal_rapor.join(', ') : ''
           this.feedback.zona = (data.errors.zona) ? data.errors.zona.join(', ') : ''
           this.feedback.file = (data.errors.photo) ? data.errors.photo.join(', ') : ''
+          this.feedback.jabatan = (data.errors.jabatan) ? data.errors.jabatan.join(', ') : ''
         } else {
           this.$swal({
             icon: data.icon,

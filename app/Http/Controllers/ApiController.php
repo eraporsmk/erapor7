@@ -66,7 +66,7 @@ class ApiController extends Controller
     public function update(Request $request){
         $request->validate(
             [
-                //'kepala_sekolah' => 'required',
+                'jabatan' => 'required',
                 'semester_id' => 'required',
                 'zona' => 'required',
                 'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
@@ -74,7 +74,7 @@ class ApiController extends Controller
             [
                 'semester_id.required' => 'Periode Aktif tidak boleh kosong.',
                 'zona.required' => 'Zona Waktu tidak boleh kosong.',
-                'kepala_sekolah.required' => 'Kepala sekolah tidak boleh kosong.',
+                'jabatan.required' => 'Jabatan Kepala sekolah tidak boleh kosong.',
                 'photo.image' => 'Logo sekolah harus berupa berkas gambar',
                 'photo.mimes' => 'Logo sekolah harus berekstensi (jpg, jpeg, png)',
                 'photo.max' => 'Logo sekolah maksimal 1Mb.',
