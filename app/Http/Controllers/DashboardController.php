@@ -49,7 +49,14 @@ class DashboardController extends Controller
              $query->whereNotNull('rencana_budaya_kerja_id');
          }
       ])->find(request()->sekolah_id);
-      $status_penilaian = Status_penilaian::where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->first();
+      $status_penilaian = Status_penilaian::firstOrCreate(
+         [
+            'sekolah_id' => request()->sekolah_id,
+            'semester_id' => request()->semester_id,
+         ],
+         ['status' => 1]
+      );
+      //Status_penilaian::where('sekolah_id', request()->sekolah_id)->where('semester_id', request()->semester_id)->first();
       $data = [
          'sekolah' => $sekolah,
          'rekap' => [

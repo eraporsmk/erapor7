@@ -69,7 +69,7 @@
                 <b-row>
                   <b-col cols="12" class="text-center">
                     <p>Logo Sekolah</p>
-                    <b-img thumbnail fluid :src="logo_sekolah" alt="Logo Sekolah" class="mb-1" v-if="logo_sekolah"></b-img>
+                    <b-img thumbnail fluid :src="logo_sekolah" alt="Logo Sekolah" class="mb-1"></b-img>
                     <b-form-file v-model="form.file" placeholder="Choose a file or drop it here..." drop-placeholder="Drop file here..." @change="onFileChange" :state="state.file" />
                     <p v-show="feedback.file" class="text-danger">{{feedback.file}}</p>
                   </b-col>
@@ -147,7 +147,7 @@ export default {
         { value: 'Plt. Kepala Sekolah', text: 'PLT Kepala Sekolah'},
         { value: 'Plh. Kepala Sekolah', text: 'PLH Kepala Sekolah'},
       ],
-      logo_sekolah: null,
+      logo_sekolah: '/images/tutwuri.png',
       rapor_pts: false,
     }
   },
@@ -181,7 +181,9 @@ export default {
         this.data_guru = getData.data_guru
         this.data_rombel = getData.data_rombel
         this.semester = getData.semester
-        this.logo_sekolah = getData.logo_sekolah
+        if(getData.logo_sekolah){
+          this.logo_sekolah = getData.logo_sekolah
+        }
         this.rapor_pts = getData.rapor_pts
         if(this.rapor_pts){
           this.form.tanggal_rapor_pts = getData.tanggal_rapor_pts

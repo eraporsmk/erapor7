@@ -684,7 +684,9 @@ class CetakController extends Controller
         $pdf->getMpdf()->defaultfooterfontsize=7;
 		$pdf->getMpdf()->defaultfooterline=1;
 		$pdf->getMpdf()->SetFooter($pd->nama.' - '. $pd->kelas->nama .' |{PAGENO}|Dicetak dari '.config('app.name').' v.'.get_setting('app_version'));
-        return $pdf->stream('document.pdf');
+		$general_title = $pd->nama.' - '.$pd->pd_pkl->praktik_kerja_lapangan->dudi->nama_dudi.'-'.Carbon::parse($pd->pd_pkl->praktik_kerja_lapangan->tanggal_selesai)->format('d-m-Y');
+		return $pdf->stream(clean($general_title).'.pdf');
+        //return $pdf->stream('document.pdf');
     }
 	public function buku_induk(){
 		$rombongan_belajar = Rombongan_belajar::withWhereHas('single_anggota_rombel', function($query){
