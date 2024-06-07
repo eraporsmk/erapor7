@@ -109,7 +109,8 @@
     <br>
     <br>
     <br>
-      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->akt_pd->mou->contact_person}}</u></p>
+      {{--<p><u>$pd->pd_pkl->praktik_kerja_lapangan->akt_pd->mou->contact_person</u></p>--}}
+      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->instruktur}}</u></p>
     </td>
     </tr>
   </table>

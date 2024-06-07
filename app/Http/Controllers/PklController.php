@@ -206,6 +206,9 @@ class PklController extends Controller
                             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                         });
                     });
+                    $query->whereHas('bimbing_pd', function($query){
+                        $query->where('guru_id', request()->guru_id);
+                    });
                 });
             })->orderBy('nama')->get(),
         ];
