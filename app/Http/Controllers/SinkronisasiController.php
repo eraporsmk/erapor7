@@ -26,6 +26,10 @@ use DB;
 
 class SinkronisasiController extends Controller
 {
+    public function __construct()
+    {
+        set_time_limit(0);
+    }
     public function index(){
         $file = 'proses_sync_'.request()->sekolah_id.'.json';
         if(Storage::disk('public')->exists($file)){
