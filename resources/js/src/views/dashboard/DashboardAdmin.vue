@@ -130,12 +130,10 @@
                   <b-td>Tim Helpdesk</b-td>
                   <b-td>
                     <div class="btn-group-vertical">
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=628156441864&text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Wahyudin [08156441864]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6281229997730&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Ahmad Aripin [081229997730]</a>
-                      <!--a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282113057512&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Iman [082113057512]</a-->
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6282174508706&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Ikhsan [082174508706]</a>
-                      <a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285643935009&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Adhi Prasetya [085643935009]</a>
-                      <!--a target="_blank" :href="`https://api.whatsapp.com/send?phone=6285624669298&amp;text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Deetha [085624669298]</a-->
+                      <template v-for="hd in helpdesk">
+                        <!--a target="_blank" :href="`https://api.whatsapp.com/send?phone=${hd.hp}&text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> {{hd.nama}} [{{hd.hp}}]</a--> 
+                        <a target="_blank" :href="`https://wa.me/${hd.hp}/?text=${text_wa}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> {{hd.nama}} [{{hd.hp}}]</a>
+                      </template>
                     </div>
                   </b-td>
                 </b-tr>
@@ -177,6 +175,8 @@ export default {
       sekolah: null,
       aplikasi: null,
       app: {},
+      helpdesk: [],
+      text_wa: null,
     }
   },
   created() {
@@ -191,6 +191,8 @@ export default {
       this.rekapitulasi = getData.rekap
       this.app = getData.app
       this.status_penilaian = this.app.status_penilaian
+      this.text_wa = getData.text_wa
+      this.helpdesk = getData.helpdesk
     })
   },
   methods: {

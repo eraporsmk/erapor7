@@ -172,7 +172,8 @@ export default {
     eventBus.$on('open-edit-pkl', this.handleEvent);
   },
   methods: {
-    handleEvent(data){
+    handleEvent(val){
+      var data = val.pkl
       this.editRencana = true
       this.form.pkl_id = data.pkl_id
       this.form.tingkat = data.rombongan_belajar.tingkat

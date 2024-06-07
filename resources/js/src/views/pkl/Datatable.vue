@@ -31,6 +31,9 @@
         <template v-slot:cell(pks)="row">
           {{row.item.akt_pd.judul_akt_pd}}
         </template>
+        <template v-slot:cell(pd_pkl_count)="row">
+          {{row.item.rombongan_belajar.anggota_rombel_count}}
+        </template>
         <template v-slot:cell(actions)="row">
           <b-dropdown id="dropdown-dropleft" dropleft text="Aksi" variant="success" size="sm">
             <b-dropdown-item href="javascript:" @click="aksi(row.item.pkl_id, 'detil')"><font-awesome-icon icon="fa-solid fa-eye" /> Detil</b-dropdown-item>

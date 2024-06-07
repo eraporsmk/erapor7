@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="showAnggotaModal" modal-class="modal-fullscreen" :scrollable="true" :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
+  <b-modal v-model="showAnggotaModal" size="xl" :scrollable="true" :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
     <b-overlay :show="loading_modal" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-table-simple hover bordered responsive>
         <b-thead>

@@ -30,11 +30,11 @@
       <b-tr>
           <b-td>Peserta Didik</b-td>
           <b-td>
-            <ul class="pl-1">
-              <template v-for="(pd, index) in detil.pd_pkl">
-                <li>{{pd.pd.nama}}</li>
+            <ol class="pl-1">
+              <template v-for="(pd, index) in data_pd">
+                <li>{{pd.nama}}</li>
               </template>
-            </ul>
+            </ol>
           </b-td>
       </b-tr>
     </b-table-simple>
@@ -52,6 +52,7 @@ export default {
     return {
       detilRencana: false,
       detil: null,
+      data_pd: [],
     }
   },
   created() {
@@ -60,11 +61,13 @@ export default {
   methods: {
     handleEvent(data){
       this.detilRencana = true
-      this.detil = data
+      this.detil = data.pkl
+      this.data_pd = data.pd
     },
     hideModal(){
       this.detilRencana = false
       this.detil = null
+      this.data_pd = []
     },
   },
 }

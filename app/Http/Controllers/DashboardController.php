@@ -105,6 +105,29 @@ class DashboardController extends Controller
             'db_version' => get_setting('db_version'),
             'status_penilaian' => ($status_penilaian && $status_penilaian->status) ? TRUE: FALSE,
          ],
+         'text_wa' => urlencode('Mohon bantuan terkait e-Rapor SMK'."\n".'NPSN:'.$sekolah->npsn),
+         'helpdesk' => [
+            [
+               'nama' => 'Wahyudin',
+               'hp' => '628156441864',
+            ],
+            [
+               'nama' => 'Ahmad Aripin',
+               'hp' => '6281229997730',
+            ],
+            [
+               'nama' => 'Ikhsan',
+               'hp' => '6282174508706',
+            ],
+            [
+               'nama' => 'Adhi Prasetya',
+               'hp' => '6285643935009',
+            ],
+            [
+               'nama' => 'Bambang Hermanto',
+               'hp' => '6282149880883',
+            ],
+         ],
       ];
       return $data;
    }
