@@ -32,7 +32,7 @@
             <b-col cols="12">
               <b-form-group label="DUDI" label-for="pkl_id" label-cols-md="3" :invalid-feedback="feedback.pkl_id" :state="meta.pkl_id">
                 <b-overlay :show="loading_pkl" opacity="0.6" size="md" spinner-variant="secondary">
-                  <v-select id="pkl_id" v-model="form.pkl_id" :reduce="nama_dudi => nama_dudi.pkl_id" label="nama_dudi" :options="data_dudi" placeholder="== Pilih Mata Pelajaran ==" :state="meta.pkl_id" @input="changePkl">
+                  <v-select id="pkl_id" v-model="form.pkl_id" :reduce="nama_dudi => nama_dudi.pkl_id" label="nama_dudi" :options="data_dudi" placeholder="== Pilih DUDI ==" :state="meta.pkl_id" @input="changePkl">
                     <template #no-options="{ search, searching, loading }">
                       Tidak ada data untuk ditampilkan
                     </template>

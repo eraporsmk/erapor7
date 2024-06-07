@@ -57,4 +57,8 @@ class Praktik_kerja_lapangan extends Model
 	{
 		return $this->belongsTo(Guru::class, 'guru_id', 'guru_id');
 	}
+	public function nilai_pkl()
+	{
+		return $this->hasMany(Nilai_pkl::class, 'pkl_id', 'pkl_id');
+	}
 }

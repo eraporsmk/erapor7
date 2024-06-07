@@ -39,7 +39,12 @@
               <b-td class="text-center">{{pd.agama.nama}}</b-td>
               <template v-if="merdeka || is_ppa">
                 <b-td class="text-center">
-                  {{(pd.nilai_akhir_kurmer) ? pd.nilai_akhir_kurmer.nilai : '-'}}
+                  <template v-if="merdeka">
+                    {{(pd.nilai_akhir_kurmer) ? pd.nilai_akhir_kurmer.nilai : '-'}}
+                  </template>
+                  <template v-else>
+                    {{(pd.nilai_akhir_pengetahuan) ? pd.nilai_akhir_pengetahuan.nilai : '-'}}
+                  </template>
                 </b-td>
                 <b-td v-if="pd.deskripsi_mapel">
                   <template v-if="pd.deskripsi_mapel.deskripsi_pengetahuan && pd.deskripsi_mapel.deskripsi_keterampilan">

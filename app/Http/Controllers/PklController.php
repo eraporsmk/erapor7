@@ -24,7 +24,19 @@ class PklController extends Controller
             $query->where('semester_id', request()->semester_id);
             $query->where('sekolah_id', request()->sekolah_id);
         })->with([
-            'rombongan_belajar',
+            'rombongan_belajar' => function($query){
+                $query->withCount([
+                    'anggota_rombel' => function($query){
+                        $query->whereHas('peserta_didik', function($query){
+                            $query->whereHas('pd_pkl', function($query){
+                                $query->whereHas('praktik_kerja_lapangan', function($query){
+                                    $query->where('guru_id', request()->guru_id);
+                                });
+                            });
+                        });
+                    },
+                ]);
+            },
             'akt_pd.dudi'
         ])->withCount('pd_pkl')->orderBy(request()->sortby, request()->sortbydesc)
         ->when(request()->q, function($query){
@@ -81,7 +93,9 @@ class PklController extends Controller
                 ]);
                 $insert++;
             }
-            $anggota_akt_pd = Anggota_akt_pd::where('akt_pd_id', request()->akt_pd_id)->get();
+            $anggota_akt_pd = Anggota_akt_pd::whereHas('anggota_rombel', function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            })->where('akt_pd_id', request()->akt_pd_id)->get();
             foreach($anggota_akt_pd as $anggota){
                 Pd_pkl::create([
                     'peserta_didik_id' => $anggota->peserta_didik_id,
@@ -149,7 +163,10 @@ class PklController extends Controller
                 $insert++;
             }
             Tp_pkl::where('pkl_id', request()->pkl_id)->whereNotIn('tp_id', request()->tp_id)->delete();
-            $anggota_akt_pd = Anggota_akt_pd::where('akt_pd_id', request()->akt_pd_id)->get();
+            //$anggota_akt_pd = Anggota_akt_pd::where('akt_pd_id', request()->akt_pd_id)->get();
+            $anggota_akt_pd = Anggota_akt_pd::whereHas('anggota_rombel', function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            })->where('akt_pd_id', request()->akt_pd_id)->get();
             $peserta_didik_id = [];
             foreach($anggota_akt_pd as $anggota){
                 $peserta_didik_id[] = $anggota->peserta_didik_id;
@@ -241,7 +258,34 @@ class PklController extends Controller
         return response()->json($data);
     }
     public function detil(){
-        $data = Praktik_kerja_lapangan::with(['rombongan_belajar', 'akt_pd.dudi', 'tp_pkl.tp', 'pd_pkl.pd'])->find(request()->id);
+        $pkl = Praktik_kerja_lapangan::with([
+            'rombongan_belajar' => function($query){
+                $query->with([
+                    'anggota_rombel' => function($query){
+                        $query->whereHas('peserta_didik', function($query){
+                            $query->whereHas('pd_pkl', function($query){
+                                $query->where('pkl_id', request()->id);
+                            });
+                        });
+                    },
+                ]);
+            },
+            'akt_pd.dudi', 
+            'tp_pkl.tp', 
+            'pd_pkl.pd'
+        ])->find(request()->id);
+        $pd = Peserta_didik::where(function($query) use ($pkl){
+            $query->whereHas('pd_pkl', function($query){
+                $query->where('pkl_id', request()->id);
+            });
+            $query->whereHas('anggota_rombel', function($query) use ($pkl){
+                $query->where('rombongan_belajar_id', $pkl->rombongan_belajar_id);
+            });
+        })->orderBy('nama')->get();
+        $data = [
+            'pkl' => $pkl,
+            'pd' => $pd,
+        ];
         return response()->json($data);
     }
     public function hapus(){
@@ -265,6 +309,8 @@ class PklController extends Controller
         $data = [
             'siswa' => Peserta_didik::withWhereHas('pd_pkl', function($query){
                 $query->where('pkl_id', request()->pkl_id);
+            })->whereHas('anggota_rombel', function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             })->with([
                 'nilai_pkl' => function($query){
                     $query->where('pkl_id', request()->pkl_id);
