@@ -89,27 +89,31 @@ class DownloadController extends Controller
 				},
 			])->find(request()->route('pembelajaran_id'));
 			$merdeka = merdeka($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum);
-			$data_siswa = Peserta_didik::withWhereHas('anggota_rombel', function($query) use ($merdeka){
-					$query->withWhereHas('rombongan_belajar', function($query){
-						$query->whereHas('mapel', function($query){
-							$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
-						});
-					});
-					$query->with([
-						'nilai_akhir_mapel' => function($query) use ($merdeka){
-							if($merdeka){
-								$query->where('kompetensi_id', 4);
-							} else {
-								$query->where('kompetensi_id', 1);
-							}
-							$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
-						},
-						'tp_nilai' => function($query) use ($merdeka){
-							$this->wherehas($query, $merdeka);
-						}
-					]);
+			$get_mapel_agama = filter_agama_siswa($pembelajaran->pembelajaran_id, $pembelajaran->rombongan_belajar_id);
+			$data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
+				if($get_mapel_agama){
+					$query->where('agama_id', $get_mapel_agama);
 				}
-			)->orderBy('nama')->get();
+			})->withWhereHas('anggota_rombel', function($query) use ($merdeka){
+				$query->withWhereHas('rombongan_belajar', function($query){
+					$query->whereHas('mapel', function($query){
+						$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+					});
+				});
+				$query->with([
+					'nilai_akhir_mapel' => function($query) use ($merdeka){
+						if($merdeka){
+							$query->where('kompetensi_id', 4);
+						} else {
+							$query->where('kompetensi_id', 1);
+						}
+						$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
+					},
+					'tp_nilai' => function($query) use ($merdeka){
+						$this->wherehas($query, $merdeka);
+					}
+				]);
+			})->orderBy('nama')->get();
 			$data_tp = Tujuan_pembelajaran::where(function($query){
 				$query->whereHas('tp_mapel', function($query){
 					$query->where('tp_mapel.pembelajaran_id', request()->route('pembelajaran_id'));
