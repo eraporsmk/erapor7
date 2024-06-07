@@ -127,6 +127,10 @@ export default {
       loading_modal: false,
       pembelajaran_id: null,
       rombongan_belajar_id: null,
+      form: {
+        pembelajaran_id: '',
+        rombongan_belajar_id: '',
+      }
     }
   },
   created() {
@@ -134,8 +138,7 @@ export default {
   },
   methods: {
     handleEvent(data){
-      this.pembelajaran_id = data.pembelajaran_id
-      this.rombongan_belajar_id = data.rombongan_belajar_id
+      this.form = data.data
       this.showDetilModal = true
     },
     handleOk(bvModalEvent) {
@@ -146,10 +149,7 @@ export default {
     },
     handleSubmit() {
       this.loading_modal = true
-      this.$http.post('/dashboard/generate-nilai', {
-        pembelajaran_id: this.pembelajaran_id,
-        rombongan_belajar_id: this.rombongan_belajar_id,
-      }).then(response => {
+      this.$http.post('/dashboard/generate-nilai', this.form).then(response => {
         this.loading_modal = false
         let getData = response.data
         this.$swal({
@@ -161,7 +161,7 @@ export default {
           },
           allowOutsideClick: false,
         }).then(result => {
-          this.detil(this.pembelajaran_id)
+          //this.detil(this.pembelajaran_id)
         })
       }).catch(error => {
         console.log(error)
