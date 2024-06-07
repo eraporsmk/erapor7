@@ -660,6 +660,7 @@ class CetakController extends Controller
 			'kelas' => function($query){
 				$query->where('rombongan_belajar.semester_id', request()->route('semester_id'));
 				$query->where('tingkat', '<>', 0);
+				$query->where('jenis_rombel', 1);
 			},
 			'pd_pkl' => function($query){
 				$query->withWhereHas('praktik_kerja_lapangan', function($query){

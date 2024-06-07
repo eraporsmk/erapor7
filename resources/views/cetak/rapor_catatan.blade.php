@@ -55,9 +55,15 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 			$huruf_absen = 'E';
 			$huruf_kenaikan = 'F';
 		} else {
-			$huruf_ekskul = 'C';
-			$huruf_absen = 'D';
-			$huruf_kenaikan = 'E';
+			if($get_siswa->peserta_didik->pd_pkl){
+				$huruf_ekskul = 'B';
+				$huruf_absen = 'C';
+				$huruf_kenaikan = 'D';
+			} else {
+				$huruf_ekskul = 'C';
+				$huruf_absen = 'D';
+				$huruf_kenaikan = 'E';
+			}
 		}
 	} else {
 		if($get_siswa->all_prakerin->count()){

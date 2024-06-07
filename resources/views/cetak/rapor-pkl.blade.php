@@ -72,7 +72,7 @@
   </table>
   <table class="table table-bordered" style="width: 300px;">
     <tr>
-      <td colspan="2">Kehadiran</td>
+      <td colspan="2">Ketidakhadiran</td>
     </tr>
     <tr>
       <td>Sakit </td>
@@ -109,7 +109,6 @@
     <br>
     <br>
     <br>
-      {{--<p><u>$pd->pd_pkl->praktik_kerja_lapangan->akt_pd->mou->contact_person</u></p>--}}
       <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->instruktur}}</u></p>
     </td>
     </tr>

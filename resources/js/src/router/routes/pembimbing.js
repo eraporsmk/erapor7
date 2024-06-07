@@ -63,19 +63,19 @@ export default [
     },
   },
   {
-    path: '/pkl/cetak-rapor',
-    name: 'pkl-rapor',
-    component: () => import('@/views/pkl/CetakRapor.vue'),
+    path: '/pkl/daftar-nilai',
+    name: 'daftar-nilai',
+    component: () => import('@/views/pkl/DaftarNilai.vue'),
     meta: {
       resource: 'Pkl',
       action: 'read',
-      pageTitle: 'Cetak Rapor',
+      pageTitle: 'Daftar Nilai',
       breadcrumb: [
         {
           text: 'Praktik Kerja Lapangan',
         },
         {
-          text: 'Cetak Rapor',
+          text: 'Daftar Nilai',
           active: true,
         },
       ],

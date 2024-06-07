@@ -53,6 +53,7 @@ class PenilaianController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->where('mata_pelajaran_id', '<>', '800001000');
             //$query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', request()->guru_id);
             if(request()->rombongan_belajar_id){
@@ -60,6 +61,7 @@ class PenilaianController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->where('mata_pelajaran_id', '<>', '800001000');
             //$query->whereNull('induk_pembelajaran_id');
         };
     }

@@ -38,8 +38,14 @@
                   <b-td class="text-center">{{item.no}}</b-td>
                   <b-td>{{item.nama_mata_pelajaran}}</b-td>
                   <b-td>{{item.guru}}</b-td>
-                  <b-td class="text-center">{{item.pd}}</b-td>
-                  <b-td class="text-center">{{item.pd_dinilai}}</b-td>
+                  <template v-if="item.mata_pelajaran_id === 800001000">
+                    <b-td class="text-center">{{item.pd_pkl_count}}</b-td>
+                    <b-td class="text-center">{{item.pd_pkl_dinilai}}</b-td>
+                  </template>
+                  <template v-else>
+                    <b-td class="text-center">{{item.pd}}</b-td>
+                    <b-td class="text-center">{{item.pd_dinilai}}</b-td>
+                  </template>
                   <b-td class="text-center">
                     <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                   </b-td>

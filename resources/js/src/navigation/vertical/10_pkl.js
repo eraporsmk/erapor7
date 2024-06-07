@@ -26,8 +26,8 @@ export default [
         },
         {
           icon: 'hand-point-right',
-          title: 'Cetak Rapor',
-          route: 'pkl-rapor',
+          title: 'Daftar Nilai',
+          route: 'daftar-nilai',
           resource: 'Pkl',
           action: 'read',
         },
