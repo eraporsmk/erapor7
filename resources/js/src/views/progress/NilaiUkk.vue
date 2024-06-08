@@ -9,16 +9,15 @@
         <datatable :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort" @detil="HandleDetil" />
       </div>
     </b-card-body>
-    <b-modal ref="detil-modal" size="xl" scrollable :title="title" ok-only ok-title="Tutup" ok-variant="secondary">
-        <detil-modal :isBusy="isBusy" :data_siswa="data_siswa" :meta="meta_nilai" @per_page_nilai="handlePerPageNilai" @pagination_nilai="handlePaginationNilai" @search_nilai="handleSearchNilai" @sort_nilai="handleSortNilai"></detil-modal>
-    </b-modal>
+    <detil-modal></detil-modal>
   </b-card>
 </template>
 
 <script>
 import { BCard, BCardBody, BSpinner } from 'bootstrap-vue'
 import Datatable from './Datatable.vue'
-import DetilModal from './modal/DetilNilaiUkk.vue'
+import DetilModal from './../penilaian/ukk/modal/DetilRencana.vue'
+import eventBus from '@core/utils/eventBus';
 export default {
   components: {
     BCard,
@@ -40,16 +39,11 @@ export default {
           thClass: 'text-center',
         },
         {
-          key: 'rombel',
-          label: 'Rombongan Belajar',
-          sortable: false,
-          thClass: 'text-center',
-        },
-        {
           key: 'kode',
           label: 'Kode Paket',
           sortable: false,
           thClass: 'text-center',
+          tdClass: 'text-center',
         },
         {
           key: 'nama',
@@ -58,7 +52,7 @@ export default {
           thClass: 'text-center',
         },
         {
-          key: 'jumlah_pd',
+          key: 'pd_count',
           label: 'Jumlah PD',
           sortable: false,
           thClass: 'text-center',
@@ -191,15 +185,19 @@ export default {
           from: getData.data_siswa.from,
           to: getData.data_siswa.to,
         }
-        this.$refs['detil-modal'].show()
+        
       }).catch(error => {
         console.log(error)
       })
     },
     HandleDetil(val){
-      this.rombongan_belajar_id = val.rombongan_belajar_id
-      this.ekstrakurikuler_id = val.ekstrakurikuler_id
-      this.detil()
+      this.$http.post('/ukk/detil-rencana', {
+        rencana_ukk_id: val,
+      }).then(response => {
+        eventBus.$emit('open-modal-detil-rencana-ukk', response.data);
+      }).catch(error => {
+        console.log(error);
+      })
     },
   },
 }

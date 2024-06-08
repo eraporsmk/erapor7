@@ -19,7 +19,7 @@
                         </template>
                       </v-select>
                     </b-form-group>
-                    <b-form-group label="Tanggal Rapor Tengah Semester" label-for="tanggal_rapor_pts">
+                    <b-form-group label="Tanggal Rapor Tengah Semester" label-for="tanggal_rapor_pts" v-if="rapor_pts">
                       <b-form-datepicker v-model="form.tanggal_rapor_pts" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal_rapor_pts" @context="onContext" placeholder="== Pilih Tanggal Rapor Tengah Semester ==" />
                     </b-form-group>
                     <b-form-group label="Tanggal Rapor Semester" label-for="tanggal_rapor" :invalid-feedback="feedback.tanggal_rapor" :state="state.tanggal_rapor">
