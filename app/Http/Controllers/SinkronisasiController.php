@@ -322,10 +322,12 @@ class SinkronisasiController extends Controller
         foreach(table_sync() as $table){
             $count = get_table($table, request()->sekolah_id, substr(request()->semester_id, 0, 4), request()->semester_id, 1);
             $jumlah += $count;
-            $table_sync[] = [
-                'data' => nama_table($table),
-                'count' => $count,
-            ];
+            if($count){
+                $table_sync[] = [
+                    'data' => nama_table($table),
+                    'count' => $count,
+                ];
+            }
         }
         $data = [
             'last_sync' => ($last_sync) ? $last_sync->updated_at->translatedFormat('d F Y H:i:s') : '-',
