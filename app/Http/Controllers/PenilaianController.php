@@ -582,11 +582,32 @@ class PenilaianController extends Controller
                 });
             });
         })->paginate(request()->per_page);
-        return response()->json(['status' => 'success', 'data' => $data, 'search' => request()->q]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+            'search' => request()->q,
+            'kurtilas' => Rombongan_belajar::where(function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%2013%');
+                });
+                $query->where('semester_id', request()->semester_id);
+                $query->where('sekolah_id', request()->sekolah_id);
+            })->first(),
+        ]);
     }
     public function ref_sikap(){
-        $data = Budaya_kerja::with(['elemen_budaya_kerja'])->get();
-        return response()->json(['status' => 'success', 'data' => $data]);
+        $data = [
+            'status' => 'success',
+            'data' => Budaya_kerja::with(['elemen_budaya_kerja'])->get(),
+            'kurtilas' => Rombongan_belajar::where(function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%2013%');
+                });
+                $query->where('semester_id', request()->semester_id);
+                $query->where('sekolah_id', request()->sekolah_id);
+            })->first(),
+        ];
+        return response()->json($data);
     }
     public function get_elemen(){
         $data = Elemen_budaya_kerja::where('budaya_kerja_id', request()->budaya_kerja_id)->get()->unique('elemen');

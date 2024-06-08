@@ -189,6 +189,11 @@ class RombelController extends Controller
                     });
                 }
             }
+            if(request()->has('opsi_sikap')){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%2013%');
+                });
+            }
         })->orderBy('nama')->get();
         return response()->json(['data' => $data]);
     }

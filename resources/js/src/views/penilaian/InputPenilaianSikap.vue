@@ -2,88 +2,97 @@
   <b-card no-body>
     <b-overlay :show="isBusy" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-card-body>
-        <b-form @submit="onSubmit">
-          <b-table-simple bordered responsive>
-            <b-thead>
-              <b-tr>
-                <template v-for="sikap in all_sikap">
-                  <b-th class="text-center" width="20%" style="vertical-align:middle">{{sikap.aspek}}</b-th>
-                </template>
-              </b-tr>
-            </b-thead>
-            <b-tbody>
-              <b-tr>
-                <template v-for="sikap in all_sikap">
-                  <b-td style="vertical-align:top">
-                    <ul style="padding-left:10px;">
-                      <template v-for="subsikap in removeDuplicates(sikap.elemen_budaya_kerja, 'elemen')">
-                        <li>{{subsikap.elemen}}</li>
-                      </template>
-                    </ul>
-                  </b-td>
-                </template>
-              </b-tr>
-            </b-tbody>
-          </b-table-simple>
-          <formulir-pd ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir-pd>
-          <b-row>
-            <b-col cols="12">
-              <b-form-group label="Tanggal" label-for="tanggal" label-cols-md="3"  :invalid-feedback="meta.tanggal_feedback" :state="meta.tanggal_state">
-                <b-form-datepicker v-model="form.tanggal" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal" @context="onContext" placeholder="== Pilih Tanggal ==" />
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label="Dimensi/Elemen Sikap" label-for="budaya_kerja_id" label-cols-md="3">
-                <b-row>
-                  <b-col cols="4">
-                    <b-form-group :invalid-feedback="meta.budaya_kerja_id_feedback" :state="meta.budaya_kerja_id_state">
-                      <v-select id="budaya_kerja_id" v-model="form.budaya_kerja_id" :reduce="aspek => aspek.budaya_kerja_id" label="aspek" :options="all_sikap" placeholder="== Pilih Dimensi Sikap ==" :searchable="false" :state="meta.budaya_kerja_id_state" @input="changeBudaya">
-                        <template #no-options="{ search, searching, loading }">
-                          Tidak ada data untuk ditampilkan
+        <template v-if="kurtilas">
+          <b-form @submit="onSubmit">
+            <b-table-simple bordered responsive>
+              <b-thead>
+                <b-tr>
+                  <template v-for="sikap in all_sikap">
+                    <b-th class="text-center" width="20%" style="vertical-align:middle">{{sikap.aspek}}</b-th>
+                  </template>
+                </b-tr>
+              </b-thead>
+              <b-tbody>
+                <b-tr>
+                  <template v-for="sikap in all_sikap">
+                    <b-td style="vertical-align:top">
+                      <ul style="padding-left:10px;">
+                        <template v-for="subsikap in removeDuplicates(sikap.elemen_budaya_kerja, 'elemen')">
+                          <li>{{subsikap.elemen}}</li>
                         </template>
-                      </v-select>
-                    </b-form-group>
-                  </b-col>
-                  <b-col cols="4">
-                    <b-form-group :invalid-feedback="meta.elemen_id_feedback" :state="meta.elemen_id_state">
-                      <b-overlay :show="loading_elemen" opacity="0.6" size="md" spinner-variant="secondary">
-                        <v-select id="elemen_id" v-model="form.elemen_id" :reduce="elemen => elemen.elemen_id" label="elemen" :options="data_elemen" placeholder="== Pilih Elemen Sikap ==" :searchable="false" :state="meta.elemen_id_state">
+                      </ul>
+                    </b-td>
+                  </template>
+                </b-tr>
+              </b-tbody>
+            </b-table-simple>
+            <formulir-pd ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir-pd>
+            <b-row>
+              <b-col cols="12">
+                <b-form-group label="Tanggal" label-for="tanggal" label-cols-md="3"  :invalid-feedback="meta.tanggal_feedback" :state="meta.tanggal_state">
+                  <b-form-datepicker v-model="form.tanggal" show-decade-nav button-variant="outline-secondary" left locale="id" aria-controls="tanggal" @context="onContext" placeholder="== Pilih Tanggal ==" />
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="Dimensi/Elemen Sikap" label-for="budaya_kerja_id" label-cols-md="3">
+                  <b-row>
+                    <b-col cols="4">
+                      <b-form-group :invalid-feedback="meta.budaya_kerja_id_feedback" :state="meta.budaya_kerja_id_state">
+                        <v-select id="budaya_kerja_id" v-model="form.budaya_kerja_id" :reduce="aspek => aspek.budaya_kerja_id" label="aspek" :options="all_sikap" placeholder="== Pilih Dimensi Sikap ==" :searchable="false" :state="meta.budaya_kerja_id_state" @input="changeBudaya">
                           <template #no-options="{ search, searching, loading }">
                             Tidak ada data untuk ditampilkan
                           </template>
                         </v-select>
-                      </b-overlay>
-                    </b-form-group>
-                  </b-col>
-                  <b-col cols="4">
-                    <b-form-group :invalid-feedback="meta.opsi_sikap_feedback" :state="meta.opsi_sikap_state">
-                      <v-select id="opsi_sikap" v-model="form.opsi_sikap" :reduce="nama => nama.id" label="nama" :options="[{id: 1, nama: 'Positif'}, {id: 2, nama: 'Negatif'}]" placeholder="== Pilih Opsi Sikap ==" :searchable="false" :state="meta.opsi_sikap_state">
-                        <template #no-options="{ search, searching, loading }">
-                          Tidak ada data untuk ditampilkan
-                        </template>
-                      </v-select>
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label="Uraian Sikap" label-for="uraian_sikap" label-cols-md="3"  :invalid-feedback="meta.uraian_sikap_feedback" :state="meta.uraian_sikap_state">
-                <b-form-textarea v-model="form.uraian_sikap" :state="meta.uraian_sikap_state"></b-form-textarea>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-form-group>
-            <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
-          </b-form-group>
-        </b-form>
+                      </b-form-group>
+                    </b-col>
+                    <b-col cols="4">
+                      <b-form-group :invalid-feedback="meta.elemen_id_feedback" :state="meta.elemen_id_state">
+                        <b-overlay :show="loading_elemen" opacity="0.6" size="md" spinner-variant="secondary">
+                          <v-select id="elemen_id" v-model="form.elemen_id" :reduce="elemen => elemen.elemen_id" label="elemen" :options="data_elemen" placeholder="== Pilih Elemen Sikap ==" :searchable="false" :state="meta.elemen_id_state">
+                            <template #no-options="{ search, searching, loading }">
+                              Tidak ada data untuk ditampilkan
+                            </template>
+                          </v-select>
+                        </b-overlay>
+                      </b-form-group>
+                    </b-col>
+                    <b-col cols="4">
+                      <b-form-group :invalid-feedback="meta.opsi_sikap_feedback" :state="meta.opsi_sikap_state">
+                        <v-select id="opsi_sikap" v-model="form.opsi_sikap" :reduce="nama => nama.id" label="nama" :options="[{id: 1, nama: 'Positif'}, {id: 2, nama: 'Negatif'}]" placeholder="== Pilih Opsi Sikap ==" :searchable="false" :state="meta.opsi_sikap_state">
+                          <template #no-options="{ search, searching, loading }">
+                            Tidak ada data untuk ditampilkan
+                          </template>
+                        </v-select>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="Uraian Sikap" label-for="uraian_sikap" label-cols-md="3"  :invalid-feedback="meta.uraian_sikap_feedback" :state="meta.uraian_sikap_state">
+                  <b-form-textarea v-model="form.uraian_sikap" :state="meta.uraian_sikap_state"></b-form-textarea>
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <b-form-group>
+              <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+            </b-form-group>
+          </b-form>
+        </template>
+        <template v-else>
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <p>Penilaian Sikap hanya bagi Satuan Pendidikan yang memiliki Rombongan Belajar Kurikulum 2013!</p>
+            </div>
+          </b-alert>
+        </template>
       </b-card-body>
     </b-overlay>
   </b-card>
 </template>
 
 <script>
-import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BInputGroup, BFormDatepicker, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd } from 'bootstrap-vue'
+import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BInputGroup, BFormDatepicker, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BAlert } from 'bootstrap-vue'
 import FormulirPd from './../components/FormulirPd.vue'
 import vSelect from 'vue-select'
 export default {
@@ -91,7 +100,7 @@ export default {
     BCard,
     BCardBody,
     BOverlay,
-    BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd,
+    BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, BAlert,
     BInputGroup, BFormDatepicker, 
     FormulirPd,
     vSelect
@@ -142,6 +151,7 @@ export default {
       loading_elemen: false,
       data_elemen: [],
       formatted: '',
+      kurtilas: null,
     }
   },
   created() {
@@ -153,6 +163,7 @@ export default {
       this.isBusy = false
       let getData = response.data
       this.all_sikap = getData.data
+      this.kurtilas = getData.kurtilas
     })
   },
   methods: {
