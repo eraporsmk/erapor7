@@ -566,4 +566,29 @@ class AuthController extends Controller
         return response()->json($data);
         return redirect('/login')->with('message', 'Your password has been changed!');
     }
+    public function foto(Request $request){
+        $request->validate([
+            'foto' => 'required|mimes:jpg,jpeg,png',
+        ]);
+        $foto = $request->foto->store('public/images');
+        $generated_new_name = basename($foto);
+        $user = User::with(['guru', 'pd'])->find(request()->user_id);
+        $user->profile_photo_path = $generated_new_name;
+        $user->save();
+        if($user->guru){
+            $user->guru->photo = $generated_new_name;
+            $user->guru->save();
+        }
+        if($user->pd){
+            $user->pd->photo = $generated_new_name;
+            $user->pd->save();
+        }
+        $data = [
+            'icon' => 'success',
+            'text' => 'Foto Profil berhasil diperbaharui',
+            'title' => 'Berhasil',
+            'foto' => $generated_new_name,
+        ];
+        return response()->json($data); 
+    }
 }
