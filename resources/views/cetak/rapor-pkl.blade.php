@@ -76,15 +76,15 @@
     </tr>
     <tr>
       <td>Sakit </td>
-      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->sakit??0 : '.....' }} hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->sakit??0 : 0 }} hari</td>
     </tr>
     <tr>
       <td>Ijin </td>
-      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->izin??0 : '.....' }} hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->izin??0 : 0 }} hari</td>
     </tr>
     <tr>
       <td>Tanpa Keterangan </td>
-      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->alpa??0 : '.....' }} hari</td>
+      <td>: {{ ($pd->absensi_pkl) ? $pd->absensi_pkl->alpa??0 : 0 }} hari</td>
     </tr>
   </table>
   <table width="100%">
@@ -98,8 +98,8 @@
     <br>
     <br>
     <p>
-    <u>{{$pd->pd_pkl->praktik_kerja_lapangan->guru->nama_lengkap }}</u><br />
-    NIP. {{$pd->pd_pkl->praktik_kerja_lapangan->guru->nip}}
+      <u>{{$pd->pd_pkl->praktik_kerja_lapangan->guru->nama_lengkap }}</u><br />
+      NIP. {{$pd->pd_pkl->praktik_kerja_lapangan->guru->nip}}
     </p>
     </td>
       <td style="width:20%"></td>
@@ -109,7 +109,11 @@
     <br>
     <br>
     <br>
-      <p><u>{{$pd->pd_pkl->praktik_kerja_lapangan->instruktur}}</u></p>
+    <p>
+      <u>{{$pd->pd_pkl->praktik_kerja_lapangan->instruktur}}</u>
+      <br />
+      NIP. {{$pd->pd_pkl->praktik_kerja_lapangan->nip}}
+    </p>
     </td>
     </tr>
   </table>
