@@ -35,6 +35,8 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
 use App\Imports\NilaiSumatifImport;
 use App\Imports\NilaiPtsImport;
+use App\Imports\NilaiSumatifLingkupMateri;
+use App\Imports\NilaiSumatifAkhirSemester;
 use Carbon\Carbon;
 use Storage;
 
@@ -366,20 +368,43 @@ class PenilaianController extends Controller
         $list = [];
         $collection = [];
         $file_path = request()->template_excel->store('files', 'public');
-        if(request()->opsi == 'sumatif-lingkup-materi' || request()->opsi == 'sumatif-akhir-semester'){
-            $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-            foreach($collection as $items){
-                $siswa = [];
-                foreach($items as $key => $item){
-                    if($key != 'NO' || $key != 'PD_ID' || $key != 'NAMA'){
-                        $tp = Tujuan_pembelajaran::where(DB::raw('TRIM(deskripsi)'), trim($key))->first();
-                        $key = ($tp) ? $tp->tp_id : $key;    
+        if(request()->opsi == 'sumatif-lingkup-materi'){
+            $data_tp = Tujuan_pembelajaran::where(function($query){
+                $query->whereHas('tp_mapel', function($query){
+                    $query->where('tp_mapel.pembelajaran_id', request()->pembelajaran_id);
+                });
+            })->orderBy('created_at')->get();
+            $list = [];
+            $collection = (new NilaiSumatifLingkupMateri())->toCollection(storage_path('/app/public/'.$file_path));
+            
+            foreach($collection as $rows){
+                foreach ($rows as $row) {
+                    $nilai = [];
+                    foreach($data_tp as $index => $tp){
+                        $nilai[] = [
+                            'angka' => $row['TP '.($index + 1)],
+                            'tp' => $row[$tp->tp_id],
+                        ];
                     }
-                    $siswa[$key] = $item;
-                    unset($siswa['NO'], $siswa['NAMA']);
+                    $list[] = [
+                        'anggota_rombel_id' => $row['PD_ID'],
+                        'nilai' => $nilai,
+                    ];
                 }
-                $list[] = $siswa;
-            }    
+            }
+        } elseif(request()->opsi == 'sumatif-akhir-semester'){
+            $list = [];
+            $collection = (new NilaiSumatifAkhirSemester())->toCollection(storage_path('/app/public/'.$file_path));
+            
+            foreach($collection as $rows){
+                foreach ($rows as $row) {
+                    $list[] = [
+                        'anggota_rombel_id' => $row['PD_ID'],
+                        'NILAI_NON_TES' => $row['NILAI_NON_TES'],
+                        'NILAI_TES' => $row['NILAI_TES'],
+                    ];
+                }
+            }
         } else {
             //Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
             $collection = (new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka))->toCollection(storage_path('/app/public/'.$file_path));

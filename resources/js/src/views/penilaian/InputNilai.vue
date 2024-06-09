@@ -264,21 +264,12 @@ export default {
           var _this = this
           data.data_nilai.forEach(function(item, index) {
             if(_this.opsi == 'sumatif-lingkup-materi'){
-              var set_nilai = []
-              Object.keys(item).forEach(key => {
-                if(key != 'PD_ID'){
-                  set_nilai.push({
-                    tp_id: key,
-                    nilai: item[key] ? item[key] : null,
-                  })
-                }
-              });
-              set_nilai.forEach(function(value, tp_id){
-                nilai_tp[item.PD_ID+'#'+value.tp_id] = value.nilai
+              item.nilai.forEach(function(a, b){
+                nilai_tp[item.anggota_rombel_id+'#'+a.tp] = a.angka
               })
             } else {
-              nilai_sumatif[item.PD_ID+'#non-tes'] = item.NILAI_NON_TES
-              nilai_sumatif[item.PD_ID+'#tes'] = item.NILAI_TES
+              nilai_sumatif[item.anggota_rombel_id+'#non-tes'] = item.NILAI_NON_TES
+              nilai_sumatif[item.anggota_rombel_id+'#tes'] = item.NILAI_TES
               var calculateAverage = 0;
               if(item.NILAI_NON_TES && item.NILAI_TES){
                 calculateAverage = _this.calculateAverage([item.NILAI_NON_TES, item.NILAI_TES])
@@ -287,7 +278,7 @@ export default {
               } else if(!item.NILAI_NON_TES && item.NILAI_TES){
                 calculateAverage = item.NILAI_TES
               }
-              nilai_sumatif[item.PD_ID+'#na'] = calculateAverage
+              nilai_sumatif[item.anggota_rombel_id+'#na'] = calculateAverage
             }
           })
           if(this.opsi == 'sumatif-lingkup-materi'){

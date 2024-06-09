@@ -226,6 +226,8 @@ export default {
       this.form.tanggal = ''
       this.form.rencana_ukk_id = ''
       this.form.siswa_dipilih = {}
+      this.data_siswa = []
+      this.show_table = false
     },
     changeTingkat(val){
       this.form.rombongan_belajar_id = ''
