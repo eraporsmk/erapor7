@@ -129,7 +129,11 @@ export default {
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
-        this.sub_mapel = getData.pembelajaran.tema_count
+        if(getData.pembelajaran.mata_pelajaran_id == 800001000){
+          this.sub_mapel = 1
+        } else {
+          this.sub_mapel = getData.pembelajaran.tema_count
+        }
         this.rombongan_belajar_id = getData.pembelajaran.rombongan_belajar_id
         this.title = getData.title
         this.data_siswa = getData.data_siswa
