@@ -362,7 +362,7 @@ class PklController extends Controller
                 ],
                 [
                     'nilai' => $nilai,
-                    'deskripsi' => request()->deskripsi[$uuid]
+                    'deskripsi' => isset(request()->deskripsi[$uuid]) ? request()->deskripsi[$uuid] : NULL,
                 ]
             );
             $insert++;
