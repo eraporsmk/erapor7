@@ -102,6 +102,7 @@ export default {
       this.loadPostsData()
     },
     loadPostsData() {
+      console.log(this.current_page);
       this.loading = true
       let current_page = this.current_page//this.search == '' ? this.current_page : 1
       this.$http.get('/referensi/tujuan-pembelajaran', {
@@ -143,6 +144,7 @@ export default {
       })
     },
     handlePerPage(val) {
+      console.log(val);
       this.per_page = val 
       this.loadPostsData() 
     },
