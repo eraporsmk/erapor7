@@ -80,8 +80,12 @@ export default {
     })
   },
   methods: {
-    handleEvent(){
-      this.hide_button = true
+    handleEvent(val){
+      if(val){
+        this.hide_button = val
+      } else {
+        this.hide_button = true
+      }
     },
     action(val){
       eventBus.$emit(val);

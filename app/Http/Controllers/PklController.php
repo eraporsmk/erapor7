@@ -85,6 +85,7 @@ class PklController extends Controller
                 'tanggal_selesai' => request()->tanggal_selesai,
                 'semester_id' => request()->semester_id,
                 'instruktur' => request()->instruktur,
+                'nip' => request()->nip,
             ]);
             foreach(request()->tp_id as $tp_id){
                 Tp_pkl::create([
@@ -154,6 +155,7 @@ class PklController extends Controller
             $pkl->tanggal_selesai = request()->tanggal_selesai;
             $pkl->semester_id = request()->semester_id;
             $pkl->instruktur = request()->instruktur;
+            $pkl->nip = request()->nip;
             $pkl->save();
             foreach(request()->tp_id as $tp_id){
                 Tp_pkl::updateOrCreate([
@@ -360,7 +362,7 @@ class PklController extends Controller
                 ],
                 [
                     'nilai' => $nilai,
-                    'deskripsi' => request()->deskripsi[$uuid]
+                    'deskripsi' => isset(request()->deskripsi[$uuid]) ? request()->deskripsi[$uuid] : NULL,
                 ]
             );
             $insert++;

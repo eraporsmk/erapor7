@@ -662,7 +662,7 @@ class SinkronDapodik extends Command
         }
         $bar->finish();
         if($rombongan_belajar_id){
-            Rombongan_belajar::where('sekolah_id', $user->sekolah_id)->where('semester_id', $semester->semester_id)->whereNotIn('rombongan_belajar_id', $rombongan_belajar_id)->where('jenis_rombel', 1)->delete();
+            Rombongan_belajar::where('sekolah_id', $user->sekolah_id)->where('semester_id', $semester->semester_id)->whereNotIn('rombongan_belajar_id', $rombongan_belajar_id)->whereIn('jenis_rombel', [1, 16])->delete();
         }
     }
     private function simpan_ptk($dapodik, $user, $semester){

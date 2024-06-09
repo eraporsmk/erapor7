@@ -84,7 +84,7 @@ export default {
       per_page: 10, //DEFAULT LOAD PERPAGE ADALAH 10
       search: '',
       sortBy: 'updated_at', //DEFAULT SORTNYA ADALAH CREATED_AT
-      sortByDesc: false, //ASCEDING
+      sortByDesc: true, //ASCEDING
       tingkat: '',
       rombongan_belajar_id: '',
       pembelajaran_id: '',

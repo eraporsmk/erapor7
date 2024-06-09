@@ -137,21 +137,23 @@ class UkkController extends Controller
             $peserta_didik_id = $segments->first();
             $anggota_rombel_id = $segments->last();
             $deleted[] = $anggota_rombel_id;
-            Nilai_ukk::firstOrCreate(
-                [
-                'rencana_ukk_id'		=> $rencana_ukk->rencana_ukk_id,
-                'anggota_rombel_id'		=> $anggota_rombel_id,
-                'peserta_didik_id'		=> $peserta_didik_id,
-                ],
-                [
-                'sekolah_id' 			=> request()->sekolah_id,
-                'nilai'					=> 0,
-                'last_sync' 			=> now(), 
-                ]
-            );
+            if($anggota_rombel_id){
+                Nilai_ukk::firstOrCreate(
+                    [
+                    'rencana_ukk_id'		=> $rencana_ukk->rencana_ukk_id,
+                    'anggota_rombel_id'		=> $anggota_rombel_id,
+                    'peserta_didik_id'		=> $peserta_didik_id,
+                    ],
+                    [
+                    'sekolah_id' 			=> request()->sekolah_id,
+                    'nilai'					=> 0,
+                    'last_sync' 			=> now(), 
+                    ]
+                );
+            }
         }
-        if($deleted){
-            Nilai_ukk::where('rencana_ukk_id', $rencana_ukk->rencana_ukk_id)->whereNotIn('anggota_rombel_id', $deleted)->delete();
+        if(array_filter($deleted)){
+            Nilai_ukk::where('rencana_ukk_id', $rencana_ukk->rencana_ukk_id)->whereNotIn('anggota_rombel_id', array_filter($deleted))->delete();
         }
         if($insert){
             $data = [

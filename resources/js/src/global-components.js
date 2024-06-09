@@ -74,6 +74,7 @@ import {
     faPlus,
     faChartLine,
     faRightFromBracket,
+    faCamera,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faHouse,
@@ -143,4 +144,5 @@ library.add(
     faPlus,
     faChartLine,
     faRightFromBracket,
+    faCamera,
 )

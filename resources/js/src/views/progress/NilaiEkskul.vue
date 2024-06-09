@@ -34,7 +34,7 @@ export default {
       periode_aktif: '',
       fields: [
         {
-          key: 'nama',
+          key: 'nama_ekskul',
           label: 'Nama Ekstrakurikuler',
           sortable: false,
           thClass: 'text-center',

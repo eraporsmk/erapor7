@@ -349,7 +349,9 @@ function table_sync(){
         'users',
         'unit_ukk',
         'tujuan_pembelajaran',
+        'tp_pkl',
         'tp_nilai',
+        'tp_mapel',
         'sekolah',
         'rombongan_belajar',
         'rombel_4_tahun',
@@ -359,9 +361,11 @@ function table_sync(){
         'rapor_pts',
         'ptk_keluar',
         'prestasi',
+        'praktik_kerja_lapangan',
         'prakerin',
         'peserta_didik',
         'pembelajaran',
+        'pd_pkl',
         'pd_keluar',
         'nilai_us',
         'nilai_un',
@@ -371,6 +375,8 @@ function table_sync(){
         'nilai_sikap',
         'nilai_remedial',
         'nilai_rapor',
+        'nilai_pts',
+        'nilai_pkl',
         'nilai_karakter',
         'nilai_ekstrakurikuler',
         'nilai_budaya_kerja',
@@ -380,6 +386,7 @@ function table_sync(){
         'kewirausahaan',
         'kenaikan_kelas',
         'kd_nilai',
+        'kasek',
         'jurusan_sp',
         'guru',
         'gelar_ptk',
@@ -398,6 +405,7 @@ function table_sync(){
         'anggota_kewirausahaan',
         'anggota_akt_pd',
         'akt_pd',
+        'absensi_pkl',
         'absensi',
     ];
 }
@@ -409,15 +417,12 @@ function get_table($table, $sekolah_id, $tahun_ajaran_id, $semester_id, $count =
                       ->from('users')
                       ->whereColumn('ref.kompetensi_dasar.user_id', 'users.user_id');
             });
-            $query->whereRaw('updated_at > last_sync');
         }
         if(in_array($table, ['ref.paket_ukk', 'users']) || Schema::hasColumn($table, 'sekolah_id')){
             $query->where('sekolah_id', $sekolah_id);
-            $query->whereRaw('updated_at > last_sync');
         }
         if(in_array($table, ['ref.capaian_pembelajaran'])){
             $query->where('is_dir', 0);
-            $query->whereRaw('updated_at > last_sync');
         }
         if (Schema::hasColumn($table, 'tahun_ajaran_id')) {
             $query->where('tahun_ajaran_id', $tahun_ajaran_id);

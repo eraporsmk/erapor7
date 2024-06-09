@@ -6,14 +6,23 @@
         <strong>Loading...</strong>
       </div>
       <div v-else>
-        <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @edit="handleEdit" @hapus="handleHapus" />
+        <template v-if="kurtilas">
+          <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @edit="handleEdit" @hapus="handleHapus" />
+        </template>
+        <template v-else>
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <p>Penilaian Sikap hanya bagi Satuan Pendidikan yang memiliki Rombongan Belajar Kurikulum 2013!</p>
+            </div>
+          </b-alert>
+        </template>
       </div>
     </b-card-body>
   </b-card>
 </template>
 
 <script>
-import { BCard, BCardBody, BSpinner } from 'bootstrap-vue'
+import { BCard, BCardBody, BSpinner, BAlert } from 'bootstrap-vue'
 import Datatable from './Datatable.vue'
 import eventBus from '@core/utils/eventBus';
 export default {
@@ -21,6 +30,7 @@ export default {
     BCard,
     BCardBody,
     BSpinner,
+    BAlert,
     Datatable
   },
   data() {
@@ -81,11 +91,23 @@ export default {
       search: '',
       sortBy: 'created_at', //DEFAULT SORTNYA ADALAH CREATED_AT
       sortByDesc: true, //ASCEDING
+      kurtilas: null,
     }
   },
   created() {
     eventBus.$on('add-sikap', (val) => {
-      this.$router.push({ name: 'penilaian-input-sikap' })
+      if(!this.kurtilas){
+        this.$swal({
+          icon: 'error',
+          title: 'GAGAL',
+          text: 'Penilaian Sikap hanya bagi Satuan Pendidikan yang memiliki Rombel Kurtilas',
+          customClass: {
+            confirmButton: 'btn btn-success',
+          },
+        })
+      } else {
+        this.$router.push({ name: 'penilaian-input-sikap' })
+      }
     })
     this.loadPostsData()
   },
@@ -115,6 +137,7 @@ export default {
         this.loading = false
         this.items = getData.data//MAKA ASSIGN DATA POSTINGAN KE DALAM VARIABLE ITEMS
         //DAN ASSIGN INFORMASI LAINNYA KE DALAM VARIABLE META
+        this.kurtilas = response.data.kurtilas
         this.meta = {
           total: getData.total,
           current_page: getData.current_page,
@@ -154,3 +177,6 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+</style>

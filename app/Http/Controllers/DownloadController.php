@@ -21,6 +21,8 @@ use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
 use App\Exports\LeggerNilaiKurmerExport;
 use App\Exports\TemplateNilaiPts;
+use App\Exports\TemplateSumatifLingkupMateri;
+use App\Exports\TemplateSumatifAkhirSemester;
 use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -182,7 +184,7 @@ class DownloadController extends Controller
 			echo 'Akses tidak sah!';
 		}
 	}
-	public function template_sumatif_lingkup_materi($pembelajaran_id){
+	public function template_sumatif_lingkup_materiOld($pembelajaran_id){
 		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
 		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
 		$data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
@@ -218,19 +220,53 @@ class DownloadController extends Controller
 		}
 		return (new FastExcel($lists))->download($file.'.xlsx');
 	}
+	public function template_sumatif_lingkup_materi($pembelajaran_id){
+		$pembelajaran = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
+		$get_mapel_agama = filter_agama_siswa($pembelajaran->pembelajaran_id, $pembelajaran->rombongan_belajar_id);
+		$data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
+			if($get_mapel_agama){
+				$query->where('agama_id', $get_mapel_agama);
+			}
+		})->withWhereHas('anggota_rombel', function($query) use ($pembelajaran){
+			$query->where('rombongan_belajar_id', $pembelajaran->rombongan_belajar_id);
+			$query->with(['nilai_tp' => function($query) use ($pembelajaran){
+				$query->where('pembelajaran_id', $pembelajaran->pembelajaran_id);
+			}]);
+		})->orderBy('nama')->get();
+		$data_tp = Tujuan_pembelajaran::where(function($query) use ($pembelajaran){
+			$query->whereHas('tp_mapel', function($query) use ($pembelajaran){
+				$query->where('tp_mapel.pembelajaran_id', $pembelajaran->pembelajaran_id);
+			});
+		})->orderBy('created_at')->get();
+		$file = clean('template-nilai-sumatif-lingkup-materi-'.$pembelajaran->nama_mata_pelajaran.'-kelas-'.$pembelajaran->rombongan_belajar->nama);
+		$data = [
+			'pembelajaran' => $pembelajaran,
+			'data_siswa' => $data_siswa,
+			'data_tp' => $data_tp,
+			'file' => $file,
+		];
+		return (new TemplateSumatifLingkupMateri($data))->download($file.'.xlsx');
+	}
 	public function template_sumatif_akhir_semester($pembelajaran_id){
-		$data = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
-		$get_mapel_agama = filter_agama_siswa($data->pembelajaran_id, $data->rombongan_belajar_id);
+		$pembelajaran = Pembelajaran::with('rombongan_belajar')->find($pembelajaran_id);
+		$get_mapel_agama = filter_agama_siswa($pembelajaran->pembelajaran_id, $pembelajaran->rombongan_belajar_id);
         $data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
 			if($get_mapel_agama){
 				$query->where('agama_id', $get_mapel_agama);
 			}
-		})->withWhereHas('anggota_rombel', function($query) use ($data){
-			$query->where('rombongan_belajar_id', $data->rombongan_belajar_id);
-			$query->with(['nilai_sumatif' => function($query) use ($data){
-				$query->where('pembelajaran_id', $data->pembelajaran_id);
+		})->withWhereHas('anggota_rombel', function($query) use ($pembelajaran){
+			$query->where('rombongan_belajar_id', $pembelajaran->rombongan_belajar_id);
+			$query->with(['nilai_sumatif' => function($query) use ($pembelajaran){
+				$query->where('pembelajaran_id', $pembelajaran->pembelajaran_id);
 			}]);
 		})->orderBy('nama')->get();
+		$file = clean('template-nilai-sumatif-akhir-semester-'.$pembelajaran->nama_mata_pelajaran.'-kelas-'.$pembelajaran->rombongan_belajar->nama);
+		$data = [
+			'pembelajaran' => $pembelajaran,
+			'data_siswa' => $data_siswa,
+			'file' => $file,
+		];
+		return (new TemplateSumatifAkhirSemester($data))->download($file.'.xlsx');
 		$lists = [];
 		$i=1;
         foreach($data_siswa as $siswa){

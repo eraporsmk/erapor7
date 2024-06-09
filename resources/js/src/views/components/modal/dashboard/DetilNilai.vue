@@ -66,7 +66,6 @@
                   {{(pd.nilai_akhir_pengetahuan) ? pd.nilai_akhir_pengetahuan.nilai : '-'}}
                 </b-td>
                 <b-td class="text-center">
-                  <!--predikatOld(item.kkm, item.nilai_akhir_pengetahuan.nilai, item.kelompok_id, item.semester_id)-->
                   {{(pd.nilai_akhir_pengetahuan) ? predikatOld(meta.kkm, pd.nilai_akhir_pengetahuan.nilai, meta.kelompok_id, meta.semester_id) : '-'}}
                 </b-td>
                 <b-td class="text-center">
@@ -134,6 +133,7 @@ export default {
       rombongan_belajar_id: null,
       form: {
         pembelajaran_id: '',
+        mata_pelajaran_id: '',
         rombongan_belajar_id: '',
       }
     }
@@ -166,7 +166,12 @@ export default {
           },
           allowOutsideClick: false,
         }).then(result => {
-          //this.detil(this.pembelajaran_id)
+          this.$emit('detil', {
+            pembelajaran_id: this.form.pembelajaran_id,
+            kkm: 0,
+            kelompok_id: 0,
+            semester_id: this.user.semester.semester_id,
+          })
         })
       }).catch(error => {
         console.log(error)

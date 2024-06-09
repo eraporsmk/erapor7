@@ -35,6 +35,8 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use App\Imports\NilaiAkhirImport;
 use App\Imports\NilaiSumatifImport;
 use App\Imports\NilaiPtsImport;
+use App\Imports\NilaiSumatifLingkupMateri;
+use App\Imports\NilaiSumatifAkhirSemester;
 use Carbon\Carbon;
 use Storage;
 
@@ -53,6 +55,7 @@ class PenilaianController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->where('mata_pelajaran_id', '<>', '800001000');
             //$query->whereNull('induk_pembelajaran_id');
             $query->orWhere('guru_pengajar_id', request()->guru_id);
             if(request()->rombongan_belajar_id){
@@ -60,6 +63,7 @@ class PenilaianController extends Controller
             }
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
+            $query->where('mata_pelajaran_id', '<>', '800001000');
             //$query->whereNull('induk_pembelajaran_id');
         };
     }
@@ -364,20 +368,43 @@ class PenilaianController extends Controller
         $list = [];
         $collection = [];
         $file_path = request()->template_excel->store('files', 'public');
-        if(request()->opsi == 'sumatif-lingkup-materi' || request()->opsi == 'sumatif-akhir-semester'){
-            $collection = (new FastExcel)->import(storage_path('/app/public/'.$file_path));
-            foreach($collection as $items){
-                $siswa = [];
-                foreach($items as $key => $item){
-                    if($key != 'NO' || $key != 'PD_ID' || $key != 'NAMA'){
-                        $tp = Tujuan_pembelajaran::where(DB::raw('TRIM(deskripsi)'), trim($key))->first();
-                        $key = ($tp) ? $tp->tp_id : $key;    
+        if(request()->opsi == 'sumatif-lingkup-materi'){
+            $data_tp = Tujuan_pembelajaran::where(function($query){
+                $query->whereHas('tp_mapel', function($query){
+                    $query->where('tp_mapel.pembelajaran_id', request()->pembelajaran_id);
+                });
+            })->orderBy('created_at')->get();
+            $list = [];
+            $collection = (new NilaiSumatifLingkupMateri())->toCollection(storage_path('/app/public/'.$file_path));
+            
+            foreach($collection as $rows){
+                foreach ($rows as $row) {
+                    $nilai = [];
+                    foreach($data_tp as $index => $tp){
+                        $nilai[] = [
+                            'angka' => $row['TP '.($index + 1)],
+                            'tp' => $row[$tp->tp_id],
+                        ];
                     }
-                    $siswa[$key] = $item;
-                    unset($siswa['NO'], $siswa['NAMA']);
+                    $list[] = [
+                        'anggota_rombel_id' => $row['PD_ID'],
+                        'nilai' => $nilai,
+                    ];
                 }
-                $list[] = $siswa;
-            }    
+            }
+        } elseif(request()->opsi == 'sumatif-akhir-semester'){
+            $list = [];
+            $collection = (new NilaiSumatifAkhirSemester())->toCollection(storage_path('/app/public/'.$file_path));
+            
+            foreach($collection as $rows){
+                foreach ($rows as $row) {
+                    $list[] = [
+                        'anggota_rombel_id' => $row['PD_ID'],
+                        'NILAI_NON_TES' => $row['NILAI_NON_TES'],
+                        'NILAI_TES' => $row['NILAI_TES'],
+                    ];
+                }
+            }
         } else {
             //Excel::import(new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka), storage_path('/app/public/'.$file_path));
             $collection = (new NilaiAkhirImport(request()->rombongan_belajar_id, request()->pembelajaran_id, request()->sekolah_id, request()->merdeka))->toCollection(storage_path('/app/public/'.$file_path));
@@ -580,11 +607,32 @@ class PenilaianController extends Controller
                 });
             });
         })->paginate(request()->per_page);
-        return response()->json(['status' => 'success', 'data' => $data, 'search' => request()->q]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+            'search' => request()->q,
+            'kurtilas' => Rombongan_belajar::where(function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%2013%');
+                });
+                $query->where('semester_id', request()->semester_id);
+                $query->where('sekolah_id', request()->sekolah_id);
+            })->first(),
+        ]);
     }
     public function ref_sikap(){
-        $data = Budaya_kerja::with(['elemen_budaya_kerja'])->get();
-        return response()->json(['status' => 'success', 'data' => $data]);
+        $data = [
+            'status' => 'success',
+            'data' => Budaya_kerja::with(['elemen_budaya_kerja'])->get(),
+            'kurtilas' => Rombongan_belajar::where(function($query){
+                $query->whereHas('kurikulum', function($query){
+                    $query->where('nama_kurikulum', 'ILIKE', '%2013%');
+                });
+                $query->where('semester_id', request()->semester_id);
+                $query->where('sekolah_id', request()->sekolah_id);
+            })->first(),
+        ];
+        return response()->json($data);
     }
     public function get_elemen(){
         $data = Elemen_budaya_kerja::where('budaya_kerja_id', request()->budaya_kerja_id)->get()->unique('elemen');

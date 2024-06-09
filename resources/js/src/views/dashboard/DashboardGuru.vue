@@ -28,10 +28,15 @@
                     <b-td>{{item.nama_mata_pelajaran}}</b-td>
                     <b-td>{{item.rombel}}</b-td>
                     <b-td>{{item.wali_kelas}}</b-td>
-                    <b-td class="text-center">{{item.pd}}</b-td>
-                    <b-td class="text-center">{{item.pd_dinilai}}</b-td>
+                    <template v-if="item.mata_pelajaran_id === 800001000">
+                      <b-td class="text-center">{{item.pd_pkl_count}}</b-td>
+                      <b-td class="text-center">{{item.pd_pkl_dinilai}}</b-td>
+                    </template>
+                    <template v-else>
+                      <b-td class="text-center">{{item.pd}}</b-td>
+                      <b-td class="text-center">{{item.pd_dinilai}}</b-td>
+                    </template>
                     <b-td class="text-center">
-                      <!--kkm, angka, kelompok_id, semester_id-->
                       <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                     </b-td>
                   </b-tr>
@@ -46,7 +51,7 @@
           </b-table-simple>
         </div>
       </b-card-body>
-      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :is_ppa="is_ppa" :sub_mapel="sub_mapel" :meta="meta"></detil-nilai>
+      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :is_ppa="is_ppa" :sub_mapel="sub_mapel" :meta="meta" @detil="HandleDetil"></detil-nilai>
     </b-card>
     <dashboard-walas v-if="hasRole('wali')" @detil="HandleDetil"></dashboard-walas>
   </div>
@@ -124,7 +129,11 @@ export default {
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
-        this.sub_mapel = getData.pembelajaran.tema_count
+        if(getData.pembelajaran.mata_pelajaran_id == 800001000){
+          this.sub_mapel = 1
+        } else {
+          this.sub_mapel = getData.pembelajaran.tema_count
+        }
         this.rombongan_belajar_id = getData.pembelajaran.rombongan_belajar_id
         this.title = getData.title
         this.data_siswa = getData.data_siswa
@@ -133,16 +142,18 @@ export default {
         //this.$refs['detil-modal'].show()
         eventBus.$emit('open-modal-detil-nilai', {
           data: {
-            rombongan_belajar_id: this.rombongan_belajar_id,
             pembelajaran_id: this.pembelajaran_id,
+            mata_pelajaran_id: getData.pembelajaran.mata_pelajaran_id,
+            rombongan_belajar_id: this.rombongan_belajar_id,
           }
         })
       }).catch(error => {
         console.log(error)
       })
     },
-    HandleDetil(pembelajaran_id){
-      this.detil(pembelajaran_id)
+    HandleDetil(item){
+      console.log(item);
+      this.detil(item)
     },
   },
 }

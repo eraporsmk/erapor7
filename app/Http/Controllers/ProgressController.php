@@ -268,22 +268,26 @@ class ProgressController extends Controller
       $data = Rencana_ukk::where(function($query){
          $query->where('sekolah_id', request()->sekolah_id);
          $query->where('semester_id', request()->semester_id);
-     })->withWhereHas('paket_ukk')->with([
-         'guru_internal' => function($query){
-             $query->select('guru_id', 'nama');
-         },
-         'guru_eksternal' => function($query){
-             $query->select('guru_id', 'nama');
-         },
-     ])->withCount('pd')
-     ->orderBy(request()->sortby, request()->sortbydesc)
-     ->when(request()->q, function($query) {
-         $query->whereHas('paket_ukk', function($query){
-             $query->where('nama_paket_id', 'ILIKE', '%' . request()->q . '%');
-             $query->orWhere('nama_paket_en', 'ILIKE', '%' . request()->q . '%');
-         });
-     })->paginate(request()->per_page);
-     return response()->json(['status' => 'success', 'data' => $data]);
+      })->withWhereHas('paket_ukk', function($query){
+         $query->with(['jurusan' => function($query){
+            $query->select('jurusan_id', 'nama_jurusan');
+         }]);
+      })->with([
+            'guru_internal' => function($query){
+               $query->select('guru_id', 'nama');
+            },
+            'guru_eksternal' => function($query){
+               $query->select('guru_id', 'nama');
+            },
+      ])->withCount('pd')
+      ->orderBy(request()->sortby, request()->sortbydesc)
+      ->when(request()->q, function($query) {
+            $query->whereHas('paket_ukk', function($query){
+               $query->where('nama_paket_id', 'ILIKE', '%' . request()->q . '%');
+               $query->orWhere('nama_paket_en', 'ILIKE', '%' . request()->q . '%');
+            });
+      })->paginate(request()->per_page);
+      return response()->json(['status' => 'success', 'data' => $data]);
    }
    public function nilai_pkl(){
       $data = Praktik_kerja_lapangan::where(function($query){

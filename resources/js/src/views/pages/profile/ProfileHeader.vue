@@ -3,18 +3,32 @@
     <!-- profile picture -->
     <div class="position-relative">
       <div class="profile-img-container d-flex align-items-center">
-        <div class="profile-img">
+        <div class="profile-img" style="height: auto;" v-b-hover="handleHover">
+          <div class="tombol">
+            <b-badge @click="show=true" variant="warning" class="cursor-pointer">
+              <feather-icon v-if="isHovered" icon="CameraIcon" size="20"/>
+            </b-badge>
+          </div>
+          <b-avatar rounded size="115" :src="headerData.avatar ? `/storage/images/${headerData.avatar}` : null" variant="light-primary">
+            <feather-icon v-if="!headerData.avatar" icon="UserIcon" size="75" />
+          </b-avatar>
+        </div>
+        <!--div class="profile-img" style="height: auto;">
+          <b-badge variant="light">
+            <b-icon icon="camera" font-scale="0.5"></b-icon>
+          </b-badge>
           <template v-if="headerData.avatar">
             <b-img rounded v-bind="mainProps" :src="`/storage/${headerData.avatar}`"></b-img>
           </template>
           <template v-else>
+            <b-avatar square variant="light-primary" badge badge-top badge-variant="success"></b-avatar>
             <b-avatar size="8.3rem" rounded :src="headerData.avatar" variant="light-primary">
               <feather-icon v-if="!headerData.nama" icon="UserIcon" size="22"/>
             </b-avatar>
           </template>
-        </div>
+        </div-->
         <!-- profile title -->
-        <div class="profile-title ml-3">
+        <div class="profile-title ml-3 d-none d-sm-block">
           <h2 class="text-white">
             {{ headerData.nama }}
           </h2>
@@ -79,13 +93,21 @@
       </b-navbar>
     </div>
     <!--/ profile navbar -->
+    <b-modal v-model="show" centered hide-footer hide-header>
+      <div class="my-1">
+        <b-overlay :show="loading" opacity="0.6" size="md" spinner-variant="secondary">
+          <b-form-file v-model="foto" accept=".jpg, .png, .jpeg" placeholder="Upload Foto..." drop-placeholder="Drop file here..." @change="onFileChange"></b-form-file>
+        </b-overlay>
+      </div>
+    </b-modal>
   </b-card>
 </template>
 
 <script>
 import {
-  BCard, BImg, BNavbar, BNavbarToggle, BCollapse, BTabs, BTab, BNavItem, BButton, BAvatar,
+  BCard, BImg, BNavbar, BNavbarToggle, BCollapse, BTabs, BTab, BNavItem, BButton, BAvatar, BBadge, BIcon, VBHover, BOverlay, BFormFile
 } from 'bootstrap-vue'
+import Ripple from 'vue-ripple-directive'
 import { initialAbility } from '@/libs/acl/config'
 import useJwt from '@/auth/jwt/useJwt'
 export default {
@@ -100,6 +122,15 @@ export default {
     BCollapse,
     BImg,
     BAvatar,
+    BBadge,
+    BIcon,
+    VBHover,
+    BOverlay,
+    BFormFile,
+  },
+  directives: {
+    'b-hover': VBHover,
+    Ripple,
   },
   props: {
     headerData: {
@@ -115,6 +146,10 @@ export default {
     return {
       tabActive: 0,
       mainProps: {width: 125, height: 125 },
+      isHovered: false,
+      show: false,
+      loading: false,
+      foto: null,
     }
   },
   watch: {
@@ -129,6 +164,9 @@ export default {
     this.$emit('tab', this.tabActive)
   },
   methods: {
+    handleHover(hovered) {
+      this.isHovered = hovered
+    },
     logout() {
       // Remove userData from localStorage
       // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
@@ -147,6 +185,38 @@ export default {
     linkClass(idx) {
       return this.tabIndex === idx
     },
+    onFileChange(e) {
+      this.loading = true
+      this.foto = e.target.files[0];
+      const data = new FormData();
+      data.append('foto', this.foto);
+      data.append('user_id', this.user.user_id);
+      this.$http.post('/auth/foto', data).then(response => {
+        this.loading = false
+        let getData = response.data
+        this.user.photo = getData.foto
+        this.$swal({
+          icon: getData.icon,
+          title: getData.title,
+          text: getData.text,
+          customClass: {
+            confirmButton: 'btn btn-success',
+          },
+        }).then(result => {
+          this.show = false
+          this.headerData.avatar = getData.foto
+        })
+      });
+    },
   },
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+.tombol{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+}
+</style>

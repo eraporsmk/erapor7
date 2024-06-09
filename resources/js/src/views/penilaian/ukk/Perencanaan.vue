@@ -164,10 +164,6 @@ export default {
         rencana_ukk_id: val,
       }).then(response => {
         this.loading = false
-        /*let getData = response.data
-        this.rencana = getData.rencana
-        this.data_siswa = getData.data_siswa
-        this.$refs['detil-rencana'].show()*/
         eventBus.$emit('open-modal-detil-rencana-ukk', response.data);
       }).catch(error => {
         console.log(error);

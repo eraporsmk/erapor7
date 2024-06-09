@@ -2,112 +2,122 @@
   <b-card no-body>
     <b-overlay :show="isBusy" rounded opacity="0.6" size="lg" spinner-variant="danger">
       <b-card-body>
-        <b-form @submit="onSubmit">
-          <b-row>
-            <b-col cols="12">
-              <b-form-group label="Tahun Pelajaran" label-for="tahun_pelajaran" label-cols-md="3">
-                <b-form-input id="tahun_pelajaran" :value="form.tahun_pelajaran" disabled />
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label="Tingkat Kelas" label-for="tingkat" label-cols-md="3" :invalid-feedback="feedback.tingkat" :state="meta.tingkat">
-                <v-select id="tingkat" v-model="form.tingkat" :reduce="nama => nama.id" label="nama" :options="data_tingkat" placeholder="== Pilih Tingkat Kelas ==" :searchable="false" :state="meta.tingkat" @input="changeTingkat">
-                  <template #no-options="{ search, searching, loading }">
-                    Tidak ada data untuk ditampilkan
-                  </template>
-                </v-select>
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label="Rombongan Belajar" label-for="rombongan_belajar_id" label-cols-md="3" :invalid-feedback="feedback.rombongan_belajar_id" :state="meta.rombongan_belajar_id">
-                <b-overlay :show="loading_rombel" opacity="0.6" size="md" spinner-variant="secondary">
-                  <v-select id="rombongan_belajar_id" v-model="form.rombongan_belajar_id" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="data_rombel" placeholder="== Pilih Rombongan Belajar ==" @input="changeRombel" :state="meta.rombongan_belajar_id">
+        <validation-observer ref="simpleRules">
+          <b-form>
+            <b-row>
+              <b-col cols="12">
+                <b-form-group label="Tahun Pelajaran" label-for="tahun_pelajaran" label-cols-md="3">
+                  <b-form-input id="tahun_pelajaran" :value="form.tahun_pelajaran" disabled />
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="Tingkat Kelas" label-for="tingkat" label-cols-md="3" :invalid-feedback="feedback.tingkat" :state="meta.tingkat">
+                  <v-select id="tingkat" v-model="form.tingkat" :reduce="nama => nama.id" label="nama" :options="data_tingkat" placeholder="== Pilih Tingkat Kelas ==" :searchable="false" :state="meta.tingkat" @input="changeTingkat">
                     <template #no-options="{ search, searching, loading }">
                       Tidak ada data untuk ditampilkan
                     </template>
                   </v-select>
-                </b-overlay>
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-form-group label="DUDI" label-for="pkl_id" label-cols-md="3" :invalid-feedback="feedback.pkl_id" :state="meta.pkl_id">
-                <b-overlay :show="loading_pkl" opacity="0.6" size="md" spinner-variant="secondary">
-                  <v-select id="pkl_id" v-model="form.pkl_id" :reduce="nama_dudi => nama_dudi.pkl_id" label="nama_dudi" :options="data_dudi" placeholder="== Pilih DUDI ==" :state="meta.pkl_id" @input="changePkl">
-                    <template #no-options="{ search, searching, loading }">
-                      Tidak ada data untuk ditampilkan
-                    </template>
-                  </v-select>
-                </b-overlay>
-              </b-form-group>
-            </b-col>
-            <b-col cols="12">
-              <b-overlay :show="loading_siswa" opacity="0.6" size="md" spinner-variant="secondary">
-                <template v-if="show && data_siswa.length  && data_tp.length">
-                  <b-table-simple bordered striped responsive>
-                    <b-thead>
-                      <b-tr>
-                        <b-th class="text-center">No</b-th>
-                        <b-th class="text-center">Nama Peserta Didik</b-th>
-                        <b-th class="text-center">NISN</b-th>
-                        <b-th class="text-center">Tujuan Pembelajaran</b-th>
-                        <b-th class="text-center">Nilai</b-th>
-                        <b-th class="text-center">Deskripsi</b-th>
-                      </b-tr>
-                    </b-thead>
-                    <b-tbody>
-                      <template v-for="(siswa, index) in data_siswa">
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="Rombongan Belajar" label-for="rombongan_belajar_id" label-cols-md="3" :invalid-feedback="feedback.rombongan_belajar_id" :state="meta.rombongan_belajar_id">
+                  <b-overlay :show="loading_rombel" opacity="0.6" size="md" spinner-variant="secondary">
+                    <v-select id="rombongan_belajar_id" v-model="form.rombongan_belajar_id" :reduce="nama => nama.rombongan_belajar_id" label="nama" :options="data_rombel" placeholder="== Pilih Rombongan Belajar ==" @input="changeRombel" :state="meta.rombongan_belajar_id">
+                      <template #no-options="{ search, searching, loading }">
+                        Tidak ada data untuk ditampilkan
+                      </template>
+                    </v-select>
+                  </b-overlay>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="DUDI" label-for="pkl_id" label-cols-md="3" :invalid-feedback="feedback.pkl_id" :state="meta.pkl_id">
+                  <b-overlay :show="loading_pkl" opacity="0.6" size="md" spinner-variant="secondary">
+                    <v-select id="pkl_id" v-model="form.pkl_id" :reduce="nama_dudi => nama_dudi.pkl_id" label="nama_dudi" :options="data_dudi" placeholder="== Pilih DUDI ==" :state="meta.pkl_id" @input="changePkl">
+                      <template #no-options="{ search, searching, loading }">
+                        Tidak ada data untuk ditampilkan
+                      </template>
+                    </v-select>
+                  </b-overlay>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-overlay :show="loading_siswa" opacity="0.6" size="md" spinner-variant="secondary">
+                  <template v-if="show && data_siswa.length  && data_tp.length">
+                    <b-table-simple bordered striped responsive>
+                      <b-thead>
                         <b-tr>
-                          <b-td class="text-center" :rowspan="data_tp.length + 2" style="vertical-align: top;">{{index + 1}}</b-td>
-                          <b-td :rowspan="data_tp.length + 2" style="vertical-align: top;">{{siswa.nama}}</b-td>
-                          <b-td :rowspan="data_tp.length + 2" class="text-center" style="vertical-align: top;">{{siswa.nisn}}</b-td>
+                          <b-th class="text-center">No</b-th>
+                          <b-th class="text-center">Nama Peserta Didik</b-th>
+                          <b-th class="text-center">NISN</b-th>
+                          <b-th class="text-center">Tujuan Pembelajaran</b-th>
+                          <b-th class="text-center">Nilai</b-th>
+                          <b-th class="text-center">Deskripsi</b-th>
                         </b-tr>
-                        <template v-for="(tp, i) in data_tp">
+                      </b-thead>
+                      <b-tbody>
+                        <template v-for="(siswa, index) in data_siswa">
                           <b-tr>
-                            <b-td>{{ tp.deskripsi }}</b-td>
-                            <b-td>
-                              <b-form-input v-model="form.nilai[`${tp.tp_id}#${siswa.peserta_didik_id}`]" />
-                            </b-td>
-                            <b-td>
-                              <b-form-input v-model="form.deskripsi[`${tp.tp_id}#${siswa.peserta_didik_id}`]" placeholder="Deskripsi ..." />
+                            <b-td class="text-center" :rowspan="data_tp.length + 2" style="vertical-align: top;">{{index + 1}}</b-td>
+                            <b-td :rowspan="data_tp.length + 2" style="vertical-align: top;">{{siswa.nama}}</b-td>
+                            <b-td :rowspan="data_tp.length + 2" class="text-center" style="vertical-align: top;">{{siswa.nisn}}</b-td>
+                          </b-tr>
+                          <template v-for="(tp, i) in data_tp">
+                            <b-tr>
+                              <b-td>{{ tp.deskripsi }}</b-td>
+                              <b-td width="100">
+                                <validation-provider #default="{ errors }" rules="integer|between:0,100" :custom-messages="{integer: 'Masukkan Angka', between: 'Angka 0-100'}">
+                                  <b-form-input v-model="form.nilai[`${tp.tp_id}#${siswa.peserta_didik_id}`]" :state="errors.length > 0 ? false:null" placeholder="0-100" />
+                                  <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                              </b-td>
+                              <b-td>
+                                <b-form-textarea title="Deskripsi ..." placeholder="Deskripsi ..." v-model="form.deskripsi[`${tp.tp_id}#${siswa.peserta_didik_id}`]"></b-form-textarea>
+                              </b-td>
+                            </b-tr>
+                          </template>
+                          <b-tr>
+                            <b-td colspan="3">
+                              <b-form-textarea title="Catatan PKL..." placeholder="Catatan PKL..." v-model="form.catatan[siswa.peserta_didik_id]"></b-form-textarea>
                             </b-td>
                           </b-tr>
                         </template>
-                        <b-tr>
-                          <b-td colspan="3">
-                            <b-form-textarea title="Catatan PKL..." placeholder="Catatan PKL..." v-model="form.catatan[siswa.peserta_didik_id]"></b-form-textarea>
-                          </b-td>
-                        </b-tr>
-                      </template>
-                    </b-tbody>
-                  </b-table-simple>
-                </template>
-              </b-overlay>
-            </b-col>
-            <b-col cols="12" v-if="show && !data_siswa.length || show && !data_tp.length">
-              <b-alert show variant="danger">
-                <div class="alert-body text-center">
-                  <h2>Rencana penilaian PKL tidak ditemukan!</h2>
-                  <p>Silahkan tambah Rencana penilaian PKL terlebih dahulu <b-link to="/pkl/perencanaan">disini</b-link></p>
-                </div>
-              </b-alert>
-            </b-col>
-            <b-col cols="12" v-if="data_siswa.length && data_tp.length">
-              <b-form-group label-cols-md="3">
-                <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-form>
+                      </b-tbody>
+                    </b-table-simple>
+                  </template>
+                </b-overlay>
+              </b-col>
+              <b-col cols="12" v-if="show && !data_siswa.length || show && !data_tp.length">
+                <b-alert show variant="danger">
+                  <div class="alert-body text-center">
+                    <h2>Rencana penilaian PKL tidak ditemukan!</h2>
+                    <p>Silahkan tambah Rencana penilaian PKL terlebih dahulu <b-link to="/pkl/perencanaan">disini</b-link></p>
+                  </div>
+                </b-alert>
+              </b-col>
+              <b-col cols="12" v-if="data_siswa.length && data_tp.length">
+                <b-form-group label-cols-md="3">
+                  <b-button type="submit" variant="primary" class="float-right ml-1" @click.prevent="validationForm">Simpan</b-button>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </b-form>
+        </validation-observer>
       </b-card-body>
     </b-overlay>
   </b-card>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { BCard, BCardBody, BOverlay, BForm, BFormGroup, BFormInput, BFormTextarea, BRow, BCol, BButton, BTableSimple, BThead, BTbody, BTh, BTr, BTd, VBTooltip, BAlert, BLink} from 'bootstrap-vue'
 import vSelect from 'vue-select'
+import { integer, between } from '@validations'
+
 export default {
   components: {
+    ValidationProvider,
+    ValidationObserver,
     vSelect,
     BCard,
     BCardBody,
@@ -173,12 +183,16 @@ export default {
         tingkat: '',
         rombongan_belajar_id: '',
         pkl_id: '',
+        nilai: {},
       },
       meta: {
         tingkat: null,
         rombongan_belajar_id: null,
         pkl_id: null,
+        nilai: {},
       },
+      integer, 
+      between,
     }
   },
   created() {
@@ -245,8 +259,14 @@ export default {
         })
       }
     },
-    onSubmit(event) {
-      event.preventDefault()
+    validationForm() {
+      this.$refs.simpleRules.validate().then(success => {
+        if (success) {
+          this.onSubmit()
+        }
+      })
+    },
+    onSubmit() {
       this.isBusy = true
       this.$http.post('/praktik-kerja-lapangan/simpan-nilai', this.form).then(response => {
         this.isBusy = false

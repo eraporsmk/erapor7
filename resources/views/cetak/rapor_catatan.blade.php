@@ -55,9 +55,15 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 			$huruf_absen = 'E';
 			$huruf_kenaikan = 'F';
 		} else {
-			$huruf_ekskul = 'C';
-			$huruf_absen = 'D';
-			$huruf_kenaikan = 'E';
+			if($get_siswa->peserta_didik->pd_pkl){
+				$huruf_ekskul = 'B';
+				$huruf_absen = 'C';
+				$huruf_kenaikan = 'D';
+			} else {
+				$huruf_ekskul = 'C';
+				$huruf_absen = 'D';
+				$huruf_kenaikan = 'E';
+			}
 		}
 	} else {
 		if($get_siswa->all_prakerin->count()){
@@ -139,18 +145,15 @@ if($get_siswa->rombongan_belajar->tingkat == 10){
 	<tr>
 	<tr>
 		<td>Sakit</td>
-		<td> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->sakit) ? $get_siswa->kehadiran->sakit.' hari' : '- hari'
-			: '.... hari'}}</td>
+		<td> : {{($get_siswa->kehadiran) ? $get_siswa->kehadiran->sakit??0 : 0}} hari</td>
 	</tr>
 	<tr>
 		<td>Izin</td>
-		<td> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->izin) ? $get_siswa->kehadiran->izin.' hari' :
-			'- hari' : '.... hari'}}</td>
+		<td> : {{($get_siswa->kehadiran) ? $get_siswa->kehadiran->izin??0 : 0}} hari</td>
 	</tr>
 	<tr>
 		<td>Tanpa Keterangan</td>
-		<td> : {{($get_siswa->kehadiran) ? ($get_siswa->kehadiran->alpa) ? $get_siswa->kehadiran->alpa.' hari' : '- hari' :
-			'.... hari'}}</td>
+		<td> : {{($get_siswa->kehadiran) ? $get_siswa->kehadiran->alpa??0 : 0}} hari</td>
 	</tr>
 	</tr>
 </table>

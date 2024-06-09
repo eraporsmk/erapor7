@@ -103,7 +103,7 @@ class KirimErapor extends Command
                 $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => count($data).' data '.nama_table($table).' berhasil dikirim']);
             }
             $this->info(count($data).' data '.nama_table($table). ' berhasil dikirim');
-            $this->update_last_sync($user_id, $table, $data, $sekolah_id);
+            //$this->update_last_sync($user_id, $table, $data, $sekolah_id);
         } else {
             if($this->argument('akses')){
                 $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->status()]);
