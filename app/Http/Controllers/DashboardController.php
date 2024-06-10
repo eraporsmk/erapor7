@@ -415,7 +415,7 @@ class DashboardController extends Controller
             $result_pilihan[] = [
                'no' => $no++,
                'pembelajaran_id' => $item_pilihan->pembelajaran_id,
-               'mata_pelajaran_id' => $item->mata_pelajaran_id,
+               'mata_pelajaran_id' => $item_pilihan->mata_pelajaran_id,
                'induk_pembelajaran_id' => $item_pilihan->induk_pembelajaran_id,
                'nama_mata_pelajaran' => $item_pilihan->nama_mata_pelajaran,
                'rombel' => $item_pilihan->rombongan_belajar->nama,
