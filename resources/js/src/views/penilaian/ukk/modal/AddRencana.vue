@@ -72,9 +72,10 @@
             <b-table-simple bordered responsive>
               <b-thead>
                 <b-tr>
-                  <b-th class="text-center" width="5%"></b-th>
-                  <b-th class="text-center" width="55%"></b-th>
-                  <b-th class="text-center" width="45%"></b-th>
+                  <b-th class="text-center">#</b-th>
+                  <b-th class="text-center">Nama Peserta Didik</b-th>
+                  <b-th class="text-center">NISN</b-th>
+                  <b-th class="text-center"></b-th>
                 </b-tr>
               </b-thead>
               <b-tbody>
@@ -84,6 +85,7 @@
                       <b-form-checkbox :id="`checkbox-${index}`" v-model="form.siswa_dipilih[`${item.peserta_didik_id}#${item.anggota_rombel.anggota_rombel_id}`]" :name="`checkbox-${index}`" :value="`${item.peserta_didik_id}#${item.anggota_rombel.anggota_rombel_id}`" stacked class="mx-auto"></b-form-checkbox>
                     </b-td>
                     <b-td>{{item.nama}}</b-td>
+                    <b-td class="text-center">{{item.nisn}}</b-td>
                     <b-td>{{(rencana_ukk) ? rencana_ukk.paket_ukk.nama_paket_id : '-'}}</b-td>
                   </b-tr>
                 </template>

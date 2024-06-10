@@ -3,7 +3,6 @@
     <filter-table :meta="meta" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel"></filter-table>
     <b-row>
       <b-col md="4" class="mb-2">
-        <!--b-form-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage"></b-form-select-->
         <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @input="loadPerPage" :clearable="false">
           <template slot="no-options">
             Tidak ada data untuk ditampilkan

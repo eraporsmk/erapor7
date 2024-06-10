@@ -3,7 +3,7 @@
     <filter-table :meta="meta" @tingkat="handleTingkat" @rombel="handleRombel" @mapel="handleMapel"></filter-table>
     <b-row>
       <b-col md="4" class="mb-2">
-        <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage" :clearable="false"></v-select>
+        <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @input="loadPerPage" :clearable="false"></v-select>
       </b-col>
       <b-col md="4" offset-md="4">
         <b-form-input @input="search" placeholder="Cari data..."></b-form-input>
@@ -139,6 +139,8 @@ export default {
       })
     },
     loadPerPage(val) {
+      console.log(val);
+      console.log(this.meta.per_page);
       this.$emit('per_page', this.meta.per_page)
     },
     changePage(val) {

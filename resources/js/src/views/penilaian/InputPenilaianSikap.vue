@@ -159,7 +159,12 @@ export default {
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.tahun_pelajaran = this.user.semester.nama
-    this.$http.get('/penilaian/ref-sikap').then(response => {
+    this.$http.get('/penilaian/ref-sikap', {
+      params: {
+        sekolah_id: this.form.sekolah_id,
+        semester_id: this.form.semester_id,
+      }
+    }).then(response => {
       this.isBusy = false
       let getData = response.data
       this.all_sikap = getData.data

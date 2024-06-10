@@ -2,7 +2,7 @@
   <div>
     <b-row>
       <b-col md="4" class="mb-2">
-        <b-form-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @change="loadPerPage"></b-form-select>
+        <v-select v-model="meta.per_page" :options="[10, 25, 50, 100]" @input="loadPerPage"></v-select>
       </b-col>
       <b-col md="4" offset-md="4">
         <b-form-input @input="search" placeholder="Cari data..."></b-form-input>
@@ -46,12 +46,14 @@
 
 <script>
 import _ from 'lodash' //IMPORT LODASH, DIMANA AKAN DIGUNAKAN UNTUK MEMBUAT DELAY KETIKA KOLOM PENCARIAN DIISI
-import { BRow, BCol, BFormInput, BFormSelect, BFormSelectOption, BTable, BSpinner, BPagination, BButton, BOverlay, BDropdown, BDropdownItem, BBadge } from 'bootstrap-vue'
+import { BRow, BCol, BFormInput, BTable, BSpinner, BPagination, BButton, BOverlay, BDropdown, BDropdownItem, BBadge } from 'bootstrap-vue'
+import vSelect from 'vue-select'
 export default {
   components: {
+    vSelect,
     BRow,
     BCol,
-    BFormInput, BFormSelect, BFormSelectOption,
+    BFormInput,
     BTable,
     BSpinner,
     BPagination,
