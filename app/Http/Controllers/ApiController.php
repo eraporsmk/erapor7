@@ -231,7 +231,7 @@ class ApiController extends Controller
         return response()->json($data);
     }
     public function unduhan(){
-        $data = ['data' => 'unduhan'];
+        $data = ['data' => view('unduhan')->render()];
         return response()->json($data);
     }
     public function changelog(){

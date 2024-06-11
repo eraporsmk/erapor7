@@ -135,6 +135,18 @@ class DashboardController extends Controller
                'nama' => 'Bambang Hermanto',
                'hp' => '6282149880883',
             ],
+            /*[
+               'nama' => 'Djoko Poernomo',
+               'hp' => '628119890509',
+            ],
+            [
+               'nama' => 'Muhamad Nazmudin',
+               'hp' => '6285651414221',
+            ],
+            [
+               'nama' => 'Didik Harianto',
+               'hp' => '6285258636767',
+            ],*/
          ],
       ];
       return $data;
