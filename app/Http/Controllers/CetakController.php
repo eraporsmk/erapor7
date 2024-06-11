@@ -558,7 +558,9 @@ class CetakController extends Controller
 		$params = array(
 			'semester' => Semester::find(request()->route('semester_id')),
 			'get_siswa'	=> $get_siswa,
-			'rencana_budaya_kerja' => Rencana_budaya_kerja::where('rombongan_belajar_id', $get_siswa->rombongan_belajar_id)
+			'rencana_budaya_kerja' => Rencana_budaya_kerja::withWhereHas('pembelajaran', function($query){
+				$query->has('induk');
+			})->where('rombongan_belajar_id', $get_siswa->rombongan_belajar_id)
 			->with([
 				'aspek_budaya_kerja' => function($query) use ($anggota_rombel_id){
 					$query->with([
