@@ -221,25 +221,29 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 			<br>
 			<p>...................................................................</p>
 		</td>
-		<td style="width:20%"></td>
-		<td style="width:40%">
-			<p>{{str_replace('Kab. ','',$get_siswa->peserta_didik->sekolah->kabupaten)}},
-				{{$tanggal_rapor}}<br>Wali Kelas</p><br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<p>
-				<u>{{$get_siswa->rombongan_belajar->wali_kelas->nama_lengkap}}</u><br />
-				NIP. {{$get_siswa->rombongan_belajar->wali_kelas->nip}}
+		<td style="width:5%"></td>
+		<td style="width:45%; text-align: right;">
+			<table width="auto">
+				<tr><td style="text-align: left;">
+					<p>{{str_replace('Kab. ','',$get_siswa->peserta_didik->sekolah->kabupaten)}},
+						{{$tanggal_rapor}}<br>Wali Kelas</p><br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					<p>
+						<u>{{$get_siswa->rombongan_belajar->wali_kelas->nama_lengkap}}</u><br />
+						NIP. {{$get_siswa->rombongan_belajar->wali_kelas->nip}}</p>
+				</td></tr>
+			</table>
 		</td>
 	</tr>
 </table>
-<table width="100%" style="margin-top:10px;">
+<table width="100%" style="margin-top:10px; text-align: center;">
 	<tr>
-		<td style="width:40%;">
-		</td>
+		{{-- <td style="width:40%;">
+		</td> --}}
 		<td style="width:60%;">
 			<p>Mengetahui,<br>{{ get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id) }}</p>
 			<br>
