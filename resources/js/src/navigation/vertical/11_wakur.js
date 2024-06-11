@@ -47,7 +47,7 @@ export default [
         },
         {
           icon: 'hand-point-right',
-          title: 'Unduh Legger',
+          title: 'Unduh Leger',
           route: 'progress-unduh-legger',
           resource: 'Waka',
           action: 'read',

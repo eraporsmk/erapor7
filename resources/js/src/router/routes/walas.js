@@ -134,7 +134,7 @@ export default [
         action: 'unduhLegger',
         link: '',
         variant: 'success',
-        text: 'Unduh Legger'
+        text: 'Unduh Leger'
       },
     },
   },
@@ -159,7 +159,7 @@ export default [
         action: 'unduhLegger',
         link: '',
         variant: 'success',
-        text: 'Unduh Legger'
+        text: 'Unduh Leger'
       },
     },
   },

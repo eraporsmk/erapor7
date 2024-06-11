@@ -454,6 +454,13 @@ function http_client($satuan, $data_sync){
     ])->retry(3, 100)->post(config('erapor.api_url').$satuan, $data_sync);
     return $response->object();
 }
+function http_dashboard($satuan, $data_sync){
+    $response = Http::withOptions([
+        'verify' => false,
+        //'debug' => config('app.debug') ? fopen('php://stderr', 'w') : FALSE,
+    ])->retry(3, 100)->post(config('erapor.dashboard_url').$satuan, $data_sync);
+    return $response;
+}
 function merdeka($nama_kurikulum){
     return Str::contains($nama_kurikulum, 'Merdeka');
 }

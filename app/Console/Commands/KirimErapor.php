@@ -91,25 +91,26 @@ class KirimErapor extends Command
             'table' => $table,
             'json' => prepare_send(json_encode($data)),
         ];
-        $url = 'http://app.erapor-smk.net/api/sinkronisasi/kirim-data';
-        $response = Http::withOptions([
-            'verify' => false,
-        ])->withHeaders([
-            'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
-            'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        ])->post($url, $data_sync);
-        if($response->status() == 200){
+        $response = http_dashboard('sinkronisasi/kirim-data', $data_sync);
+        # $url = 'http://app.erapor-smk.net/api/sinkronisasi/kirim-data';
+        # $response = Http::withOptions([
+        #     'verify' => false,
+        # ])->withHeaders([
+        #   'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+        #   'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        # ])->post($url, $data_sync);
+        if($response->status){
             if($this->argument('akses')){
                 $this->call('respon:artisan', ['status' => 'info', 'title' => 'Berhasil', 'respon' => count($data).' data '.nama_table($table).' berhasil dikirim']);
             }
             $this->info(count($data).' data '.nama_table($table). ' berhasil dikirim');
-            //$this->update_last_sync($user_id, $table, $data, $sekolah_id);
+            $this->update_last_sync($user_id, $table, $data, $sekolah_id);
         } else {
             if($this->argument('akses')){
-                $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->status()]);
+                $this->call('respon:artisan', ['status' => 'error', 'title' => 'Gagal', 'respon' => 'Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->message]);
             }
             $this->proses_sync('', 'Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon', 0, 0, 0);
-            $this->error('Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->status());
+            $this->error('Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$response->message);
         }
     }
     private function update_last_sync($user_id, $table, $data, $sekolah_id){
