@@ -146,16 +146,10 @@ class PenilaianController extends Controller
         $bobot_sumatif_akhir = $pembelajaran->bobot_sumatif_akhir;
         $total_bobot = $bobot_sumatif_materi + $bobot_sumatif_akhir;
         $data_siswa = [];
-        //bobot * rata2_sumatif_materi / total_bobot
-        //bobot * rata2_sumatif_semester / total_bobot
-        //=IFERROR(ROUND(($H$42*H43/$L$42)+($K$42*K43/$L$42);0);"")
         foreach($get_siswa as $siswa){
-            //$nilai_sumatif_materi = $bobot_sumatif_materi * number_format($siswa->anggota_rombel->nilai_tp_avg_nilai,0) / $total_bobot;
-            //$nilai_sumatif_semester = ($siswa->anggota_rombel->nilai_sumatif_semester) ? $bobot_sumatif_akhir * number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai) / $total_bobot : 0;
             $nilai_sumatif_materi = number_format($siswa->anggota_rombel->nilai_tp_avg_nilai, 2);
             $nilai_sumatif_semester = ($siswa->anggota_rombel->nilai_sumatif_semester) ? number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai, 2) : 0;
             $nilai_akhir = collect([$nilai_sumatif_materi, $nilai_sumatif_semester]);
-            //=IFERROR(ROUND(($H$42*H43/$L$42)+($K$42*K43/$L$42);0);"")
             $nilai_asesmen = NULL;
             if($nilai_akhir->avg()){
                 $nilai_asesmen = number_format(($bobot_sumatif_materi * $nilai_sumatif_materi / $total_bobot) + ($bobot_sumatif_akhir * $nilai_sumatif_semester / $total_bobot) , 0);
@@ -164,14 +158,10 @@ class PenilaianController extends Controller
                 'nama' => $siswa->nama,
                 'anggota_rombel_id' => $siswa->anggota_rombel->anggota_rombel_id,
                 'nilai_akhir' => ($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL,
-                //'nilai_asesmen' => ($nilai_akhir->avg()) ? number_format($nilai_akhir->avg(),0) : NULL,
                 'nilai_asesmen' => $nilai_asesmen,
-                //'nilai_sumatif_materi' => number_format($siswa->anggota_rombel->nilai_tp_avg_nilai,0),
-                //'nilai_sumatif_semester' => ($siswa->anggota_rombel->nilai_sumatif_semester) ? number_format($siswa->anggota_rombel->nilai_sumatif_semester->nilai) : 0,
                 'tp_kompeten' => $siswa->anggota_rombel->tp_kompeten,
                 'tp_inkompeten' => $siswa->anggota_rombel->tp_inkompeten,
                 'capaian_kompeten' => $siswa->anggota_rombel->capaian_kompeten,
-                //'anggota_rombel' => $siswa->anggota_rombel,
             ];
         }
         $data = [
@@ -181,7 +171,7 @@ class PenilaianController extends Controller
                 $query->whereHas('tp_mapel', function($query){
                     $query->where('tp_mapel.pembelajaran_id', request()->pembelajaran_id);
                 });
-                /*if(request()->merdeka){
+                if(request()->merdeka){
                     $query->whereHas('cp', function($query){
                         $query->where('mata_pelajaran_id', request()->mata_pelajaran_id);
                     });
@@ -189,7 +179,7 @@ class PenilaianController extends Controller
                     $query->whereHas('kd', function($query){
                         $query->where('mata_pelajaran_id', request()->mata_pelajaran_id);
                     });
-                }*/
+                }
             })->orderBy('created_at')->get(),
             'pembelajaran' => $pembelajaran,
         ];
@@ -226,7 +216,7 @@ class PenilaianController extends Controller
         $insert = 0;
         foreach(request()->nilai as $anggota_rombel_id => $nilai_akhir){
             $insert++;
-            if($nilai_akhir && $nilai_akhir > -1){
+            if($nilai_akhir >= 0 && $nilai_akhir <= 100){
                 Nilai_akhir::updateOrCreate(
                     [
                         'sekolah_id' => request()->sekolah_id,
@@ -242,14 +232,31 @@ class PenilaianController extends Controller
                 $kompetensi_id = (request()->merdeka) ? 4 : 1;
                 Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
             }
+            /*if($nilai_akhir && $nilai_akhir > -1){
+                Nilai_akhir::updateOrCreate(
+                    [
+                        'sekolah_id' => request()->sekolah_id,
+                        'anggota_rombel_id' => $anggota_rombel_id,
+                        'pembelajaran_id' => request()->pembelajaran_id,
+                        'kompetensi_id' => (request()->merdeka) ? 4 : 1,
+                    ],
+                    [
+                        'nilai' => ($nilai_akhir) ? number_format($nilai_akhir,0) : 0,
+                    ]
+                );
+            } else {
+                $kompetensi_id = (request()->merdeka) ? 4 : 1;
+                Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
+            }*/
         }
-        $segments = [];
         $first = [];
         $last = [];
         foreach(request()->kompeten as $uuid => $kompeten){
             $segments = Str::of($uuid)->split('/[\s#]+/');
             $anggota_rombel_id = $segments->first();
             $tp_id = $segments->last();
+            $first[] = $anggota_rombel_id;
+            $last[] = $tp_id;
             $tp = Tujuan_pembelajaran::find($tp_id);
             if($tp){
                 if(request()->merdeka){
@@ -274,6 +281,8 @@ class PenilaianController extends Controller
                 } else {
                     Tp_nilai::where('anggota_rombel_id', $anggota_rombel_id)->where('tp_id', $tp_id)->delete();
                 }
+            } else {
+
             }
         }
         if($insert){
@@ -281,7 +290,6 @@ class PenilaianController extends Controller
                 'icon' => 'success',
                 'title' => 'Berhasil!',
                 'text' => 'Nilai Akhir berhasil disimpan',
-                'segments' => $segments,
                 'first' => $first,
                 'last' => $last,
             ];

@@ -430,6 +430,7 @@ class DashboardController extends Controller
                'mata_pelajaran_id' => $item_pilihan->mata_pelajaran_id,
                'induk_pembelajaran_id' => $item_pilihan->induk_pembelajaran_id,
                'nama_mata_pelajaran' => $item_pilihan->nama_mata_pelajaran,
+               'guru' => ($item_pilihan->pengajar) ? $item_pilihan->pengajar->nama_lengkap : $item_pilihan->guru->nama_lengkap,
                'rombel' => $item_pilihan->rombongan_belajar->nama,
                'wali_kelas' => ($item_pilihan->rombongan_belajar->wali_kelas) ? $item_pilihan->rombongan_belajar->wali_kelas->nama_lengkap : '-',
                'pd' => $item_pilihan->anggota_rombel_count,
