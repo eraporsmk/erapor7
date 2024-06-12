@@ -168,7 +168,7 @@ class DashboardController extends Controller
                'rombel' => $rombel->nama,
                'wali_kelas' => ($rombel->wali_kelas) ? $rombel->wali_kelas->nama_lengkap : '-',
                'pd' => $pembelajaran->anggota_rombel_count,
-               'pd_dinilai' => $this->anggota_dinilai($pembelajaran->pembelajaran_id),
+               'pd_dinilai' => $this->anggota_dinilai($pembelajaran->pembelajaran_id, $pembelajaran->rombongan_belajar_id),
                'kkm' => $pembelajaran->kkm,
                'kelompok_id' => $pembelajaran->kelompok_id,
                'semester_id' => $pembelajaran->semester_id,
@@ -294,8 +294,9 @@ class DashboardController extends Controller
          'is_ppa' => is_ppa($pembelajaran->semester_id),
       ]);
    }
-   public function anggota_dinilai($pembelajaran_id){
-      $data = Anggota_rombel::whereHas('nilai_akhir_mapel', function($query) use ($pembelajaran_id){
+   public function anggota_dinilai($pembelajaran_id, $rombongan_belajar_id){
+      $data = Anggota_rombel::whereHas('nilai_akhir_mapel', function($query) use ($pembelajaran_id, $rombongan_belajar_id){
+         $query->where('rombongan_belajar_id', $rombongan_belajar_id);
          $query->where('pembelajaran_id', $pembelajaran_id);
       })->count();
       return $data;
@@ -392,7 +393,7 @@ class DashboardController extends Controller
                'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
                'guru' => ($item->pengajar) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
                'pd' => $item->anggota_rombel_count,
-               'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id),
+               'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id, $item->rombongan_belajar_id),
                'kkm' => $item->kkm,
                'kelompok_id' => $item->kelompok_id,
                'semester_id' => $item->semester_id,
@@ -434,7 +435,7 @@ class DashboardController extends Controller
                'rombel' => $item_pilihan->rombongan_belajar->nama,
                'wali_kelas' => ($item_pilihan->rombongan_belajar->wali_kelas) ? $item_pilihan->rombongan_belajar->wali_kelas->nama_lengkap : '-',
                'pd' => $item_pilihan->anggota_rombel_count,
-               'pd_dinilai' => $this->anggota_dinilai($item_pilihan->pembelajaran_id),
+               'pd_dinilai' => $this->anggota_dinilai($item_pilihan->pembelajaran_id, $item_pilihan->rombongan_belajar_id),
                'kkm' => $item_pilihan->kkm,
                'kelompok_id' => $item_pilihan->kelompok_id,
                'semester_id' => $item_pilihan->semester_id,
@@ -500,7 +501,7 @@ class DashboardController extends Controller
             'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
             'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
             'pd' => $item->anggota_rombel_count,
-            'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id),
+            'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id, $item->rombongan_belajar_id),
          ];
       }
       $data = [
