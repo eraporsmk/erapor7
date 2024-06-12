@@ -39,6 +39,7 @@ Route::group(['prefix' => 'downloads'], function () {
     Route::get('/leger-nilai-akhir/{rombongan_belajar_id}', [DownloadController::class, 'unduh_leger_nilai_akhir'])->name('unduh-leger-nilai-akhir');
     Route::get('/leger-nilai-rapor/{rombongan_belajar_id}', [DownloadController::class, 'unduh_leger_nilai_rapor'])->name('unduh-leger-nilai-rapor');
     Route::get('/leger-nilai-kurmer/{rombongan_belajar_id}/{sekolah_id}/{semester_id}', [DownloadController::class, 'unduh_leger_nilai_kurmer'])->name('unduh-leger-nilai-kurmer');
+    Route::get('/leger-nilai-pilihan/{rombongan_belajar_id}/{sekolah_id}/{semester_id}', [DownloadController::class, 'unduh_leger_nilai_pilihan'])->name('unduh-leger-nilai-pilihan');
     Route::get('/template-nilai-akhir/{pembelajaran_id?}', [DownloadController::class, 'template_nilai_akhir'])->name('template-nilai-akhir');
     Route::get('/template-nilai-kd/{rencana_penilaian_id?}', [DownloadController::class, 'template_nilai_kd'])->name('template-nilai-kd');
     Route::get('/template-nilai-tp/{rencana_penilaian_id?}', [DownloadController::class, 'template_nilai_tp'])->name('template-nilai-tp');

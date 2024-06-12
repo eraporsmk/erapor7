@@ -4,8 +4,8 @@
       <formulir-waka :meta="meta" :form="form" :loading="loading" @hide_form="handleForm" @rombel="handleRombel"></formulir-waka>
       <b-row  v-if="show">
         <b-col cols="12">
-          <b-form-group label="Unduh Legger" label-cols-md="3">
-            <b-button size="sm" variant="primary" @click="unduhLegger">Unduh Legger</b-button>
+          <b-form-group label="Unduh Leger" label-cols-md="3">
+            <b-button size="sm" variant="primary" @click="unduhLegger">Unduh Leger</b-button>
           </b-form-group>
         </b-col>
       </b-row>

@@ -1,5 +1,49 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.5</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Buka Akses legger dan rapor semester Kurikulum 2013 REV</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan tombol hapus Referensi UKK</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan Fitur Aktivasi Penilaian di login Wali Kelas</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan inputan 2 (dua) bahasa (Bahasa Indonesia dan Bahasa Inggris) di Referensi Unit UKK</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan Fitur Daftar Pembelajaran di Login Wali Kelas Matpel Pilihan</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan pengecekan koneksi client sebelum proses kirim data ke Server Direktorat</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan jabatan PLH Kepala Sekolah</li>
+		<li><b class="text-success">[Pembaharuan]</b> Penambahan Tim Helpdesk</li>
+		<li><b class="text-success">[Pembaharuan]</b> Perubahan menu Cetak Rapor PKL menjadi Daftar Nilai</li>
+		<li><b class="text-success">[Pembaharuan]</b> Menghapus istilah Rapor PKL dan Cetak Rapor Akademik khusus untuk Mata Pelajaran PKL</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan inputan NIP Instruktur pada perencanaan penilaian PKL</li>
+        <li><b class="text-danger">[Perbaikan]</b> Error handling</li>
+        <li><b class="text-danger">[Perbaikan]</b> Sinkronisasi via commmad prompt</li>
+        <li><b class="text-danger">[Perbaikan]</b> Nama jabatan Kepala Sekolah</li>
+        <li><b class="text-danger">[Perbaikan]</b> Cetak rapor kenaikan kelas tingkat 12 SMK Program 4 Tahun</li>
+        <li><b class="text-danger">[Perbaikan]</b> Opsi kenaikan tingkat 12 SMK Program 4 Tahun</li>
+        <li><b class="text-danger">[Perbaikan]</b> Login Penguji Internal</li>
+        <li><b class="text-danger">[Perbaikan]</b> Sinkronisasi anggota per item ekstrakurikuler</li>
+        <li><b class="text-danger">[Perbaikan]</b> Mengeluarkan anggota ekstrakurikuler</li>
+		<li><b class="text-danger">[Perbaikan]</b> Detil nilai tampilan lama</li>
+		<li><b class="text-danger">[Perbaikan]</b> Unduh template nilai akhir</li>
+		<li><b class="text-danger">[Perbaikan]</b> Import template nilai akhir</li>
+		<li><b class="text-danger">[Perbaikan]</b> Combobox di mapping pembelajaran dan penilaian PKL</li>
+		<li><b class="text-danger">[Perbaikan]</b> Filter DUDI saat input rencana penilaian PKL</li>
+		<li><b class="text-danger">[Perbaikan]</b> Mengganti nama Pembimbing DUDI di cetak Rapor PKL dari Contact Person DUDI menjadi nama Instruktur saat input perencanaan</li>
+		<li><b class="text-danger">[Perbaikan]</b> Nomor urut mata pelajaran pilihan di cetak rapor akademik</li>
+		<li><b class="text-danger">[Perbaikan]</b> Rombel di cetak Daftar Nilai PKL</li>
+		<li><b class="text-danger">[Perbaikan]</b> Urutan abjad di cetak rapor akademik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Input nilai sikap hanya dibuka bagi Satuan Pendidikan yang memiliki Rombongan Belajar Kurikulum 2013</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perbaikan urutan tampilan data CP sesuai yang terakhir di perbaharui</li>
+        <li><b class="text-danger">[Perbaikan]</b> Tampilan login Peserta Didik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Monitoring penilaian UKK</li>
+        <li><b class="text-danger">[Perbaikan]</b> Angka ketidakhadiran di Cetak Rapor Akademik & Cetak Daftar Nilai PKL</li>
+        <li><b class="text-danger">[Perbaikan]</b> Kirim data e-Rapor ke server Direktorat</li>
+        <li><b class="text-danger">[Perbaikan]</b> Export Import Nilai Sumatif Lingkup Materi</li>
+        <li><b class="text-danger">[Perbaikan]</b> Export Import Nilai Sumatif Akhir Semester</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perencanaan Penilaian UKK</li>
+        <li><b class="text-danger">[Perbaikan]</b> Penambahan validasi input nilai PKL</li>
+        <li><b class="text-danger">[Perbaikan]</b> Cek Rombel Kurikulum 2013 di input nilai sikap</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.4</h3>
     </legend>
     <ol>
@@ -21,8 +65,8 @@
         <h3>Versi 7.0.2</h3>
     </legend>
     <ol>
-        <li><b class="text-success">[Pembaharuan]</b> Penambahan Kolom Ketidakhadiran di Unduh Legger</li>
-        <li><b class="text-danger">[Perbaikan]</b> Sub Menu Cetak Rapor Semester & Unduh Legger di akun Waka Kurikulum</li>
+        <li><b class="text-success">[Pembaharuan]</b> Penambahan Kolom Ketidakhadiran di Unduh Leger</li>
+        <li><b class="text-danger">[Perbaikan]</b> Sub Menu Cetak Rapor Semester & Unduh Leger di akun Waka Kurikulum</li>
         <li><b class="text-danger">[Perbaikan]</b> Menu Referensi GTK, Rombongan Belajar & Peserta Didik di akun Tendik</li>
         <li><b class="text-danger">[Perbaikan]</b> Proses sinkronisasi Peserta Didik Keluar</li>
         <li><b class="text-danger">[Perbaikan]</b> Proses sinkronisasi Anggota Rombel Matpel Pilihan</li>

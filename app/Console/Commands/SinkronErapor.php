@@ -250,7 +250,8 @@ class SinkronErapor extends Command
     }
     private function ambil_data($satuan, $data_sync){
         try {
-            $response = Http::post('http://app.erapor-smk.net/api/sinkronisasi/'.$satuan, $data_sync);
+            $response = http_dashboard('sinkronisasi/'.$satuan, $data_sync);
+            //$response = Http::post('http://app.erapor-smk.net/api/sinkronisasi/'.$satuan, $data_sync);
             if($response->status() == 200){
                 return $response->object();
             } else {

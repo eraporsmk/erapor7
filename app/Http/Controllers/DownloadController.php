@@ -20,6 +20,7 @@ use App\Exports\TemplateNilaiKd;
 use App\Exports\TemplateNilaiTp;
 use App\Exports\TemplateTp;
 use App\Exports\LeggerNilaiKurmerExport;
+use App\Exports\LeggerNilaiPilihanExport;
 use App\Exports\TemplateNilaiPts;
 use App\Exports\TemplateSumatifLingkupMateri;
 use App\Exports\TemplateSumatifAkhirSemester;
@@ -55,6 +56,21 @@ class DownloadController extends Controller
 			'sekolah_id' => request()->route('sekolah_id'),
 			'semester_id' => request()->route('semester_id'),
 		])->download($nama_file);
+    }
+	public function unduh_leger_nilai_pilihan(){
+        $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));
+		$merdeka = merdeka($rombongan_belajar->kurikulum->nama_kurikulum);
+		$nama_file = 'Leger Nilai Akhir Kelas ' . $rombongan_belajar->nama;
+		$nama_file = clean($nama_file);
+		$nama_file = $nama_file . '.xlsx';
+		$data = [
+			'rombongan_belajar' => $rombongan_belajar, 
+			'rombongan_belajar_id' => request()->route('rombongan_belajar_id'), 
+			'merdeka' => $merdeka,
+			'sekolah_id' => request()->route('sekolah_id'),
+			'semester_id' => request()->route('semester_id'),
+		];
+		return (new LeggerNilaiPilihanExport)->query($data)->download($nama_file);
     }
     public function unduh_leger_nilai_rapor(){
         $rombongan_belajar = Rombongan_belajar::find(request()->route('rombongan_belajar_id'));

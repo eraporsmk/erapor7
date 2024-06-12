@@ -47,7 +47,7 @@ export default [
         },
         {
           icon: 'download',
-          title: 'Unduh Legger',
+          title: 'Unduh Leger',
           route: 'walas-unduh-legger',
           resource: 'Wali',
           action: 'read',
@@ -60,7 +60,7 @@ export default [
       children: [
         {
           icon: 'download',
-          title: 'Unduh Legger',
+          title: 'Unduh Leger',
           route: 'pilihan-unduh-legger',
           resource: 'Pilihan',
           action: 'read',
