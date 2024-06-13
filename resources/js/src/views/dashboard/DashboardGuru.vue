@@ -152,7 +152,6 @@ export default {
       })
     },
     HandleDetil(item){
-      console.log(item);
       this.detil(item)
     },
   },

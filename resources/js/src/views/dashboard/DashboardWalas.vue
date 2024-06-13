@@ -95,7 +95,7 @@
                     <b-td class="text-center">{{item.pd}}</b-td>
                     <b-td class="text-center">{{item.pd_dinilai}}</b-td>
                     <b-td class="text-center">
-                      <b-button variant="success" size="sm" @click="detil(item.pembelajaran_id)">Detil</b-button>
+                      <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                     </b-td>
                   </b-tr>
                 </template>
