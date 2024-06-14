@@ -639,6 +639,9 @@ class PenilaianController extends Controller
                 $query->where('semester_id', request()->semester_id);
                 $query->where('sekolah_id', request()->sekolah_id);
             })->first(),
+            'nilai_budaya_kerja' => Nilai_budaya_kerja::with(['anggota_rombel' => function($query){
+                $query->with(['rombongan_belajar', 'peserta_didik']);
+            }])->find(request()->nilai_budaya_kerja_id),
         ];
         return response()->json($data);
     }
@@ -647,51 +650,122 @@ class PenilaianController extends Controller
         return response()->json(['data' => $data->values()->all()]);
     }
     public function simpan_nilai_sikap(){
-        request()->validate(
-            [
-                'tingkat' => 'required',
-                'rombongan_belajar_id' => 'required',
-                'anggota_rombel_id' => 'required',
-                'tanggal' => 'required',
-                'budaya_kerja_id' => 'required',
-                'elemen_id' => 'required',
-                'opsi_sikap' => 'required',
-                'uraian_sikap' => 'required',
-            ],
-            [
-                'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
-                'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
-                'anggota_rombel_id.required' => 'Peserta Didik tidak boleh kosong!',
-                'tanggal.required' => 'Tanggal tidak boleh kosong!',
-                'budaya_kerja_id.required' => 'Dimensi Sikap tidak boleh kosong!',
-                'elemen_id.required' => 'Elemen Sikap tidak boleh kosong!',
-                'opsi_sikap.required' => 'Opsi Sikap tidak boleh kosong!',
-                'uraian_sikap.required' => 'Uraian Sikap tidak boleh kosong!',
-            ]
-        );
-        Nilai_budaya_kerja::create([
-            'sekolah_id'		=> request()->sekolah_id,
-            'guru_id' => request()->guru_id,
-            'anggota_rombel_id'	=> request()->anggota_rombel_id,
-            'tanggal' 	=> request()->tanggal,
-            'budaya_kerja_id'	=> request()->budaya_kerja_id,
-            'elemen_id' => request()->elemen_id,
-            'opsi_id'		=> request()->opsi_sikap,
-            'deskripsi'		=> request()->uraian_sikap,
-            'last_sync'			=> now(),
-        ]);
-        $insert = 1;
-        if($insert){
-            $data = [
-                'icon' => 'success',
-                'title' => 'Berhasil!',
-                'text' => 'Catatan Sikap berhasil disimpan',
-            ];
+        if(request()->nilai_budaya_kerja_id){
+            request()->validate(
+                [
+                    'tanggal' => 'required',
+                    'budaya_kerja_id' => 'required',
+                    'elemen_id' => 'required',
+                    'opsi_sikap' => 'required',
+                    'uraian_sikap' => 'required',
+                ],
+                [
+                    'tanggal.required' => 'Tanggal tidak boleh kosong!',
+                    'budaya_kerja_id.required' => 'Dimensi Sikap tidak boleh kosong!',
+                    'elemen_id.required' => 'Elemen Sikap tidak boleh kosong!',
+                    'opsi_sikap.required' => 'Opsi Sikap tidak boleh kosong!',
+                    'uraian_sikap.required' => 'Uraian Sikap tidak boleh kosong!',
+                ]
+            );
+            $find = Nilai_budaya_kerja::find(request()->nilai_budaya_kerja_id);
+            if($find){
+                $find->tanggal = request()->tanggal;
+                $find->budaya_kerja_id = request()->budaya_kerja_id;
+                $find->elemen_id = request()->elemen_id;
+                $find->opsi_id = request()->opsi_sikap;
+                $find->deskripsi = request()->uraian_sikap;
+                if($find->save()){
+                    $data = [
+                        'icon' => 'success',
+                        'title' => 'Berhasil!',
+                        'text' => 'Catatan Sikap berhasil diperbaharui',
+                    ];
+                } else {
+                    $data = [
+                        'icon' => 'error',
+                        'title' => 'Berhasil!',
+                        'text' => 'Catatan Sikap gagal diperbaharui. Silahkan coba beberapa saat lagi!',
+                    ];
+                }
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Berhasil!',
+                    'text' => 'Catatan Sikap tidak ditemukan!',
+                ];
+            }
+        } else {
+            request()->validate(
+                [
+                    'tingkat' => 'required',
+                    'rombongan_belajar_id' => 'required',
+                    'anggota_rombel_id' => 'required',
+                    'tanggal' => 'required',
+                    'budaya_kerja_id' => 'required',
+                    'elemen_id' => 'required',
+                    'opsi_sikap' => 'required',
+                    'uraian_sikap' => 'required',
+                ],
+                [
+                    'tingkat.required' => 'Tingkat Kelas tidak boleh kosong!',
+                    'rombongan_belajar_id.required' => 'Rombongan Belajar tidak boleh kosong!',
+                    'anggota_rombel_id.required' => 'Peserta Didik tidak boleh kosong!',
+                    'tanggal.required' => 'Tanggal tidak boleh kosong!',
+                    'budaya_kerja_id.required' => 'Dimensi Sikap tidak boleh kosong!',
+                    'elemen_id.required' => 'Elemen Sikap tidak boleh kosong!',
+                    'opsi_sikap.required' => 'Opsi Sikap tidak boleh kosong!',
+                    'uraian_sikap.required' => 'Uraian Sikap tidak boleh kosong!',
+                ]
+            );
+            Nilai_budaya_kerja::create([
+                'sekolah_id'		=> request()->sekolah_id,
+                'guru_id' => request()->guru_id,
+                'anggota_rombel_id'	=> request()->anggota_rombel_id,
+                'tanggal' 	=> request()->tanggal,
+                'budaya_kerja_id'	=> request()->budaya_kerja_id,
+                'elemen_id' => request()->elemen_id,
+                'opsi_id'		=> request()->opsi_sikap,
+                'deskripsi'		=> request()->uraian_sikap,
+                'last_sync'			=> now(),
+            ]);
+            $insert = 1;
+            if($insert){
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Catatan Sikap berhasil disimpan',
+                ];
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Gagal!',
+                    'text' => 'Catatan Sikap gagal disimpan. Silahkan coba beberapa saat lagi!',
+                ];
+            }
+        }
+        return response()->json($data);
+    }
+    public function hapus_nilai_sikap(){
+        $find = Nilai_budaya_kerja::find(request()->id);
+        if($find){
+            if($find->delete()){
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Catatan Sikap berhasil dihapus',
+                ];
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Berhasil!',
+                    'text' => 'Catatan Sikap gagal dihapus. Silahkan coba beberapa saat lagi!',
+                ];
+            }
         } else {
             $data = [
                 'icon' => 'error',
-                'title' => 'Gagal!',
-                'text' => 'Catatan Sikap gagal disimpan. Silahkan coba beberapa saat lagi!',
+                'title' => 'Berhasil!',
+                'text' => 'Catatan Sikap tidak ditemukan!',
             ];
         }
         return response()->json($data);

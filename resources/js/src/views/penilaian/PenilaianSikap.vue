@@ -7,7 +7,7 @@
       </div>
       <div v-else>
         <template v-if="kurtilas">
-          <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @edit="handleEdit" @hapus="handleHapus" />
+          <datatable :loading="loading" :isBusy="isBusy" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @aksi="handleAksi" />
         </template>
         <template v-else>
           <b-alert show variant="danger">
@@ -168,12 +168,9 @@ export default {
       this.search = val //SET VALUE PENCARIAN KE VARIABLE SEARCH
       this.loadPostsData() //REQUEST DATA BARU
     },
-    handleEdit(val){
+    handleAksi(val){
       console.log(val);
     },
-    handleHapus(val){
-      console.log(val);
-    }
   },
 }
 </script>
