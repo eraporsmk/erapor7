@@ -309,6 +309,7 @@ class SinkronisasiController extends Controller
             'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
             'semester_id'		=> $semester->semester_id,
             'sekolah_id'		=> $user->sekolah->sekolah_id,
+            'kirim'              => TRUE,
         ];
         $response = NULL;
         try {

@@ -42,7 +42,7 @@
             <strong>{{last_sync}}</strong>
           </p>
           <b-overlay :show="loading" rounded opacity="0.6" size="sm" spinner-variant="danger">
-            <b-button size="lg" variant="success" @click="kirimData" :disabled="aktif"><font-awesome-icon icon="fa-solid fa-cloud-arrow-up" /> <strong>KIRIM DATA</strong></b-button>
+            <b-button size="lg" variant="success" @click="kirimData" :disabled="offline"><font-awesome-icon icon="fa-solid fa-cloud-arrow-up" /> <strong>KIRIM DATA</strong></b-button>
           </b-overlay>
         </b-card>
       </b-col>
@@ -50,6 +50,9 @@
     <template v-if="!isBusy">
       <b-card bg-variant="dark" class="text-center">
         <b-card-text class="h2" style="color:#fff">DATA YANG MENGALAMI PERUBAHAN</b-card-text>
+      </b-card>
+      <b-card bg-variant="danger" class="text-center" v-if="offline">
+        <b-card-text class="h2" style="color:#fff">{{message}}</b-card-text>
       </b-card>
       <b-card>
         <b-overlay :show="loading" rounded opacity="0.6" size="xl" spinner-variant="danger">
@@ -111,7 +114,6 @@ export default {
   },
   data() {
     return {
-      online: null,
       loading: false,
       isBusy: true,
       table_sync: [],
@@ -122,7 +124,8 @@ export default {
         sekolah_id: '',
         semester_id: '',
       },
-      aktif: true,
+      offline: true,
+      message: '',
     }
   },
   created() {
@@ -140,9 +143,8 @@ export default {
         this.last_sync = getData.last_sync
         this.table_sync = getData.table_sync
         this.jumlah = getData.jumlah
-        //this.aktif = (this.jumlah) ? false : true
-        this.online = getData.response
-        this.aktif = (this.online) ? false : true
+        this.message = getData.response.message
+        this.offline = (this.message) ? true : false
       })
     },
     kirimData(){
