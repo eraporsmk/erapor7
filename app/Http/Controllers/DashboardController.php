@@ -118,34 +118,47 @@ class DashboardController extends Controller
             [
                'nama' => 'Wahyudin',
                'hp' => '628156441864',
+               'instansi' => 'SMKN 1 Tangerang',
             ],
             [
                'nama' => 'Ahmad Aripin',
                'hp' => '6281229997730',
+               'instansi' => 'SMK Ariya Metta Tangerang'
             ],
             [
-               'nama' => 'Ikhsan',
+               'nama' => 'Ikhsan Wijaya',
                'hp' => '6282174508706',
+               'instansi' => 'SMKN 1 Lubuk Sikaping',
             ],
             [
                'nama' => 'Adhi Prasetya',
                'hp' => '6285643935009',
+               'instansi' => 'SMK Muhammadiyah 1 Temon',
             ],
             [
                'nama' => 'Bambang Hermanto',
                'hp' => '6282149880883',
+               'instansi' => 'SMK Budi Luhur Sintang',
             ],
             /*[
                'nama' => 'Djoko Poernomo',
                'hp' => '628119890509',
+               'instansi' => 'SMKN 51 Jakarta',
             ],
             [
                'nama' => 'Muhamad Nazmudin',
                'hp' => '6285651414221',
+               'instansi' => 'SMK Negeri 1 Cilimus',
             ],
             [
                'nama' => 'Didik Harianto',
                'hp' => '6285258636767',
+               'instansi => 'SMKN 1 Kraksaan'
+            ],
+            [
+               'nama' => 'Iwan Sutisna',
+               'hp' => '6285258636767',
+               'instansi => 'SMKN 1 Lemahabang'
             ],*/
          ],
       ];
