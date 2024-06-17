@@ -252,8 +252,8 @@ class SinkronErapor extends Command
         try {
             $response = http_dashboard('sinkronisasi/'.$satuan, $data_sync);
             //$response = Http::post('http://app.erapor-smk.net/api/sinkronisasi/'.$satuan, $data_sync);
-            if($response->status() == 200){
-                return $response->object();
+            if($response->status){
+                return $response;
             } else {
                 if($this->argument('akses')){
                     $this->call('respon:artisan', ['status' => 'info', 'title' => 'Gagal', 'respon' => 'Proses pengambilan data '.$this->get_table($satuan).' gagal. Server tidak merespon. Status Server: '.$response->status()]);

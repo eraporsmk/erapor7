@@ -459,7 +459,7 @@ function http_dashboard($satuan, $data_sync){
         'verify' => false,
         //'debug' => config('app.debug') ? fopen('php://stderr', 'w') : FALSE,
     ])->retry(3, 100)->post(config('erapor.dashboard_url').$satuan, $data_sync);
-    return $response;
+    return $response->object();
 }
 function merdeka($nama_kurikulum){
     return Str::contains($nama_kurikulum, 'Merdeka');
