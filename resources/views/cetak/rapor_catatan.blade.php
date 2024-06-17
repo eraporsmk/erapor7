@@ -212,7 +212,7 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 <br>
 <table width="100%">
 	<tr>
-		<td style="width:40%">
+		<td style="width:30%">
 			<p>Orang Tua/Wali</p><br>
 			<br>
 			<br>
@@ -222,7 +222,7 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 			<p>...................................................................</p>
 		</td>
 		<td style="width:5%"></td>
-		<td style="width:45%; text-align: right;">
+		<td style="width:55%; text-align: right;">
 			<table width="auto">
 				<tr><td style="text-align: left;">
 					<p>{{str_replace('Kab. ','',$get_siswa->peserta_didik->sekolah->kabupaten)}},
@@ -233,27 +233,45 @@ if($get_siswa->rombongan_belajar->semester->semester == 2){
 					<br>
 					<br>
 					<p>
-						<u>{{$get_siswa->rombongan_belajar->wali_kelas->nama_lengkap}}</u><br />
+						<strong><u>{{$get_siswa->rombongan_belajar->wali_kelas->nama_lengkap}}</u></strong><br />
 						NIP. {{$get_siswa->rombongan_belajar->wali_kelas->nip}}</p>
 				</td></tr>
 			</table>
 		</td>
 	</tr>
 </table>
-<table width="100%" style="margin-top:10px; text-align: center;">
+<?php
+$ks = get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id);
+$jabatan = str_replace('Plh. ', '', $ks);
+$jabatan = str_replace('Plt. ', '', $jabatan);
+$extend = str_replace('Kepala Sekolah', '', $ks);
+$extend = str_replace(' ', '', $extend);
+?>
+<table width="100%" style="margin-top:10px;">
 	<tr>
-		{{-- <td style="width:40%;">
-		</td> --}}
+		<td style="width:40%;padding-right:0px;" class="text-right">
+			<p><br>{{ $extend }}</p>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<p>&nbsp;</p>
+		</td>
 		<td style="width:60%;">
-			<p>Mengetahui,<br>{{ get_setting('jabatan', $get_siswa->sekolah_id, $get_siswa->semester_id) }}</p>
+			<p>Mengetahui,<br>{{ $jabatan }}</p>
 			<br>
 			<br>
 			<br>
 			<br>
 			<br>
-			<p><u>{{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nama_lengkap : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}</u><br />
-				NIP. {{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nip : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
-			</p>
+			<p class="nama_ttd"><strong><u>{{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nama_lengkap : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}</u></strong></p>
+		</td>
+	</tr>
+	<tr>
+		<td style="width:40%;"></td>
+		<td style="width:60%;" class="nip">
+			NIP. {{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nip : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
 		</td>
 	</tr>
 </table>
