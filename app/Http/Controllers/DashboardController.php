@@ -709,36 +709,34 @@ class DashboardController extends Controller
             'desc' => $desc,
          ];
       } else {
-         $sub_mapel = Pembelajaran::where('induk_pembelajaran_id', request()->pembelajaran_id)->get();
+         $sub_mapel = Pembelajaran::has('all_nilai_akhir_kurmer')->where('induk_pembelajaran_id', request()->pembelajaran_id)->get();
          $nilai_akhir_induk = [];
-         $deskripsi_induk = [];
+         $deskripsi_pengetahuan_induk = [];
+         $deskripsi_keterampilan_induk = [];
          foreach($pembelajaran->rombongan_belajar->pd as $pd){
             $nilai_akhir = [];
             $deskripsi = [];
             $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_induk) ? $pd->nilai_akhir_induk->nilai : 0;
-            $deskripsi_induk[$pd->peserta_didik_id] = [];
-            if($pd->deskripsi_mapel){
-               $deskripsi_induk[$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
-            }
+            $deskripsi_pengetahuan_induk[$pd->peserta_didik_id] = ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_pengetahuan : NULL;
+            $deskripsi_keterampilan_induk[$pd->peserta_didik_id] = ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_keterampilan : NULL;
          }
          $nilai_akhir_sub = [];
          $deskripsi_sub = [];
+         $sub_id = [];
          foreach($sub_mapel as $sub){
-            $nilai_akhir_sub = [];
-            $deskripsi_sub = [];
             $data_pd = Peserta_didik::withWhereHas('anggota_rombel', function($query){
-               $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
-            })->with([
-               'nilai_akhir_kurmer' => function($query) use ($sub){
-                  $query->where('pembelajaran_id', $sub->pembelajaran_id);
-               },
-               'nilai_akhir_pengetahuan' => function($query) use ($sub){
-                  $query->where('pembelajaran_id', $sub->pembelajaran_id);
-               },
-               'deskripsi_mapel' => function($query) use ($sub){
-                  $query->where('pembelajaran_id', $sub->pembelajaran_id);
-               },
-         ])->orderBy('nama')->get();
+                  $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+               })->with([
+                  'nilai_akhir_kurmer' => function($query) use ($sub){
+                     $query->where('pembelajaran_id', $sub->pembelajaran_id);
+                  },
+                  'nilai_akhir_pengetahuan' => function($query) use ($sub){
+                     $query->where('pembelajaran_id', $sub->pembelajaran_id);
+                  },
+                  'deskripsi_mapel' => function($query) use ($sub){
+                     $query->where('pembelajaran_id', $sub->pembelajaran_id);
+                  },
+            ])->orderBy('nama')->get();
             foreach($data_pd as $pd){
                $nilai_akhir = [];
                $deskripsi = [];
@@ -747,47 +745,32 @@ class DashboardController extends Controller
                if($pd->deskripsi_mapel){
                   $deskripsi[$sub->pembelajaran_id][$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
                }
-               $nilai_akhir_sub[] = $nilai_akhir;
+               $nilai_akhir_sub[$pd->peserta_didik_id][] = [
+                  'pembelajaran_id' => $sub->pembelajaran_id,
+                  'peserta_didik_id' => $pd->peserta_didik_id,
+                  'nilai' => ($pd->nilai_akhir_kurmer) ? $pd->nilai_akhir_kurmer->nilai : 0,
+                  'deskripsi_pengetahuan' => ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_pengetahuan : NULL,
+                  'deskripsi_keterampilan' => ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_keterampilan : NULL,
+               ];
                $deskripsi_sub[] = $deskripsi;
             }
          }
-         $nilai_akhir_all = [];
-         $deskripsi_akhir_all = [];
-         foreach($nilai_akhir_sub as $kunci => $nilai_akhir){
-            foreach($nilai_akhir as $pembelajaran_id => $siswa){
-               foreach($siswa as $key => $value){
-                  $nilai_akhir = [];
-                  $deskripsi_akhir = [];
-                  $nilai_akhir[$key] = [$value, $nilai_akhir_induk[$key]];
-                  $deskripsi_akhir[$key] = [$deskripsi_induk[$key], $deskripsi_sub[$kunci][$pembelajaran_id][$key]];
-                  $nilai_akhir_all[] = $nilai_akhir;
-                  $deskripsi_akhir_all[] = $deskripsi_akhir;
-               }
-            }
+         $nilai_sub = [];
+         foreach($nilai_akhir_sub as $peserta_didik_id => $nilai_akhir){
+            $arr_nilai = Str::of(collect($nilai_akhir)->implode('nilai', ','))->explode(',');
+            $merged_nilai = $arr_nilai->merge([$nilai_akhir_induk[$peserta_didik_id]]);
+            $nilai_sub[$peserta_didik_id] = [
+               'nilai' => number_format($merged_nilai->avg(), 0),
+               'deskripsi_pengetahuan' => $deskripsi_pengetahuan_induk[$peserta_didik_id].'. '.collect($nilai_akhir)->implode('deskripsi_pengetahuan', ','),
+               'deskripsi_keterampilan' => $deskripsi_keterampilan_induk[$peserta_didik_id].'. '.collect($nilai_akhir)->implode('deskripsi_keterampilan', ','),
+            ];
          }
-         $average = [];
-         $desc_p = [];
-         $desc_k = [];
-         foreach($nilai_akhir_all as $key => $all){
-            foreach($all as $peserta_didik_id => $nilai){
-               $deskripsi = collect($deskripsi_akhir_all[$key][$peserta_didik_id]);
-               $pengetahuan = [];
-               $keterampilan = [];
-               foreach($deskripsi as $desk){
-                  $pengetahuan[] = collect($desk)->first();
-                  $keterampilan[] = collect($desk)->last();
-               }
-               $desc_p[$peserta_didik_id] = collect(array_unique(array_filter($pengetahuan)))->implode(', ');
-               $desc_k[$peserta_didik_id] = collect(array_unique(array_filter($keterampilan)))->implode(', ');
-               $average[$peserta_didik_id] = collect(array_filter($nilai))->avg();
-            }
-         }
-         foreach($average as $peserta_didik_id => $nilai_jadi){
+         foreach($nilai_sub as $pd_id => $akhir){
             $anggota = Anggota_rombel::with(['nilai_akhir_mapel' => function($query){
                $query->where('pembelajaran_id', request()->pembelajaran_id);
-            }])->where('peserta_didik_id', $peserta_didik_id)->where('rombongan_belajar_id', request()->rombongan_belajar_id)->first();
+            }])->where('peserta_didik_id', $pd_id)->where('rombongan_belajar_id', request()->rombongan_belajar_id)->first();
             if($anggota){
-               if($desc_p[$peserta_didik_id] || $desc_k[$peserta_didik_id]){
+               if($akhir['deskripsi_pengetahuan'] || $akhir['deskripsi_keterampilan']){
                   Deskripsi_mata_pelajaran::updateOrCreate(
                      [
                         'sekolah_id' => $anggota->sekolah_id,
@@ -795,8 +778,8 @@ class DashboardController extends Controller
                         'pembelajaran_id' => request()->pembelajaran_id,
                      ],
                      [
-                        'deskripsi_pengetahuan' => $desc_p[$peserta_didik_id],
-                        'deskripsi_keterampilan' => $desc_k[$peserta_didik_id],
+                        'deskripsi_pengetahuan' => str_replace('. ,', '', $akhir['deskripsi_pengetahuan']),
+                        'deskripsi_keterampilan' => str_replace('. ,', '', $akhir['deskripsi_keterampilan']),
                         'last_sync' => now()->subDays(30),
                      ]
                   );
@@ -809,7 +792,7 @@ class DashboardController extends Controller
                      'kompetensi_id' => 4,
                   ],
                   [
-                     'nilai' => number_format($nilai_jadi, 0),
+                     'nilai' => number_format($akhir['nilai'], 0),
                      'last_sync' => now()->subDays(30),
                   ]
                );
@@ -821,7 +804,7 @@ class DashboardController extends Controller
             'text' => 'Nilai Sub Mapel berhasil digenerate',
          ];
       }
-     return response()->json($data);
+      return response()->json($data);
    }
    public function detil_nilai(){
       $data = Pembelajaran::with([
