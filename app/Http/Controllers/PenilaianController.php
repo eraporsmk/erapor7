@@ -103,6 +103,7 @@ class PenilaianController extends Controller
         }
     }
     public function get_nilai_akhir(){
+        /*
         $callback = function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             $query->with([
@@ -134,14 +135,57 @@ class PenilaianController extends Controller
                 $query->where('pembelajaran_id', request()->pembelajaran_id);
             }], 'nilai');
         };
-        $get_mapel_agama = filter_agama_siswa(request()->pembelajaran_id, request()->rombongan_belajar_id);
         $get_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama, $callback){
             $query->whereHas('anggota_rombel', $callback);
             if($get_mapel_agama){
                 $query->where('agama_id', $get_mapel_agama);
             }
         })->with(['anggota_rombel' => $callback])->orderBy('nama')->get();
+        */
+        $get_mapel_agama = filter_agama_siswa(request()->pembelajaran_id, request()->rombongan_belajar_id);
         $pembelajaran = Pembelajaran::find(request()->pembelajaran_id);
+        $kompetensi_id = (request()->merdeka) ? 4 : 1;
+        if(request()->mata_pelajaran_id !='800001000'){
+            $sub_mapel = Pembelajaran::where(function($query){
+                $query->where('induk_pembelajaran_id', request()->pembelajaran_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+            })->get();
+            if($sub_mapel->count()){
+                $kompetensi_id = 99;
+            }
+        }
+        $get_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
+            if($get_mapel_agama){
+                $query->where('agama_id', $get_mapel_agama);
+            }
+        })->withWhereHas('anggota_rombel', function($query) use ($kompetensi_id){
+            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+            $query->with([
+                'capaian_kompeten' => function($query){
+                    $this->wherehas($query);
+                },
+                'tp_kompeten' => function($query){
+                    $this->wherehas($query);
+                },
+                'tp_inkompeten' => function($query){
+                    $this->wherehas($query);
+                },
+                'nilai_tp' => function($query){
+                    $query->where('pembelajaran_id', request()->pembelajaran_id);
+                },
+                'nilai_sumatif_semester' => function($query){
+                    $query->where('pembelajaran_id', request()->pembelajaran_id);
+                },
+                'nilai_akhir_mapel' => function($query) use ($kompetensi_id){
+                    $query->where('kompetensi_id', $kompetensi_id);
+                    $query->where('pembelajaran_id', request()->pembelajaran_id);
+                }
+            ]);
+            $query->withAvg(['nilai_tp' => function($query){
+                $query->where('pembelajaran_id', request()->pembelajaran_id);
+            }], 'nilai');
+        })->orderBy('nama')->get();
         $bobot_sumatif_materi = $pembelajaran->bobot_sumatif_materi;
         $bobot_sumatif_akhir = $pembelajaran->bobot_sumatif_akhir;
         $total_bobot = $bobot_sumatif_materi + $bobot_sumatif_akhir;
@@ -214,6 +258,17 @@ class PenilaianController extends Controller
             ]
         );
         $insert = 0;
+        $kompetensi_id = (request()->merdeka) ? 4 : 1;
+        if(request()->mata_pelajaran_id !='800001000'){
+            $sub_mapel = Pembelajaran::where(function($query){
+                $query->where('induk_pembelajaran_id', request()->pembelajaran_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+            })->get();
+            if($sub_mapel->count()){
+                $kompetensi_id = 99;
+            }
+        }
         foreach(request()->nilai as $anggota_rombel_id => $nilai_akhir){
             $insert++;
             if($nilai_akhir >= 0 && $nilai_akhir <= 100){
@@ -222,14 +277,13 @@ class PenilaianController extends Controller
                         'sekolah_id' => request()->sekolah_id,
                         'anggota_rombel_id' => $anggota_rombel_id,
                         'pembelajaran_id' => request()->pembelajaran_id,
-                        'kompetensi_id' => (request()->merdeka) ? 4 : 1,
+                        'kompetensi_id' => $kompetensi_id,
                     ],
                     [
                         'nilai' => ($nilai_akhir) ? number_format($nilai_akhir,0) : 0,
                     ]
                 );
             } else {
-                $kompetensi_id = (request()->merdeka) ? 4 : 1;
                 Nilai_akhir::where('anggota_rombel_id', $anggota_rombel_id)->where('pembelajaran_id', request()->pembelajaran_id)->where('kompetensi_id', $kompetensi_id)->delete();
             }
             /*if($nilai_akhir && $nilai_akhir > -1){

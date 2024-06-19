@@ -51,7 +51,7 @@
           </b-table-simple>
         </div>
       </b-card-body>
-      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :is_ppa="is_ppa" :sub_mapel="sub_mapel" :meta="meta" @detil="HandleDetil"></detil-nilai>
+      <detil-nilai :title="title" :data_siswa="data_siswa" :merdeka="merdeka" :is_ppa="is_ppa" :sub_mapel="sub_mapel" :induk="induk" :meta="meta" @detil="HandleDetil"></detil-nilai>
     </b-card>
     <dashboard-walas v-if="hasRole('wali')" @detil="HandleDetil"></dashboard-walas>
   </div>
@@ -95,7 +95,8 @@ export default {
       sub_mapel: 0,
       pembelajaran_id: null,
       rombongan_belajar_id: null,
-      meta: {}
+      meta: {},
+      induk: null,
     }
   },
   created() {
@@ -129,6 +130,7 @@ export default {
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
+        this.induk = getData.pembelajaran.induk
         if(getData.pembelajaran.mata_pelajaran_id == 800001000){
           this.sub_mapel = 1
         } else {

@@ -107,24 +107,31 @@ class DownloadController extends Controller
 				},
 			])->find(request()->route('pembelajaran_id'));
 			$merdeka = merdeka($pembelajaran->rombongan_belajar->kurikulum->nama_kurikulum);
+			$kompetensi_id = ($merdeka) ? 4 : 1;
+			if($pembelajaran->mata_pelajaran_id !='800001000'){
+				$sub_mapel = Pembelajaran::where(function($query) use ($pembelajaran){
+					$query->where('induk_pembelajaran_id', $pembelajaran->pembelajaran_id);
+					$query->whereNotNull('kelompok_id');
+					$query->whereNotNull('no_urut');
+				})->get();
+				if($sub_mapel->count()){
+					$kompetensi_id = 99;
+				}
+			}
 			$get_mapel_agama = filter_agama_siswa($pembelajaran->pembelajaran_id, $pembelajaran->rombongan_belajar_id);
 			$data_siswa = Peserta_didik::where(function($query) use ($get_mapel_agama){
 				if($get_mapel_agama){
 					$query->where('agama_id', $get_mapel_agama);
 				}
-			})->withWhereHas('anggota_rombel', function($query) use ($merdeka){
+			})->withWhereHas('anggota_rombel', function($query) use ($merdeka, $kompetensi_id){
 				$query->withWhereHas('rombongan_belajar', function($query){
 					$query->whereHas('mapel', function($query){
 						$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
 					});
 				});
 				$query->with([
-					'nilai_akhir_mapel' => function($query) use ($merdeka){
-						if($merdeka){
-							$query->where('kompetensi_id', 4);
-						} else {
-							$query->where('kompetensi_id', 1);
-						}
+					'nilai_akhir_mapel' => function($query) use ($merdeka, $kompetensi_id){
+						$query->where('kompetensi_id', $kompetensi_id);
 						$query->where('pembelajaran_id', request()->route('pembelajaran_id'));
 					},
 					'tp_nilai' => function($query) use ($merdeka){

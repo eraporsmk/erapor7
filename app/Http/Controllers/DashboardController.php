@@ -250,6 +250,10 @@ class DashboardController extends Controller
    }
    public function detil_penilaian(){
       $pembelajaran = Pembelajaran::with([
+         'induk' => function($query){
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+         }, 
          'rombongan_belajar' => function($query){
             $query->with([
                'pd' => function($query){
@@ -621,6 +625,9 @@ class DashboardController extends Controller
             $query->with(['pd' => function($query){
                $query->orderBy('nama');
                $query->with([
+                  'nilai_akhir_induk' => function($query){
+                     $query->where('pembelajaran_id', request()->pembelajaran_id);
+                  },
                   'nilai_akhir_kurmer' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
                   },
@@ -708,7 +715,7 @@ class DashboardController extends Controller
          foreach($pembelajaran->rombongan_belajar->pd as $pd){
             $nilai_akhir = [];
             $deskripsi = [];
-            $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_kurmer) ? $pd->nilai_akhir_kurmer->nilai : 0;
+            $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_induk) ? $pd->nilai_akhir_induk->nilai : 0;
             $deskripsi_induk[$pd->peserta_didik_id] = [];
             if($pd->deskripsi_mapel){
                $deskripsi_induk[$pd->peserta_didik_id] = [$pd->deskripsi_mapel->deskripsi_pengetahuan, $pd->deskripsi_mapel->deskripsi_keterampilan];
@@ -818,6 +825,14 @@ class DashboardController extends Controller
    }
    public function detil_nilai(){
       $data = Pembelajaran::with([
+         'induk' => function($query){
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+         }, 
+         'sub_mapel' => function($query){
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+         },
          'nilai_tp' => function($query){
             $query->whereHas('anggota_rombel', function($query){
                $query->where('peserta_didik_id', request()->user()->peserta_didik_id);
