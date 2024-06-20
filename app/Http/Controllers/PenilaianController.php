@@ -180,7 +180,15 @@ class PenilaianController extends Controller
                 'nilai_akhir_mapel' => function($query) use ($kompetensi_id){
                     $query->where('kompetensi_id', $kompetensi_id);
                     $query->where('pembelajaran_id', request()->pembelajaran_id);
-                }
+                },
+                'nilai_akhir_kurmer' => function($query){
+                    $query->where('kompetensi_id', 4);
+                    $query->where('pembelajaran_id', request()->pembelajaran_id);
+                },
+                'nilai_akhir_induk' => function($query){
+                    $query->where('kompetensi_id', 99);
+                    $query->where('pembelajaran_id', request()->pembelajaran_id);
+                },
             ]);
             $query->withAvg(['nilai_tp' => function($query){
                 $query->where('pembelajaran_id', request()->pembelajaran_id);
@@ -198,10 +206,23 @@ class PenilaianController extends Controller
             if($nilai_akhir->avg()){
                 $nilai_asesmen = number_format(($bobot_sumatif_materi * $nilai_sumatif_materi / $total_bobot) + ($bobot_sumatif_akhir * $nilai_sumatif_semester / $total_bobot) , 0);
             }
+            $nilai_akhir_jadi = NULL;
+            if($siswa->anggota_rombel->nilai_akhir_mapel){
+                $nilai_akhir_jadi = $siswa->anggota_rombel->nilai_akhir_mapel->nilai;
+            } elseif($siswa->anggota_rombel->nilai_akhir_kurmer){
+                $nilai_akhir_jadi = $siswa->anggota_rombel->nilai_akhir_kurmer->nilai;
+            } elseif($siswa->anggota_rombel->nilai_akhir_induk){
+                $nilai_akhir_jadi = $siswa->anggota_rombel->nilai_akhir_induk->nilai;
+            }
             $data_siswa[] = [
                 'nama' => $siswa->nama,
                 'anggota_rombel_id' => $siswa->anggota_rombel->anggota_rombel_id,
-                'nilai_akhir' => ($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL,
+                'pembelajaran_id' => request()->pembelajaran_id,
+                'kompetensi_id' => $kompetensi_id,
+                'nilai_akhir' => $nilai_akhir_jadi,
+                //'nilai_akhir' => ($siswa->anggota_rombel->nilai_akhir_mapel) ? $siswa->anggota_rombel->nilai_akhir_mapel->nilai : NULL,
+                'nilai_akhir_kurmer' => ($siswa->anggota_rombel->nilai_akhir_kurmer) ? $siswa->anggota_rombel->nilai_akhir_kurmer->nilai : NULL,
+                'nilai_akhir_induk' => ($siswa->anggota_rombel->nilai_akhir_induk) ? $siswa->anggota_rombel->nilai_akhir_induk->nilai : NULL,
                 'nilai_asesmen' => $nilai_asesmen,
                 'tp_kompeten' => $siswa->anggota_rombel->tp_kompeten,
                 'tp_inkompeten' => $siswa->anggota_rombel->tp_inkompeten,
