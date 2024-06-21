@@ -308,10 +308,17 @@ class UsersController extends Controller
         if($user->guru_id){
             $roles = Role::select('id as value', 'display_name as text')->whereIn('name', ['waka', 'kaprog', 'internal'])->orderBy('id')->get();
         }
+        /*
+        $sorted = $collection->sortBy(function ($product, $key) {
+            return count($product['colors']);
+        });
+        $sorted->values()->all();*/
+        $collection = collect($user_roles);
+        $sorted = $collection->sortBy('name', SORT_NATURAL);
         $data = [
             'user' => $user,
             'roles' => $roles,
-            'permission' => $user->allPermissions(),
+            'permission' => $sorted->values()->all(),
         ];
         return response()->json($data);
     }

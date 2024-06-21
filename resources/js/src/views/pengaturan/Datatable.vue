@@ -84,8 +84,8 @@
           </b-tr>
         </b-thead>
         <b-tbody>
-          <template v-if="data">
-            <b-tr v-for="(item, index) in data.roles_teams" :key="item.role_id">
+          <template v-if="permissions.length">
+            <b-tr v-for="(item, index) in permissions" :key="index">
               <b-td>{{item.display_name}}</b-td>
               <b-td class="text-center">{{ filterRole(data.roles, item.pivot.role_id) }}</b-td>
               <b-td class="text-center">
@@ -177,6 +177,7 @@ export default {
       selected: [],
       options: [],
       role_guru: [7,8,9],
+      permissions: [],
     }
   },
   watch: {
@@ -232,6 +233,7 @@ export default {
         let getData = response.data
         this.data = getData.user
         this.options = getData.roles
+        this.permissions = getData.permission
         this.judul = 'DETIL '+getData.user.name
         this.$refs['detil-modal'].show()
       });
