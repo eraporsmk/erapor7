@@ -216,7 +216,7 @@ class EraporUpdate extends Command
             $query->where('periode_aktif', 1);
         })->get();
         $adminRole = Role::where('name', 'admin')->first();
-        $users = User::whereNotNull('sekolah_id')->whereNull('nuptk')->whereNull('nisn')->get();
+        $users = User::whereNotNull('sekolah_id')->whereNull('guru_id')->whereNull('peserta_didik_id')->get();
         foreach($all_semester as $semester){
             $team = Team::updateOrCreate([
                 'name' => $semester->nama,

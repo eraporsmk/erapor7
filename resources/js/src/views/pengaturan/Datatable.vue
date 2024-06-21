@@ -87,9 +87,9 @@
           <template v-if="data">
             <b-tr v-for="(item, index) in data.roles_teams" :key="item.role_id">
               <b-td>{{item.display_name}}</b-td>
-              <b-td class="text-center">{{data.roles[index].display_name}}</b-td>
+              <b-td class="text-center">{{ filterRole(data.roles, item.pivot.role_id) }}</b-td>
               <b-td class="text-center">
-                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[index].name)" v-if="role_guru.includes(data.roles[index].id)">
+                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[item.pivot.role_id].name, item.display_name)" v-if="role_guru.includes(data.roles[item.pivot.role_id].id)">
                   <font-awesome-icon icon="fa-solid fa-trash" v-b-tooltip.hover.html="'Hapus Hak Akses'" />
                 </b-button>
               </b-td>
@@ -210,6 +210,16 @@ export default {
       var names = roles.map((a) => a.display_name);
       return names.join(", ")
     },
+    filterRole(roles, role_id){
+      let filteredRoles = roles.filter((role) => {
+        return role.id === role_id
+      });
+      if(filteredRoles.length){
+        return filteredRoles[0].display_name
+      } else {
+        return '-'
+      }
+    },
     detil(user_id){
       this.loading = true
       this.user_id = user_id
@@ -258,10 +268,10 @@ export default {
         }
       })
     },
-    hapusAkses(role) {
+    hapusAkses(role, periode_aktif) {
       var text = 'Tindakan ini tidak dapat dikembalikan!'
       var aksi = '/users/hapus-akses'
-      var params = {user_id: this.user_id, role:role, periode_aktif: this.user.semester.nama}
+      var params = {user_id: this.user_id, role:role, periode_aktif: periode_aktif}
       this.swalConfirm(text, aksi, params)
     },
     handleOk(bvModalEvent) {

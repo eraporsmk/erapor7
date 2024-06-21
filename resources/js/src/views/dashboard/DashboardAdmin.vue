@@ -131,6 +131,19 @@
                   </b-td>
                 </b-tr>
               </b-table-simple>
+            </template>
+          </b-card-body>
+        </b-card>
+        <b-card no-body>
+          <b-card-body>
+            <template v-if="isBusy">
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template v-else>
+              <h4 class="card-title">Helpdesk e-Rapor SMK</h4>
               <b-table-simple bordered hover responsive>
                 <b-thead>
                   <b-tr>

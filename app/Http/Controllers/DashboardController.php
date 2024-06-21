@@ -153,12 +153,12 @@ class DashboardController extends Controller
             [
                'nama' => 'Didik Harianto',
                'hp' => '6285258636767',
-               'instansi => 'SMKN 1 Kraksaan'
+               'instansi' => 'SMKN 1 Kraksaan'
             ],
             [
                'nama' => 'Iwan Sutisna',
                'hp' => '6285258636767',
-               'instansi => 'SMKN 1 Lemahabang'
+               'instansi' => 'SMKN 1 Lemahabang'
             ],*/
          ],
       ];

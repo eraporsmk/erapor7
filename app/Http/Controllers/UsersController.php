@@ -310,7 +310,8 @@ class UsersController extends Controller
         }
         $data = [
             'user' => $user,
-            'roles' => $roles
+            'roles' => $roles,
+            'permission' => $user->allPermissions(),
         ];
         return response()->json($data);
     }
