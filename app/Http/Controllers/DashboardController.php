@@ -641,13 +641,13 @@ class DashboardController extends Controller
             }]);
          },
          'pd_pkl' => function($query){
-            $query->with(['anggota_rombel' => function($query){
+            $query->withWhereHas('anggota_rombel', function($query){
                $query->whereHas('rombongan_belajar', function($query){
                   $query->whereHas('pembelajaran', function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
                   });
                });
-            }]);
+            });
             $query->withWhereHas('nilai_pkl');
             $query->withSum('absensi_pkl as sakit', 'sakit');
             $query->withSum('absensi_pkl as izin', 'izin');
