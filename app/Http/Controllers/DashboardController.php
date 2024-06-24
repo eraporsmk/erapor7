@@ -317,7 +317,7 @@ class DashboardController extends Controller
       ]);
    }
    public function anggota_dinilai($pembelajaran_id, $rombongan_belajar_id){
-      $data = Anggota_rombel::whereHas('nilai_akhir_mapel', function($query) use ($pembelajaran_id, $rombongan_belajar_id){
+      $data = Anggota_rombel::whereHas('nilai_akhir', function($query) use ($pembelajaran_id, $rombongan_belajar_id){
          $query->where('rombongan_belajar_id', $rombongan_belajar_id);
          $query->where('pembelajaran_id', $pembelajaran_id);
       })->count();
