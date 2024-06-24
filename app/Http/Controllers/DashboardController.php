@@ -175,6 +175,7 @@ class DashboardController extends Controller
             $result[] = [
                'no' => $no++,
                'pembelajaran_id' => $pembelajaran->pembelajaran_id,
+               'rombongan_belajar_id' => $pembelajaran->rombongan_belajar_id,
                'mata_pelajaran_id' => $pembelajaran->mata_pelajaran_id,
                'induk_pembelajaran_id' => $pembelajaran->induk_pembelajaran_id,
                'nama_mata_pelajaran' => $pembelajaran->nama_mata_pelajaran,
@@ -261,15 +262,19 @@ class DashboardController extends Controller
                   $query->with([
                      'nilai_akhir_kurmer' => function($query){
                         $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                      },
                      'nilai_akhir_pengetahuan' => function($query){
-                           $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                      },
                      'nilai_akhir_keterampilan' => function($query){
                         $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                      },
                      'deskripsi_mapel' => function($query){
-                           $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('pembelajaran_id', request()->pembelajaran_id);
+                        $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                      },
                      'agama',
                   ]);
@@ -407,6 +412,7 @@ class DashboardController extends Controller
                'pembelajaran_id' => $item->pembelajaran_id,
                'mata_pelajaran_id' => $item->mata_pelajaran_id,
                'induk_pembelajaran_id' => $item->induk_pembelajaran_id,
+               'rombongan_belajar_id' => $item->rombongan_belajar_id,
                'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
                'guru' => ($item->pengajar) ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
                'pd' => $item->anggota_rombel_count,
@@ -447,6 +453,7 @@ class DashboardController extends Controller
                'pembelajaran_id' => $item_pilihan->pembelajaran_id,
                'mata_pelajaran_id' => $item_pilihan->mata_pelajaran_id,
                'induk_pembelajaran_id' => $item_pilihan->induk_pembelajaran_id,
+               'rombongan_belajar_id' => $item_pilihan->rombongan_belajar_id,
                'nama_mata_pelajaran' => $item_pilihan->nama_mata_pelajaran,
                'guru' => ($item_pilihan->pengajar) ? $item_pilihan->pengajar->nama_lengkap : $item_pilihan->guru->nama_lengkap,
                'rombel' => $item_pilihan->rombongan_belajar->nama,
@@ -480,8 +487,12 @@ class DashboardController extends Controller
       })
       ->with(['rombongan_belajar'])
       ->withCount([
-            'anggota_rombel',
-      ])
+         'anggota_rombel',
+         'pd_pkl',
+         'pd_pkl as pd_pkl_dinilai' => function($query){
+            $query->has('nilai_pkl');
+         }
+       ])
       ->when(request()->q, function($query) {
          $query->where('nama_mata_pelajaran', 'ILIKE', '%' . request()->q . '%');
          $query->whereNotNull('kelompok_id');
@@ -513,13 +524,32 @@ class DashboardController extends Controller
       $result = [];
       foreach($collection->sortBy('rombongan_belajar.tingkat')->sortBy('rombongan_belajar.nama') as $item){
          $result[] = [
+            'no' => $no++,
             'pembelajaran_id' => $item->pembelajaran_id,
+            'rombongan_belajar_id' => $item->rombongan_belajar_id,
+            'mata_pelajaran_id' => $item->mata_pelajaran_id,
+            'induk_pembelajaran_id' => $item->induk_pembelajaran_id,
+            'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
+            'rombel' => $item->rombongan_belajar->nama,
+            'wali_kelas' => ($item->rombongan_belajar->wali_kelas) ? $item->rombongan_belajar->wali_kelas->nama_lengkap : '-',
+            'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
+            'pd' => $item->anggota_rombel_count,
+            'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id, $item->rombongan_belajar_id),
+            'kkm' => $item->kkm,
+            'kelompok_id' => $item->kelompok_id,
+            'semester_id' => $item->semester_id,
+            'pd_pkl_count' => $item->pd_pkl_count,
+            'pd_pkl_dinilai' => $item->pd_pkl_dinilai,
+         ];
+         /*$result[] = [
+            'pembelajaran_id' => $item->pembelajaran_id,
+            'rombongan_belajar_id' => $item_pilihan->rombongan_belajar_id,
             'rombel' => $item->rombongan_belajar->nama,
             'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
             'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
             'pd' => $item->anggota_rombel_count,
             'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id, $item->rombongan_belajar_id),
-         ];
+         ];*/
       }
       $data = [
          'current_page' => request()->page,

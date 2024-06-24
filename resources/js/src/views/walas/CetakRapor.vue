@@ -26,12 +26,7 @@
                 <b-td class="text-center">
                   <b-button variant="success" :href="`/cetak/rapor-cover/${item.anggota_rombel.anggota_rombel_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file" size="2xl" /></b-button>
                 </b-td>
-                <template v-if="merdeka">
-                  <b-td class="text-center">
-                    <b-button variant="warning" :href="`/cetak/rapor-nilai-akhir/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
-                  </b-td>
-                </template>
-                <template v-else-if="is_ppa">
+                <template v-if="merdeka || is_ppa">
                   <b-td class="text-center">
                     <b-button variant="warning" :href="`/cetak/rapor-nilai-akhir/${item.anggota_rombel.anggota_rombel_id}/${form.sekolah_id}/${form.semester_id}`" target="_blank"><font-awesome-icon icon="fa-solid fa-file-pdf" size="2xl" /></b-button>
                   </b-td>

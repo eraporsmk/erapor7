@@ -119,6 +119,7 @@ export default {
     },
     detil(item){
       this.pembelajaran_id = item.pembelajaran_id
+      this.rombongan_belajar_id = item.rombongan_belajar_id
       this.meta = {
         kkm: item.kkm,
         kelompok_id: item.kelompok_id,
@@ -127,6 +128,7 @@ export default {
       this.loading_modal = true
       this.$http.post('/dashboard/detil-penilaian', {
         pembelajaran_id: this.pembelajaran_id,
+        rombongan_belajar_id: this.rombongan_belajar_id,
       }).then(response => {
         this.loading_modal = false
         let getData = response.data
@@ -136,7 +138,6 @@ export default {
         } else {
           this.sub_mapel = getData.pembelajaran.tema_count
         }
-        this.rombongan_belajar_id = getData.pembelajaran.rombongan_belajar_id
         this.title = getData.title
         this.data_siswa = getData.data_siswa
         this.merdeka = getData.merdeka
