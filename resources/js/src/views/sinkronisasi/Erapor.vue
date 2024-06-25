@@ -87,6 +87,29 @@
         </b-overlay>
       </b-card>
     </template>
+    <b-modal v-model="modalShow" ok-only ok-title="Tutup" size="lg" title="Informasi">
+      <p>Terdeteksi jumlah data yang akan dikirim melebihi 1.000 row. Sangat disarankan melakukan pengiriman data melalui <code>Command Prompt</code> untuk menghindari kegagalan pengiriman data.</p>
+      <p>Cara melakukan pengiriman data melalui <code>Command Prompt</code>:</p>
+      <p>Untuk Pengguna <strong>Windows</strong></p>
+      <ol>
+        <li>Buka CMD</li>
+        <li>Ketik: <code>cd c:\eRaporSMK\dataweb</code> [enter]</li>
+        <li>Ketik: <code>php artisan kirim:erapor</code> [enter]</li>
+        <li>Ketikkan email administrator</li>
+        <li>Tunggu hingga proses pengiriman data selesai.</li>
+      </ol>
+      <p>Untuk Pengguna <strong>Linux</strong></p>
+      <ol>
+        <li>Buka Aplikasi Putty dan login ke <code>shh</code></li>
+        <li>Ketik: <code>cd /var/www/html/dataweb<sup>*</sup></code> [enter]</li>
+        <li>Ketik: <code>php artisan kirim:erapor</code> [enter]</li>
+        <li>Ketikkan email administrator</li>
+        <li>Tunggu hingga proses pengiriman data selesai.</li>
+      </ol>
+      <p>Keterangan: <br>
+        * : Sesuaikan dengan direktori root folder aplikasi e-Rapor SMK di install
+      </p>
+    </b-modal>
   </div>
 </template>
 
@@ -114,6 +137,7 @@ export default {
   },
   data() {
     return {
+      modalShow: false,
       loading: false,
       isBusy: true,
       table_sync: [],
@@ -143,6 +167,9 @@ export default {
         this.last_sync = getData.last_sync
         this.table_sync = getData.table_sync
         this.jumlah = getData.jumlah
+        if(this.jumlah >= 1000){
+          this.modalShow = true
+        }
         this.message = getData.response.message
         this.offline = (this.message) ? true : false
       })

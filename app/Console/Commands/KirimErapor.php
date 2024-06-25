@@ -19,7 +19,7 @@ class KirimErapor extends Command
      *
      * @var string
      */
-    protected $signature = 'kirim:erapor {table?} {sekolah_id?}, {tahun_ajaran_id?}, {semester_id?} {akses?} {user_id?}';
+    protected $signature = 'kirim:erapor {table?} {sekolah_id?} {tahun_ajaran_id?} {semester_id?} {akses?} {user_id?}';
 
     /**
      * The console command description.
@@ -51,7 +51,7 @@ class KirimErapor extends Command
         $semester_id = $this->argument('semester_id');
         $user_id = $this->argument('user_id');
         if(!$table){
-            $email = $this->ask('Email Administrator:');
+            $email = $this->ask('Email Administrator');
             $user = User::where('email', $email)->first();
             if($user){
                 $semester = Semester::where('periode_aktif', 1)->first();
@@ -59,9 +59,48 @@ class KirimErapor extends Command
                     $sekolah = Sekolah::with(['user' => function($query) use ($semester){
                         $query->whereRoleIs('admin', $semester->nama);
                     }])->find($user->sekolah_id);
-                    $table_sync = table_sync();
-                    foreach($table_sync as $table){
-                        $this->proses_kirim($user->user_id, $table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                    if($sekolah){
+                        $response = NULL;
+                        try {
+                            $spinner = $this->spinner(100);
+                            $spinner->setMessage('Mengecek koneksi ke Server Direktorat...'."\n");
+                            $spinner->start();
+                            for ($i=0; $i < 100; $i++) { 
+                                $spinner->advance();
+                            }
+                            $data_sync = [
+                                'username_dapo'		=> $user->email,
+                                'password_dapo'		=> $user->password,
+                                'npsn'				=> $user->sekolah->npsn,
+                                'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
+                                'semester_id'		=> $semester->semester_id,
+                                'sekolah_id'		=> $sekolah->sekolah_id,
+                                'kirim'              => TRUE,
+                            ];
+                            $response = http_client('status', $data_sync);
+                            $spinner->finish();
+                        } catch (\Throwable $th) {
+                            $this->error('Terdeteksi ada repositori belum terinstall di aplikasi. Silahkan jalankan "composer update" di Command Prompt ini!');
+                            exit;
+                        }        
+                        if($response){
+                            if($response->message){
+                                $this->error($response->message);
+                                exit;
+                            } else {
+                                $table_sync = table_sync();
+                                foreach($table_sync as $table){
+                                    $this->proses_kirim($user->user_id, $table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                                }
+                                $this->info('Proses pengiriman data e-Rapor selesai!');
+                            }
+                        } else {
+                            $this->error('Tidak dapat terhubung ke Server Direktorat. Silahkan coba beberapa saat lagi!');
+                            exit;
+                        }
+                    } else {
+                        $this->error('Email '.$email.' tidak terhubung ke Data Sekolah');
+                        exit;
                     }
                 } else {
                     $this->error('Email '.$email.' tidak memiliki akses Administrator');
