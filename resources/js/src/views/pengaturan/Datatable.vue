@@ -89,7 +89,7 @@
               <b-td>{{item.display_name}}</b-td>
               <b-td class="text-center">{{ filterRole(data.roles, item.pivot.role_id) }}</b-td>
               <b-td class="text-center">
-                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[item.pivot.role_id].name, item.display_name)" v-if="data.roles[item.pivot.role_id] && role_guru.includes(data.roles[item.pivot.role_id].id)">
+                <b-button variant="danger" size="sm" @click="hapusAkses(getRoleName(data.roles, item.pivot.role_id), item.display_name)" v-if="role_guru.includes(item.pivot.role_id)">
                   <font-awesome-icon icon="fa-solid fa-trash" v-b-tooltip.hover.html="'Hapus Hak Akses'" />
                 </b-button>
               </b-td>
@@ -200,12 +200,6 @@ export default {
         return bcrypt.compareSync(default_password, password)
       }
       return false
-      /*bcrypt.compare(default_password, password, (err, res) => {
-        if(res)
-          return 'sama'
-        return 'tidak sama'
-        // res == true or res == false
-      });*/
     },
     allRoles(roles){
       var names = roles.map((a) => a.display_name);
@@ -217,6 +211,16 @@ export default {
       });
       if(filteredRoles.length){
         return filteredRoles[0].display_name
+      } else {
+        return '-'
+      }
+    },
+    getRoleName(roles, role_id){
+      let filteredRoles = roles.filter((role) => {
+        return role.id === role_id
+      });
+      if(filteredRoles.length){
+        return filteredRoles[0].name
       } else {
         return '-'
       }
