@@ -89,7 +89,7 @@
               <b-td>{{item.display_name}}</b-td>
               <b-td class="text-center">{{ filterRole(data.roles, item.pivot.role_id) }}</b-td>
               <b-td class="text-center">
-                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[item.pivot.role_id].name, item.display_name)" v-if="role_guru.includes(data.roles[item.pivot.role_id].id)">
+                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[item.pivot.role_id].name, item.display_name)" v-if="data.roles[item.pivot.role_id] && role_guru.includes(data.roles[item.pivot.role_id].id)">
                   <font-awesome-icon icon="fa-solid fa-trash" v-b-tooltip.hover.html="'Hapus Hak Akses'" />
                 </b-button>
               </b-td>
