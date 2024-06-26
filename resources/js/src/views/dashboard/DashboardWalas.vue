@@ -165,6 +165,7 @@ export default {
         kkm: item.kkm,
         kelompok_id: item.kelompok_id,
         semester_id: item.semester_id,
+        rombongan_belajar_id: item.rombongan_belajar_id,
       })
     },
     status(kunci_nilai){

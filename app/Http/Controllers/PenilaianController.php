@@ -74,7 +74,7 @@ class PenilaianController extends Controller
             $query->where('sekolah_id', request()->sekolah_id);
             $query->where('jenis_rombel', request()->jenis_rombel);
             $query->whereHas('pembelajaran', $this->kondisiPembelajaran());
-        })->get();
+        })->orderBy('nama')->get();
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     public function get_mapel(){
