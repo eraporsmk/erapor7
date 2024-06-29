@@ -19,7 +19,7 @@ class KirimErapor extends Command
      *
      * @var string
      */
-    protected $signature = 'kirim:erapor {table?} {sekolah_id?} {tahun_ajaran_id?} {semester_id?} {akses?} {user_id?}';
+    protected $signature = 'kirim:erapor {table?} {sekolah_id?} {tahun_ajaran_id?} {semester_id?} {akses?} {user_id?} {--force}';
 
     /**
      * The console command description.
@@ -89,8 +89,16 @@ class KirimErapor extends Command
                                 exit;
                             } else {
                                 $table_sync = table_sync();
-                                foreach($table_sync as $table){
-                                    $this->proses_kirim($user->user_id, $table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                                if ($this->option('force')){
+                                    foreach($table_sync as $table){
+                                        $force = $this->getTableForce($user->user_id, $table, $user->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                                        //$this->info($force['table'].' : '.$force['count']);
+                                    }
+                                    Sync_log::updateOrCreate(['user_id' => $user->user_id, 'updated_at' => now()]);
+                                } else {
+                                    foreach($table_sync as $table){
+                                        $this->proses_kirim($user->user_id, $table, $sekolah->sekolah_id, $semester->tahun_ajaran_id, $semester->semester_id);
+                                    }
                                 }
                                 $this->info('Proses pengiriman data e-Rapor selesai!');
                             }
@@ -109,7 +117,7 @@ class KirimErapor extends Command
             } else {
                 $this->error('Email '.$email.' tidak terdaftar');
                 exit;
-            }    
+            }
         } else {
             $this->proses_kirim($user_id, $table, $sekolah_id, $tahun_ajaran_id, $semester_id);
         }
@@ -164,5 +172,66 @@ class KirimErapor extends Command
 		$record['jumlah'] = $jumlah;
 		$record['inserted'] = $inserted;
 		Storage::disk('public')->put('proses_sync_'.$sekolah_id.'.json', json_encode($record));
+    }
+    private function getTableForce($user_id, $table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+        $jml = DB::table($table)->where(function($query) use ($table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+            if(in_array($table, ['ref.kompetensi_dasar'])){
+                $query->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                          ->from('users')
+                          ->whereColumn('ref.kompetensi_dasar.user_id', 'users.user_id');
+                });
+            }
+            if(in_array($table, ['ref.paket_ukk', 'users']) || Schema::hasColumn($table, 'sekolah_id')){
+                $query->where('sekolah_id', $sekolah_id);
+            }
+            if(in_array($table, ['ref.capaian_pembelajaran'])){
+                $query->where('is_dir', 0);
+            }
+        })->count();
+        if($jml){
+            $this->info('Memulai kirim data '.nama_table($table));
+            $bar = $this->output->createProgressBar($jml);
+            $bar->start();
+            $getData = DB::table($table)->where(function($query) use ($table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+                if(in_array($table, ['ref.kompetensi_dasar'])){
+                    $query->whereExists(function ($query) {
+                        $query->select(DB::raw(1))
+                            ->from('users')
+                            ->whereColumn('ref.kompetensi_dasar.user_id', 'users.user_id');
+                    });
+                }
+                if(in_array($table, ['ref.paket_ukk', 'users']) || Schema::hasColumn($table, 'sekolah_id')){
+                    $query->where('sekolah_id', $sekolah_id);
+                }
+                if(in_array($table, ['ref.capaian_pembelajaran'])){
+                    $query->where('is_dir', 0);
+                }
+            });
+            if (Schema::hasColumn($table, 'last_sync')) {
+                $getData->update(['last_sync' => now()]);
+            }
+            $getData->orderBy('created_at')->chunk(1000, function ($data) use ($bar, $user_id, $table, $sekolah_id, $tahun_ajaran_id, $semester_id){
+                foreach($data as $d){
+                    $bar->advance();
+                }
+                try {
+                    $data_sync = [
+                        'sekolah_id' => $sekolah_id,
+                        'tahun_ajaran_id' => $tahun_ajaran_id,
+                        'semester_id' => $semester_id,
+                        'table' => $table,
+                        'json' => prepare_send(json_encode($data)),
+                    ];
+                    http_dashboard('sinkronisasi/kirim-data', $data_sync);
+                } catch (\Throwable $th) {
+                    $this->error('Proses pengiriman data '.nama_table($table).' gagal. Server tidak merespon. Status Server: '.$th->getMessage());
+                }
+                //$this->kirim_data($user_id, $table, $data, $sekolah_id, $tahun_ajaran_id, $semester_id);
+            });
+            $bar->finish();
+            $this->newLine();
+            $this->warn('Kirim data '.nama_table($table).' selesai!');
+        }
     }
 }

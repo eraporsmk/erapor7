@@ -107,7 +107,8 @@
         <li>Tunggu hingga proses pengiriman data selesai.</li>
       </ol>
       <p>Keterangan: <br>
-        * : Sesuaikan dengan direktori root folder aplikasi e-Rapor SMK di install
+        * : Sesuaikan dengan direktori root folder aplikasi e-Rapor SMK di install <br>
+        Untuk mengirimkan seluruh data yang tersimpan di database tanpa filter apapun, jalankan perintah: <code>php artisan kirim:erapor --force</code>
       </p>
     </b-modal>
   </div>

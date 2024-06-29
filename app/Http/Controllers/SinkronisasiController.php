@@ -317,7 +317,7 @@ class SinkronisasiController extends Controller
         } catch (\Exception $e){
             //
         }
-        $last_sync = Sync_log::where('user_id', request()->user_id)->first();
+        $last_sync = Sync_log::where('user_id', request()->user_id)->orderBy('created_at', 'DESC')->first();
         $table_sync = [];
         $jumlah = 0;
         foreach(table_sync() as $table){
