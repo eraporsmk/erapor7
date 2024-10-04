@@ -67,8 +67,8 @@ function filter_pembelajaran_agama($agama_siswa, $nama_agama){
     }
 }
 function jenis_gtk($query){
-    $data['tendik'] = array(11, 30, 40, 41, 42, 43, 44, 57, 58, 59);
-    $data['guru'] = array(3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 20, 25, 26, 51, 52, 53, 54, 56);
+    $data['tendik'] = array(11, 30, 40, 41, 42, 43, 44, 57, 58, 59, 91, 93);
+    $data['guru'] = array(3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 20, 25, 26, 51, 52, 53, 54, 56, 92);
     $data['instruktur'] = array(97);
     $data['asesor'] = array(98);
     return collect($data[$query]);

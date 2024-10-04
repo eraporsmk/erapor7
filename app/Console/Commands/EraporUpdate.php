@@ -181,6 +181,25 @@ class EraporUpdate extends Command
                     ]
                 ],
             ],
+            [
+                'tahun_ajaran_id' => 2024,
+                'nama' => '2024/2025',
+                'periode_aktif' => 1,   
+                'semester' => [
+                    [
+                        'semester_id' => 20241,
+                        'nama' => '2024/2025 Ganjil',
+                        'semester' => 1,
+                        'periode_aktif' => 1,
+                    ],
+                    [
+                        'semester_id' => 20242,
+                        'nama' => '2024/2025 Genap',
+                        'semester' => 2,
+                        'periode_aktif' => 0,
+                    ]
+                ],
+            ],
         ];
         foreach($ajaran as $a){
             Tahun_ajaran::updateOrCreate(
@@ -229,8 +248,8 @@ class EraporUpdate extends Command
                 }
             }
         }
-        Semester::where('semester_id', '<>', '20232')->update(['periode_aktif' => 0]);
-        Semester::where('semester_id', '20232')->update(['periode_aktif' => 1]);
+        Semester::where('semester_id', '<>', '20241')->update(['periode_aktif' => 0]);
+        Semester::where('semester_id', '20241')->update(['periode_aktif' => 1]);
         $guru = Guru::whereRaw('guru_id <> guru_id_dapodik')->first();
         if($guru){
             $semester = Semester::where('periode_aktif', 1)->first();
