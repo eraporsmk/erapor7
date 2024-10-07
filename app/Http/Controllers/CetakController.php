@@ -316,6 +316,11 @@ class CetakController extends Controller
 						$callback = function($query) use ($get_siswa){
 							$query->whereHas('anggota_rombel', function($query) use ($get_siswa){
 								$query->where('peserta_didik_id', $get_siswa->peserta_didik_id);
+								$query->whereHas('rombongan_belajar', function($query){
+									$query->where('jenis_rombel', 16);
+									$query->where('sekolah_id', request()->route('sekolah_id'));
+									$query->where('semester_id', request()->route('semester_id'));
+								});
 							});
 						};
 						$query->with([

@@ -1,5 +1,11 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.6</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Rilis Tahun Ajaran 2024/2025 Semester Ganjil</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.5</h3>
     </legend>
     <ol>

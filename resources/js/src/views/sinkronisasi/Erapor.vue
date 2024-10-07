@@ -42,7 +42,7 @@
             <strong>{{last_sync}}</strong>
           </p>
           <b-overlay :show="loading" rounded opacity="0.6" size="sm" spinner-variant="danger">
-            <b-button size="lg" variant="success" @click="kirimData" :disabled="aktif"><font-awesome-icon icon="fa-solid fa-cloud-arrow-up" /> <strong>KIRIM DATA</strong></b-button>
+            <b-button size="lg" variant="success" @click="kirimData" :disabled="offline"><font-awesome-icon icon="fa-solid fa-cloud-arrow-up" /> <strong>KIRIM DATA</strong></b-button>
           </b-overlay>
         </b-card>
       </b-col>
@@ -50,6 +50,9 @@
     <template v-if="!isBusy">
       <b-card bg-variant="dark" class="text-center">
         <b-card-text class="h2" style="color:#fff">DATA YANG MENGALAMI PERUBAHAN</b-card-text>
+      </b-card>
+      <b-card bg-variant="danger" class="text-center" v-if="offline">
+        <b-card-text class="h2" style="color:#fff">{{message}}</b-card-text>
       </b-card>
       <b-card>
         <b-overlay :show="loading" rounded opacity="0.6" size="xl" spinner-variant="danger">
@@ -84,6 +87,30 @@
         </b-overlay>
       </b-card>
     </template>
+    <b-modal v-model="modalShow" ok-only ok-title="Tutup" size="lg" title="Informasi">
+      <p>Terdeteksi jumlah data yang akan dikirim melebihi 1.000 row. Sangat disarankan melakukan pengiriman data melalui <code>Command Prompt</code> untuk menghindari kegagalan pengiriman data.</p>
+      <p>Cara melakukan pengiriman data melalui <code>Command Prompt</code>:</p>
+      <p>Untuk Pengguna <strong>Windows</strong></p>
+      <ol>
+        <li>Buka CMD</li>
+        <li>Ketik: <code>cd c:\eRaporSMK\dataweb</code> [enter]</li>
+        <li>Ketik: <code>php artisan kirim:erapor</code> [enter]</li>
+        <li>Ketikkan email administrator</li>
+        <li>Tunggu hingga proses pengiriman data selesai.</li>
+      </ol>
+      <p>Untuk Pengguna <strong>Linux</strong></p>
+      <ol>
+        <li>Buka Aplikasi Putty dan login ke <code>shh</code></li>
+        <li>Ketik: <code>cd /var/www/html/dataweb<sup>*</sup></code> [enter]</li>
+        <li>Ketik: <code>php artisan kirim:erapor</code> [enter]</li>
+        <li>Ketikkan email administrator</li>
+        <li>Tunggu hingga proses pengiriman data selesai.</li>
+      </ol>
+      <p>Keterangan: <br>
+        * : Sesuaikan dengan direktori root folder aplikasi e-Rapor SMK di install <br>
+        Untuk mengirimkan seluruh data yang tersimpan di database tanpa filter apapun, jalankan perintah: <code>php artisan kirim:erapor --force</code>
+      </p>
+    </b-modal>
   </div>
 </template>
 
@@ -111,7 +138,7 @@ export default {
   },
   data() {
     return {
-      online: null,
+      modalShow: false,
       loading: false,
       isBusy: true,
       table_sync: [],
@@ -122,7 +149,8 @@ export default {
         sekolah_id: '',
         semester_id: '',
       },
-      aktif: true,
+      offline: true,
+      message: '',
     }
   },
   created() {
@@ -140,9 +168,11 @@ export default {
         this.last_sync = getData.last_sync
         this.table_sync = getData.table_sync
         this.jumlah = getData.jumlah
-        //this.aktif = (this.jumlah) ? false : true
-        this.online = getData.response
-        this.aktif = (this.online) ? false : true
+        if(this.jumlah >= 1000){
+          this.modalShow = true
+        }
+        this.message = getData.response.message
+        this.offline = (this.message) ? true : false
       })
     },
     kirimData(){

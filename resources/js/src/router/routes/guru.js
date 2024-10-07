@@ -259,6 +259,26 @@ export default [
     },
   },
   {
+    path: '/penilaian/edit-nilai-sikap/:id',
+    name: 'penilaian-edit-sikap',
+    component: () => import('@/views/penilaian/InputPenilaianSikap.vue'),
+    meta: {
+      resource: 'Guru',
+      action: 'read',
+      pageTitle: 'Ubah Data Nilai Sikap',
+      breadcrumb: [
+        {
+          text: 'Penilaian',
+        },
+        {
+          text: 'Ubah Data Nilai Sikap',
+          active: true,
+        },
+      ],
+      navActiveLink: 'penilaian-sikap',
+    },
+  },
+  {
     path: '/penilaian/ekstrakurikuler',
     name: 'penilaian-ekstrakurikuler',
     component: () => import('@/views/penilaian/Ekstrakurikuler.vue'),

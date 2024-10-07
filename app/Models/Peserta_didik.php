@@ -155,6 +155,17 @@ class Peserta_didik extends Model
         )->where('kompetensi_id', 4);
 		//return $this->hasOne(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 4);
 	}
+	public function nilai_akhir_induk(){
+		return $this->hasOneThrough(
+            Nilai_akhir::class,
+            Anggota_rombel::class,
+            'peserta_didik_id',
+            'anggota_rombel_id',
+            'peserta_didik_id',
+            'anggota_rombel_id'
+        )->where('kompetensi_id', 99);
+		//return $this->hasOne(Nilai_akhir::class, 'pembelajaran_id', 'pembelajaran_id')->where('kompetensi_id', 4);
+	}
 	public function deskripsi_mapel(){
 		return $this->hasOneThrough(
             Deskripsi_mata_pelajaran::class,

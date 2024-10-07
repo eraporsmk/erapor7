@@ -84,12 +84,12 @@
           </b-tr>
         </b-thead>
         <b-tbody>
-          <template v-if="data">
-            <b-tr v-for="(item, index) in data.roles_teams" :key="item.role_id">
+          <template v-if="permissions.length">
+            <b-tr v-for="(item, index) in permissions" :key="index">
               <b-td>{{item.display_name}}</b-td>
-              <b-td class="text-center">{{data.roles[index].display_name}}</b-td>
+              <b-td class="text-center">{{ filterRole(data.roles, item.pivot.role_id) }}</b-td>
               <b-td class="text-center">
-                <b-button variant="danger" size="sm" @click="hapusAkses(data.roles[index].name)" v-if="role_guru.includes(data.roles[index].id)">
+                <b-button variant="danger" size="sm" @click="hapusAkses(getRoleName(data.roles, item.pivot.role_id), item.display_name)" v-if="role_guru.includes(item.pivot.role_id)">
                   <font-awesome-icon icon="fa-solid fa-trash" v-b-tooltip.hover.html="'Hapus Hak Akses'" />
                 </b-button>
               </b-td>
@@ -177,6 +177,7 @@ export default {
       selected: [],
       options: [],
       role_guru: [7,8,9],
+      permissions: [],
     }
   },
   watch: {
@@ -199,16 +200,30 @@ export default {
         return bcrypt.compareSync(default_password, password)
       }
       return false
-      /*bcrypt.compare(default_password, password, (err, res) => {
-        if(res)
-          return 'sama'
-        return 'tidak sama'
-        // res == true or res == false
-      });*/
     },
     allRoles(roles){
       var names = roles.map((a) => a.display_name);
       return names.join(", ")
+    },
+    filterRole(roles, role_id){
+      let filteredRoles = roles.filter((role) => {
+        return role.id === role_id
+      });
+      if(filteredRoles.length){
+        return filteredRoles[0].display_name
+      } else {
+        return '-'
+      }
+    },
+    getRoleName(roles, role_id){
+      let filteredRoles = roles.filter((role) => {
+        return role.id === role_id
+      });
+      if(filteredRoles.length){
+        return filteredRoles[0].name
+      } else {
+        return '-'
+      }
     },
     detil(user_id){
       this.loading = true
@@ -222,6 +237,7 @@ export default {
         let getData = response.data
         this.data = getData.user
         this.options = getData.roles
+        this.permissions = getData.permission
         this.judul = 'DETIL '+getData.user.name
         this.$refs['detil-modal'].show()
       });
@@ -258,10 +274,10 @@ export default {
         }
       })
     },
-    hapusAkses(role) {
+    hapusAkses(role, periode_aktif) {
       var text = 'Tindakan ini tidak dapat dikembalikan!'
       var aksi = '/users/hapus-akses'
-      var params = {user_id: this.user_id, role:role, periode_aktif: this.user.semester.nama}
+      var params = {user_id: this.user_id, role:role, periode_aktif: periode_aktif}
       this.swalConfirm(text, aksi, params)
     },
     handleOk(bvModalEvent) {

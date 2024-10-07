@@ -309,6 +309,7 @@ class SinkronisasiController extends Controller
             'tahun_ajaran_id'	=> $semester->tahun_ajaran_id,
             'semester_id'		=> $semester->semester_id,
             'sekolah_id'		=> $user->sekolah->sekolah_id,
+            'kirim'              => TRUE,
         ];
         $response = NULL;
         try {
@@ -316,7 +317,7 @@ class SinkronisasiController extends Controller
         } catch (\Exception $e){
             //
         }
-        $last_sync = Sync_log::where('user_id', request()->user_id)->first();
+        $last_sync = Sync_log::where('user_id', request()->user_id)->orderBy('created_at', 'DESC')->first();
         $table_sync = [];
         $jumlah = 0;
         foreach(table_sync() as $table){
@@ -339,15 +340,24 @@ class SinkronisasiController extends Controller
     }
     public function nilai_dapodik(){
         $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
+        $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
+        $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
+        if($response->object()){
+            $body = $response->object();
+        } else {
+            $body = get_string_between($response->body(), '{', '}');
+            $body = json_decode('{'.$body.'}');
+        }
         $data = [
             'url_dapodik' => $url_dapodik,
-            'token_dapodik' => get_setting('token_dapodik', request()->sekolah_id, request()->semester_id),
+            'token_dapodik' => $token_dapodik,
             'rombel_erapor' => [],
             'rombel_dapodik' => [],
             'matev_dapodik' => [],
             'matev_erapor' => [],
             'nilai_dapodik' => [],
             'nilai_erapor' => [],
+            'dapodik' => $body,
         ];
         return response()->json($data);
     }
@@ -511,7 +521,7 @@ class SinkronisasiController extends Controller
         $all_response = [];
         try {
             $matev_rapor = Matev_rapor::with(['pembelajaran' => function($query){
-                $query->with(['all_nilai_akhir_pengetahuan', 'all_nilai_akhir_kurmer']);
+                $query->with(['all_nilai_akhir_pengetahuan', 'all_nilai_akhir_kurmer', 'deskripsi_mata_pelajaran']);
             }])->where(function($query){
                 $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             })->get();
@@ -543,11 +553,17 @@ class SinkronisasiController extends Controller
                             }
                         } else {
                             foreach($matev->pembelajaran->all_nilai_akhir_kurmer as $nilai_akhir){
+                                $get_desc = $matev->pembelajaran->deskripsi_mata_pelajaran()->where('anggota_rombel_id', $nilai_akhir->anggota_rombel_id)->first();
+                                $deskripsi = NULL;
+                                if($get_desc){
+                                    $deskripsi = Str::of($get_desc->deskripsi_pengetahuan.' '.$get_desc->deskripsi_keterampilan)->limit(300);
+                                }
                                 $params[] = [
                                     'nilai_id' => $nilai_akhir->nilai_akhir_id,
                                     'id_evaluasi' => $matev->id_evaluasi,
                                     'anggota_rombel_id' => $nilai_akhir->anggota_rombel_id,
                                     'nilai_kognitif_angka' => $nilai_akhir->nilai,
+                                    'ket_kognitif' => $deskripsi,
                                     'a_beku' => 1,
                                     'create_date' => now(),
                                     'last_update' => now(),

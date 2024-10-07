@@ -26,7 +26,33 @@
                 </b-tr>
               </b-tbody>
             </b-table-simple>
-            <formulir-pd ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir-pd>
+            <template v-if="edit">
+              <b-row>
+                <b-col cols="12">
+                  <b-form-group label="Tahun Pelajaran" label-for="tahun_pelajaran" label-cols-md="3">
+                    <b-form-input id="tahun_pelajaran" :value="form.tahun_pelajaran" disabled />
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12">
+                  <b-form-group label="Tingkat Kelas" label-for="tingkat" label-cols-md="3">
+                    <b-form-input id="tingkat" :value="value.tingkat" disabled />
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12">
+                  <b-form-group label="Rombongan Belajar" label-for="rombongan_belajar_id" label-cols-md="3">
+                    <b-form-input id="rombongan_belajar_id" :value="value.rombongan_belajar_id" disabled />
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12">
+                  <b-form-group label="Nama Peserta Didik" label-for="anggota_rombel_id" label-cols-md="3">
+                    <b-form-input id="anggota_rombel_id" :value="value.anggota_rombel_id" disabled />
+                  </b-form-group>
+                </b-col>
+              </b-row>
+            </template>
+            <template v-else>
+              <formulir-pd ref="formulir" :meta="meta" :form="form" @show_form="handleShowForm" @hide_form="handleHideForm"></formulir-pd>
+            </template>
             <b-row>
               <b-col cols="12">
                 <b-form-group label="Tanggal" label-for="tanggal" label-cols-md="3"  :invalid-feedback="meta.tanggal_feedback" :state="meta.tanggal_state">
@@ -75,7 +101,10 @@
               </b-col>
             </b-row>
             <b-form-group>
-              <b-button type="submit" variant="primary" class="float-right ml-1">Simpan</b-button>
+              <b-button type="submit" variant="primary" class="float-right ml-1">
+                <template v-if="edit">Perbaharui</template>
+                <template v-else>Simpan</template>
+              </b-button>
             </b-form-group>
           </b-form>
         </template>
@@ -109,6 +138,7 @@ export default {
     return {
       isBusy: true,
       form: {
+        nilai_budaya_kerja_id: '',
         tahun_pelajaran: '',
         tingkat: '',
         anggota_rombel_id: '',
@@ -152,23 +182,45 @@ export default {
       data_elemen: [],
       formatted: '',
       kurtilas: null,
+      edit: false,
+      value: {
+        tingkat: null,
+        rombongan_belajar_id: null,
+        anggota_rombel_id: null,
+      },
     }
   },
   created() {
+    if(this.$route.params.id){
+      this.edit = true
+    }
     this.form.guru_id = this.user.guru_id
     this.form.sekolah_id = this.user.sekolah_id
     this.form.semester_id = this.user.semester.semester_id
     this.form.tahun_pelajaran = this.user.semester.nama
+    this.form.nilai_budaya_kerja_id = this.$route.params.id
     this.$http.get('/penilaian/ref-sikap', {
       params: {
         sekolah_id: this.form.sekolah_id,
         semester_id: this.form.semester_id,
+        nilai_budaya_kerja_id: this.$route.params.id,
       }
     }).then(response => {
       this.isBusy = false
       let getData = response.data
       this.all_sikap = getData.data
       this.kurtilas = getData.kurtilas
+      if(getData.nilai_budaya_kerja){
+        this.value.tingkat = `Kelas ${getData.nilai_budaya_kerja.anggota_rombel.rombongan_belajar.tingkat}`
+        this.value.rombongan_belajar_id = getData.nilai_budaya_kerja.anggota_rombel.rombongan_belajar.nama
+        this.value.anggota_rombel_id = getData.nilai_budaya_kerja.anggota_rombel.peserta_didik.nama
+        this.form.tanggal = getData.nilai_budaya_kerja.tanggal
+        this.form.budaya_kerja_id = getData.nilai_budaya_kerja.budaya_kerja_id
+        this.changeBudaya(this.form.budaya_kerja_id)
+        this.form.elemen_id = getData.nilai_budaya_kerja.elemen_id
+        this.form.opsi_sikap = getData.nilai_budaya_kerja.opsi_id
+        this.form.uraian_sikap = getData.nilai_budaya_kerja.deskripsi
+      }
     })
   },
   methods: {

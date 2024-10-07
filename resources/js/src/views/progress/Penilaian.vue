@@ -151,6 +151,7 @@ export default {
       this.$http.post('/progress/detil', {
         aksi: 'pembelajaran',
         pembelajaran_id: item.pembelajaran_id,
+        rombongan_belajar_id: item.rombongan_belajar_id,
       }).then(response => {
         this.loading = false
         let getData = response.data

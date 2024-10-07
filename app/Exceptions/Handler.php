@@ -52,12 +52,28 @@ class Handler extends ExceptionHandler
                 ];
                 return response()->json($data, 500);
             }
-            if (!$e instanceof ValidationException && !$e->getStatusCode() == 503) {
-                $data = [
-                    'icon' => 'error',
-                    'title' => 'ERROR 500!',
-                    'text' => $e->getMessage(),
-                ];
+            if (!$e instanceof ValidationException) {
+                if (method_exists('getStatusCode', $e)) {
+                    if(!$e->getStatusCode() == 503){
+                        $data = [
+                            'icon' => 'error',
+                            'title' => 'ERROR 500!',
+                            'text' => $e->getMessage(),
+                        ];
+                    } else {
+                        $data = [
+                            'icon' => 'error',
+                            'title' => 'ERROR 500!',
+                            'text' => $e->getMessage(),
+                        ];
+                    }
+                } else {
+                    $data = [
+                        'icon' => 'error',
+                        'title' => 'ERROR 500!',
+                        'text' => $e->getMessage(),
+                    ];
+                }
                 return response()->json($data, 500);
             }
         });

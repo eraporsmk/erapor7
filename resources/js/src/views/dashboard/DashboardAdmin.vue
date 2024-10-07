@@ -122,21 +122,43 @@
                 <b-tr>
                   <b-td>Group Diskusi</b-td>
                   <b-td>
-                    <a href="https://www.facebook.com/groups/2003597939918600/" target="_blank"><font-awesome-icon :icon="['fab', 'facebook']" /> FB Group</a> 
-                    <a href="http://t.me/eRaporSMK" target="_blank"><font-awesome-icon :icon="['fab', 'telegram']" /> Telegram</a>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-td>Tim Helpdesk</b-td>
-                  <b-td>
                     <div class="btn-group-vertical">
-                      <template v-for="hd in helpdesk">
-                        <!--a target="_blank" :href="`https://api.whatsapp.com/send?phone=${hd.hp}&text=NPSN:${sekolah.npsn}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> {{hd.nama}} [{{hd.hp}}]</a--> 
-                        <a target="_blank" :href="`https://wa.me/${hd.hp}/?text=${text_wa}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /> {{hd.nama}} [{{hd.hp}}]</a>
-                      </template>
+                      <a href="https://www.facebook.com/groups/2003597939918600/" target="_blank"><font-awesome-icon :icon="['fab', 'facebook']" /> FB Group</a> 
+                      <a href="http://t.me/eRaporSMK" target="_blank"><font-awesome-icon :icon="['fab', 'telegram']" /> Telegram</a>
+                      <a target="_blank" href="https://chat.whatsapp.com/DMHsy6IvOv36rVTw1V3xzS"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Whatsapp 1</a>
+                      <a target="_blank" href="https://chat.whatsapp.com/F8LfJ0y3JYlCswou4t9cYU"><font-awesome-icon :icon="['fab', 'whatsapp']" /> Whatsapp 2</a>
                     </div>
                   </b-td>
                 </b-tr>
+              </b-table-simple>
+            </template>
+          </b-card-body>
+        </b-card>
+        <b-card no-body>
+          <b-card-body>
+            <template v-if="isBusy">
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template v-else>
+              <h4 class="card-title">Helpdesk e-Rapor SMK</h4>
+              <b-table-simple bordered hover responsive>
+                <b-thead>
+                  <b-tr>
+                    <b-th class="text-center">Nama</b-th>
+                    <b-th class="text-center">Instansi</b-th>
+                    <b-th class="text-center"><font-awesome-icon :icon="['fab', 'whatsapp']" /></b-th>
+                  </b-tr>
+                </b-thead>
+                <b-tbody>
+                  <b-tr v-for="hd in helpdesk" :key="hd.hp">
+                    <b-td>{{hd.nama}}</b-td>
+                    <b-td>{{hd.instansi}}</b-td>
+                    <b-td class="text-center"><a target="_blank" :href="`https://wa.me/${hd.hp}/?text=${text_wa}`"><font-awesome-icon :icon="['fab', 'whatsapp']" /></a></b-td>
+                  </b-tr>
+                </b-tbody>
               </b-table-simple>
             </template>
           </b-card-body>
@@ -150,7 +172,7 @@
 
 <script>
 import vc from 'version_compare'
-import { BRow, BCol, BCard, BCardBody, BSpinner, BTableSimple, BTr, BTd, BFormCheckbox, VBTooltip } from 'bootstrap-vue'
+import { BRow, BCol, BCard, BCardBody, BSpinner, BTableSimple, BThead, BTbody,  BTr, BTh, BTd, BFormCheckbox, VBTooltip } from 'bootstrap-vue'
 
 export default {
   components: {
@@ -160,7 +182,10 @@ export default {
     BCardBody,
     BSpinner,
     BTableSimple,
+    BThead,
+    BTbody,
     BTr, 
+    BTh,
     BTd,
     BFormCheckbox,
     VBTooltip

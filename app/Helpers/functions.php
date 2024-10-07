@@ -67,8 +67,8 @@ function filter_pembelajaran_agama($agama_siswa, $nama_agama){
     }
 }
 function jenis_gtk($query){
-    $data['tendik'] = array(11, 30, 40, 41, 42, 43, 44, 57, 58, 59);
-    $data['guru'] = array(3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 20, 25, 26, 51, 52, 53, 54, 56);
+    $data['tendik'] = array(11, 30, 40, 41, 42, 43, 44, 57, 58, 59, 91, 93);
+    $data['guru'] = array(3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 20, 25, 26, 51, 52, 53, 54, 56, 92);
     $data['instruktur'] = array(97);
     $data['asesor'] = array(98);
     return collect($data[$query]);
@@ -459,7 +459,7 @@ function http_dashboard($satuan, $data_sync){
         'verify' => false,
         //'debug' => config('app.debug') ? fopen('php://stderr', 'w') : FALSE,
     ])->retry(3, 100)->post(config('erapor.dashboard_url').$satuan, $data_sync);
-    return $response;
+    return $response->object();
 }
 function merdeka($nama_kurikulum){
     return Str::contains($nama_kurikulum, 'Merdeka');
@@ -522,4 +522,12 @@ function jam_sinkron(){
 }
 function is_ppa($semester_id){
     return ($semester_id >= 20221);
+}
+function get_string_between($string, $start, $end){
+    $string = ' ' . $string;
+    $ini = strpos($string, $start);
+    if ($ini == 0) return '';
+    $ini += strlen($start);
+    $len = strpos($string, $end, $ini) - $ini;
+    return substr($string, $ini, $len);
 }

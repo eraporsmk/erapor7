@@ -17,12 +17,14 @@
             font-size: 13px;
         }
         p {text-align: justify;}
+        p.nama_ttd {margin-bottom: 100px !important;}
         .table tbody tr th, .table tbody tr td, table tr td, table tr th {padding: 5px !important;line-height:1 !important;}
         hr.baris {
             margin: 0; color: #000; height: 1px; width: 102.5%; margin-bottom: 5px; margin-top: 5px;
         }
         p.mt-1 {margin-top: 10px !important;}
         table tr td.p0 {padding: 5px -1px !important;}
+        table tr td.nip {padding: -5px 5px !important;}
     </style>
 </head>
 <body>

@@ -158,6 +158,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/ref-sikap', [PenilaianController::class, 'ref_sikap']);
     Route::post('/get-elemen', [PenilaianController::class, 'get_elemen']);
     Route::post('/simpan-nilai-sikap', [PenilaianController::class, 'simpan_nilai_sikap']);
+    Route::post('/hapus-nilai-sikap', [PenilaianController::class, 'hapus_nilai_sikap']);
     Route::get('/nilai-projek', [PenilaianController::class, 'nilai_projek']);
     Route::post('/get-tema', [PenilaianController::class, 'get_tema']);
     Route::post('/get-budaya-kerja', [PenilaianController::class, 'get_budaya_kerja']);

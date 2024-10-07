@@ -265,6 +265,7 @@ export default {
       }
     },
     handleShowForm(val){
+      this.form.bentuk_penilaian = ''
       this.kunci_nilai = val
     },
     calculateAverage(array) {

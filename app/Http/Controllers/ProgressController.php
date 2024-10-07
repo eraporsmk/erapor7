@@ -64,7 +64,7 @@ class ProgressController extends Controller
             'nama_mata_pelajaran' => $item->nama_mata_pelajaran,
             'guru' => $item->guru_pengajar_id ? $item->pengajar->nama_lengkap : $item->guru->nama_lengkap,
             'pd' => $item->anggota_rombel_count,
-            'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id),
+            'pd_dinilai' => $this->anggota_dinilai($item->pembelajaran_id, $item->rombongan_belajar_id),
             'kkm' => $item->kkm,
             'kelompok_id' => $item->kelompok_id,
             'semester_id' => $item->semester_id,
@@ -81,8 +81,9 @@ class ProgressController extends Controller
       ];
       return response()->json(['status' => 'success', 'data' => $data]);
    }
-   public function anggota_dinilai($pembelajaran_id){
-      $data = Anggota_rombel::whereHas('nilai_akhir_mapel', function($query) use ($pembelajaran_id){
+   public function anggota_dinilai($pembelajaran_id, $rombongan_belajar_id){
+      $data = Anggota_rombel::whereHas('nilai_akhir', function($query) use ($pembelajaran_id, $rombongan_belajar_id){
+         $query->where('rombongan_belajar_id', $rombongan_belajar_id);
          $query->where('pembelajaran_id', $pembelajaran_id);
       })->count();
       return $data;
@@ -95,15 +96,19 @@ class ProgressController extends Controller
                $query->with([
                   'nilai_akhir_kurmer' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
+                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                   },
                   'nilai_akhir_pengetahuan' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
+                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                   },
                   'nilai_akhir_keterampilan' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
+                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                   },
                   'deskripsi_mapel' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
+                     $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
                   },
                   'agama',
                ]);

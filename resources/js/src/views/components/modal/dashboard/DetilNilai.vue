@@ -112,6 +112,9 @@ export default {
       type: Object,
       default: () => {},
     },
+    induk: {
+      default: () => null,
+    },
     merdeka: {
       type: Boolean,
       default: () => false,

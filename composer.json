@@ -16,6 +16,7 @@
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "^3.1",
+        "rahul900day/laravel-console-spinner": "^1.1",
         "rap2hpoutre/fast-excel": "^5.2.0",
         "santigarcor/laratrust": "^7.1",
         "staudenmeir/eloquent-has-many-deep": "^1.7"

@@ -78,7 +78,7 @@
                 <b-th class="text-center">No</b-th>
                 <b-th class="text-center">Mata Pelajaran</b-th>
                 <b-th class="text-center">Rombel</b-th>
-                <b-th class="text-center">Wali Kelas</b-th>
+                <b-th class="text-center">Guru Mata Pelajaran</b-th>
                 <b-th class="text-center">Jml Peserta Didik</b-th>
                 <b-th class="text-center">Jml Peserta Didik Dinilai</b-th>
                 <b-th class="text-center">Detil</b-th>
@@ -91,11 +91,11 @@
                     <b-td class="text-center">{{item.no}}</b-td>
                     <b-td>{{item.nama_mata_pelajaran}}</b-td>
                     <b-td>{{item.rombel}}</b-td>
-                    <b-td>{{item.wali_kelas}}</b-td>
+                    <b-td>{{item.guru}}</b-td>
                     <b-td class="text-center">{{item.pd}}</b-td>
                     <b-td class="text-center">{{item.pd_dinilai}}</b-td>
                     <b-td class="text-center">
-                      <b-button variant="success" size="sm" @click="detil(item.pembelajaran_id)">Detil</b-button>
+                      <b-button variant="success" size="sm" @click="detil(item)">Detil</b-button>
                     </b-td>
                   </b-tr>
                 </template>
@@ -165,6 +165,7 @@ export default {
         kkm: item.kkm,
         kelompok_id: item.kelompok_id,
         semester_id: item.semester_id,
+        rombongan_belajar_id: item.rombongan_belajar_id,
       })
     },
     status(kunci_nilai){
