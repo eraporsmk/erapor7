@@ -265,13 +265,25 @@ $extend = str_replace(' ', '', $extend);
 			<br>
 			<br>
 			<br>
-			<p class="nama_ttd"><strong><u>{{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nama_lengkap : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}</u></strong></p>
+			<p class="nama_ttd">
+				<strong><u>
+				@if ($get_siswa->peserta_didik->sekolah->kasek)
+					{{$get_siswa->peserta_didik->sekolah->kasek->nama_lengkap}}
+				@elseif($get_siswa->peserta_didik->sekolah->kepala_sekolah)
+					{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}
+				@endif
+				</u></strong></p>
 		</td>
 	</tr>
 	<tr>
 		<td style="width:40%;"></td>
 		<td style="width:60%;" class="nip">
-			NIP. {{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nip : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
+			NIP. 
+			@if ($get_siswa->peserta_didik->sekolah->kasek)
+				{{$get_siswa->peserta_didik->sekolah->kasek->nip}}
+			@elseif($get_siswa->peserta_didik->sekolah->kepala_sekolah)
+				{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
+			@endif
 		</td>
 	</tr>
 </table>

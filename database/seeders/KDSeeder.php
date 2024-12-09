@@ -45,6 +45,7 @@ class KDSeeder extends Seeder
 						'deleted_at' => $obj->deleted_at,
 						'last_sync' => $obj->last_sync,
 					]);
+					$this->command->info('mata_pelajaran_id: '.$obj->mata_pelajaran_id);
 				} else {
 					$this->command->error('mata_pelajaran_id: '.$obj->mata_pelajaran_id.' belum terdaftar di database!');
 				}
