@@ -531,3 +531,25 @@ function get_string_between($string, $start, $end){
     $len = strpos($string, $end, $ini) - $ini;
     return substr($string, $ini, $len);
 }
+function nip_format($nip, $glue = " ") {
+    $nip = trim($nip," ");
+    $countChar = strlen($nip);
+    $subChar = [(empty($nip)?'-':$nip)];
+    switch ($countChar) {
+        case 18:
+            $subChar[0] = substr($nip, 0, 8); // tanggal lahir
+            $subChar[1] = substr($nip, 8, 6); // tanggal pengangkatan
+            $subChar[2] = substr($nip, 14, 1); // jenis kelamin
+            $subChar[3] = substr($nip, 15, 3); // nomor urut
+            break;
+        case 15:
+            $subChar[0] = substr($nip, 0, 8); // tanggal lahir
+            $subChar[1] = substr($nip, 8, 6); // tanggal pengangkatan
+            $subChar[2] = substr($nip, 14, 1); // jenis kelamin
+            break;
+        case 9:
+            $subChar = str_split($nip, 3);
+            break;
+    }
+    return implode($glue, $subChar);
+}
