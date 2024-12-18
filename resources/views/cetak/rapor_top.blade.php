@@ -3,20 +3,14 @@
 <div class="text-center" id="cover_utama">
 <br>
 <br>
-<br>
-<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? public_path('./storage'.config('erapor.storage').'/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah) : public_path('./images/tutwuri.png')}}" style="max-height: 200px" />
-<br>
-<br>
-<br>
-<br>
+<img src="{{public_path('./images/tutwuri.png')}}" style="max-height: 200px" />
 <br>
 <br>
 <h3>RAPOR PESERTA DIDIK</h3>
 <h3>SEKOLAH MENENGAH KEJURUAN</h3>
-<h3>(SMK)</h3><br>
+<h3>(SMK)</h3>
 <br>
-<br>
-<br>
+<img src="{{($get_siswa->rombongan_belajar->sekolah && $get_siswa->rombongan_belajar->sekolah->logo_sekolah) ? public_path('./storage'.config('erapor.storage').'/images/'.$get_siswa->rombongan_belajar->sekolah->logo_sekolah) : public_path('./images/transparent.png')}}" style="max-height: 180px" />
 <br>
 <br>
 {{--dd($get_siswa)--}}
