@@ -58,7 +58,7 @@ class Guru extends Model
             'gelar_akademik_id',
             'guru_id',
             'gelar_akademik_id'
-        )->where('posisi_gelar', 2)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999]);
+        )->where('posisi_gelar', 2)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999])->orderBy('gelar_ptk.gelar_akademik_id', 'DESC');
 	}
 	public function pengguna(){
 		return $this->hasOne(User::class, 'guru_id', 'guru_id');
