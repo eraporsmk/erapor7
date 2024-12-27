@@ -486,11 +486,99 @@ class SinkronisasiController extends Controller
         return response()->json(['status' => 'success', 'data' => $data]);
     }
     public function matev_rapor($repeat = NULL){
-        $pembelajaran = Pembelajaran::where(function($query){
-            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+        //{{host}}/WebService/getMatevNilai?npsn={{npsn}}&semester_id={{semester_id}}&a_dari_template=1
+        $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
+        $getMatev = getMatev($rombel->sekolah_id, $rombel->sekolah->npsn, $rombel->semester_id);
+        if($getMatev){
+            $jml_pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
+            })->count();
+            $filtered = $getMatev->filter(function ($value, $key) {
+                return $value->rombongan_belajar_id == request()->rombongan_belajar_id;
+            });
+            if($filtered->count()){
+                Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->delete();
+                foreach($filtered->all() as $matev){
+                    DB::table('dapodik.matev_rapor')->updateOrInsert(
+                        ['id_evaluasi' => $matev->id_evaluasi],
+                        [
+                            'rombongan_belajar_id' => $matev->rombongan_belajar_id,
+                            'mata_pelajaran_id' => $matev->mata_pelajaran_id,
+                            'pembelajaran_id' => $matev->pembelajaran_id,
+                            'nm_mata_evaluasi' => $matev->nm_mata_evaluasi,
+                            'a_dari_template' => $matev->a_dari_template,
+                            'no_urut' => $matev->no_urut,
+                            'create_date' => $matev->create_date,
+                            'last_update' => $matev->last_update,
+                            'soft_delete' => $matev->soft_delete,
+                            'last_sync' => $matev->last_sync,
+                            'updater_id' => $matev->updater_id,
+                        ]
+                    );
+                }
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => $filtered->count().' Mata Evaluasi berhasil di ambil dari Dapodik',
+                    'request' => request()->all(),
+                ];
+            }
+            if($jml_pembelajaran > $filtered->count()){
+                $this->createMatev(request()->rombongan_belajar_id);
+            }
+        } else {
+            $pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
+            })->orderBy('mata_pelajaran_id')->get();
+            $insert = 0;
+            $pembelajaran_id = [];
+            foreach($pembelajaran as $mapel){
+                $insert++;
+                $pembelajaran_id[] = $mapel->pembelajaran_id;
+                Matev_rapor::updateOrCreate(
+                    [
+                        'rombongan_belajar_id' => $mapel->rombongan_belajar_id,
+                        'mata_pelajaran_id' => $mapel->mata_pelajaran_id,
+                        'pembelajaran_id' => $mapel->pembelajaran_id,
+                    ],
+                    [
+                        'nm_mata_evaluasi' => Str::of($mapel->mata_pelajaran->nama)->limit(40),
+                        'a_dari_template' => 1,
+                        'no_urut' => $mapel->no_urut,
+                        'create_date' => Carbon::now()->subHour(),
+                        'last_update' => Carbon::now(),
+                        'soft_delete' => 0,
+                        'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                        'updater_id' => Str::uuid(),
+                    ]
+                );
+            }
+            Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => $insert.' Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
+                'request' => request()->all(),
+            ];
+            if(!$repeat){
+                return $this->matev_rapor(1);
+            }
+        }
+        return response()->json($data);
+    }
+    private function createMatev($rombongan_belajar_id){
+        $pembelajaran = Pembelajaran::where(function($query) use ($rombongan_belajar_id){
+            $query->where('rombongan_belajar_id', $rombongan_belajar_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
             $query->whereNull('induk_pembelajaran_id');
+            $query->doesntHave('matev_rapor');
         })->orderBy('mata_pelajaran_id')->get();
         $insert = 0;
         $pembelajaran_id = [];
@@ -515,17 +603,6 @@ class SinkronisasiController extends Controller
                 ]
             );
         }
-        Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
-        $data = [
-            'icon' => 'success',
-            'title' => 'Berhasil!',
-            'text' => $insert.' Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
-            'request' => request()->all(),
-        ];
-        if(!$repeat){
-            return $this->matev_rapor(1);
-        }
-        return response()->json($data);
     }
     public function kirim_nilai(){
         $user = auth()->user();

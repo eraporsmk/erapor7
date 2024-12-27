@@ -10,6 +10,7 @@ use App\Models\Rombongan_belajar;
 use App\Models\Semester;
 use App\Models\Matev_rapor;
 use Carbon\Carbon;
+use DB;
 
 class KirimNilai extends Command
 {
@@ -54,66 +55,135 @@ class KirimNilai extends Command
             $semester = [$segments->first().'2', $segments->first().'1'];
             foreach($semester as $smt){
                 $semester = Semester::find($smt);
-                $rombongan_belajar = Rombongan_belajar::with(['pembelajaran' => function($query){
-                    $query->whereNotNull('kelompok_id');
-                    $query->whereNotNull('no_urut');
-                    $query->whereNull('induk_pembelajaran_id');
-                    $query->orderBy('mata_pelajaran_id');
-                }])->where(function($query) use ($smt, $user){
-                    $query->whereIn('jenis_rombel', [1, 16]);
-                    $query->where('semester_id', $smt);
-                    $query->where('sekolah_id', $user->sekolah_id);
-                })->orderBy('nama')->get();
-                if($rombongan_belajar->count()){
-                    $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, $semester->semester_id, $user->email);
-                    //$getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.$semester->semester_id);
-                    //dd($response);
-                    if($updater_id){
-                        /*$users = $getPengguna->object();
-                        $pengguna = collect($users->rows);
-                        $user_id = $pengguna->first(function ($value, $key) use ($user){
-                            return $value->username == $user->email;
-                        });
-                        $updater_id = $user_id->pengguna_id;*/
-                        $this->info('Memulai kirim nilai ke Dapodik Tahun Pelajaran '.$semester->nama.' dari '.$rombongan_belajar->count().' Rombel');
-                        foreach ($rombongan_belajar as $rombel) {
-                            $this->info('Mengirim nilai dari kelas '.$rombel->nama);
-                            $insert = 0;
-                            $pembelajaran_id = [];
-                            foreach($rombel->pembelajaran as $mapel){
-                                $insert++;
-                                $pembelajaran_id[] = $mapel->pembelajaran_id;
-                                Matev_rapor::updateOrCreate(
-                                    [
-                                        'rombongan_belajar_id' => $mapel->rombongan_belajar_id,
-                                        'mata_pelajaran_id' => $mapel->mata_pelajaran_id,
-                                        'pembelajaran_id' => $mapel->pembelajaran_id,
-                                    ],
-                                    [
-                                        'nm_mata_evaluasi' => Str::limit($mapel->mata_pelajaran->nama, 40),
-                                        'a_dari_template' => 1,
-                                        'no_urut' => $mapel->no_urut,
-                                        'create_date' => Carbon::now()->subHour(),
-                                        'last_update' => Carbon::now(),
-                                        'soft_delete' => 0,
-                                        'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
-                                        'updater_id' => $updater_id,
-                                    ]
-                                );
+                $getMatev = getMatev($user->sekolah_id, $user->sekolah->npsn, $semester->semester_id);
+                if($getMatev){
+                    Matev_rapor::whereHas('rombongan_belajar', function($query) use ($semester){
+                        $query->where('semester_id', $semester->semester_id);
+                    })->delete();
+                    foreach($getMatev as $matev){
+                        DB::table('dapodik.matev_rapor')->updateOrInsert(
+                            ['id_evaluasi' => $matev->id_evaluasi],
+                            [
+                                'rombongan_belajar_id' => $matev->rombongan_belajar_id,
+                                'mata_pelajaran_id' => $matev->mata_pelajaran_id,
+                                'pembelajaran_id' => $matev->pembelajaran_id,
+                                'nm_mata_evaluasi' => $matev->nm_mata_evaluasi,
+                                'a_dari_template' => $matev->a_dari_template,
+                                'no_urut' => $matev->no_urut,
+                                'create_date' => $matev->create_date,
+                                'last_update' => $matev->last_update,
+                                'soft_delete' => $matev->soft_delete,
+                                'last_sync' => $matev->last_sync,
+                                'updater_id' => $matev->updater_id,
+                            ]
+                        );
+                    }
+                    $grouped = $getMatev->groupBy('rombongan_belajar_id');
+                    $this->info('Memulai kirim nilai ke Dapodik Tahun Pelajaran '.$semester->nama.' dari '.$grouped->count().' Rombel');
+                    $rombel_id = [];
+                    foreach($grouped->all() as $rombongan_belajar_id => $group){
+                        $rombel_id[] = $rombongan_belajar_id;
+                        $rombel = Rombongan_belajar::find($rombongan_belajar_id);
+                        $this->info('Mengirim nilai dari kelas '.$rombel->nama);
+                        //$this->kirim_nilai($rombel->nama, $rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $smt);
+                    }
+                    $this->createMatev($semester, $user, $rombel_id);
+                } else {
+                    $rombongan_belajar = Rombongan_belajar::with(['pembelajaran' => function($query){
+                        $query->whereNotNull('kelompok_id');
+                        $query->whereNotNull('no_urut');
+                        $query->whereNull('induk_pembelajaran_id');
+                        $query->orderBy('mata_pelajaran_id');
+                    }])->where(function($query) use ($smt, $user){
+                        $query->whereIn('jenis_rombel', [1, 16]);
+                        $query->where('semester_id', $smt);
+                        $query->where('sekolah_id', $user->sekolah_id);
+                    })->orderBy('nama')->get();
+                    if($rombongan_belajar->count()){
+                        $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, $semester->semester_id, $user->email);
+                        if($updater_id){
+                            $this->info('Memulai kirim nilai ke Dapodik Tahun Pelajaran '.$semester->nama.' dari '.$rombongan_belajar->count().' Rombel');
+                            foreach ($rombongan_belajar as $rombel) {
+                                $this->info('Mengirim nilai dari kelas '.$rombel->nama);
+                                $insert = 0;
+                                $pembelajaran_id = [];
+                                foreach($rombel->pembelajaran as $mapel){
+                                    $insert++;
+                                    $pembelajaran_id[] = $mapel->pembelajaran_id;
+                                    Matev_rapor::updateOrCreate(
+                                        [
+                                            'rombongan_belajar_id' => $mapel->rombongan_belajar_id,
+                                            'mata_pelajaran_id' => $mapel->mata_pelajaran_id,
+                                            'pembelajaran_id' => $mapel->pembelajaran_id,
+                                        ],
+                                        [
+                                            'nm_mata_evaluasi' => Str::limit($mapel->mata_pelajaran->nama, 40),
+                                            'a_dari_template' => 1,
+                                            'no_urut' => $mapel->no_urut,
+                                            'create_date' => Carbon::now()->subHour(),
+                                            'last_update' => Carbon::now(),
+                                            'soft_delete' => 0,
+                                            'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                                            'updater_id' => $updater_id,
+                                        ]
+                                    );
+                                }
+                                Matev_rapor::where('rombongan_belajar_id', $rombel->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
+                                $this->kirim_nilai($rombel->nama, $rombel->rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $smt);
                             }
-                            Matev_rapor::where('rombongan_belajar_id', $rombel->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
-                            $this->kirim_nilai($rombel->nama, $rombel->rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $smt);
                         }
                     }
                 }
             }
         }
-        
-        /*$satuan = $this->choice(
-            'Pilih Tahun Ajaran!',
-            $list_data
-        );*/
         return Command::SUCCESS;
+    }
+    private function createMatev($semester, $user, $rombel_id){
+        $rombongan_belajar = Rombongan_belajar::with(['pembelajaran' => function($query){
+            $query->whereNotNull('kelompok_id');
+            $query->whereNotNull('no_urut');
+            $query->whereNull('induk_pembelajaran_id');
+            $query->orderBy('mata_pelajaran_id');
+        }])->where(function($query) use ($semester, $user, $rombel_id){
+            $query->whereIn('jenis_rombel', [1, 16]);
+            $query->where('semester_id', $semester->semester_id);
+            $query->where('sekolah_id', $user->sekolah_id);
+            $query->whereNotIn('rombongan_belajar_id', $rombel_id);
+        })->orderBy('nama')->get();
+        if($rombongan_belajar->count()){
+            $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, $semester->semester_id, $user->email);
+            if($updater_id){
+                $this->info('Memulai kirim nilai ke Dapodik Tahun Pelajaran '.$semester->nama.' dari '.$rombongan_belajar->count().' Rombel');
+                foreach ($rombongan_belajar as $rombel) {
+                    $this->info('Mengirim nilai dari kelas '.$rombel->nama);
+                    $insert = 0;
+                    $pembelajaran_id = [];
+                    foreach($rombel->pembelajaran as $mapel){
+                        $insert++;
+                        $pembelajaran_id[] = $mapel->pembelajaran_id;
+                        Matev_rapor::updateOrCreate(
+                            [
+                                'rombongan_belajar_id' => $mapel->rombongan_belajar_id,
+                                'mata_pelajaran_id' => $mapel->mata_pelajaran_id,
+                                'pembelajaran_id' => $mapel->pembelajaran_id,
+                            ],
+                            [
+                                'nm_mata_evaluasi' => Str::limit($mapel->mata_pelajaran->nama, 40),
+                                'a_dari_template' => 1,
+                                'no_urut' => $mapel->no_urut,
+                                'create_date' => Carbon::now()->subHour(),
+                                'last_update' => Carbon::now(),
+                                'soft_delete' => 0,
+                                'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                                'updater_id' => $updater_id,
+                            ]
+                        );
+                    }
+                    Matev_rapor::where('rombongan_belajar_id', $rombel->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
+                    $this->kirim_nilai($rombel->nama, $rombel->rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $semester->semester_id);
+                }
+            }
+        }
     }
     private function kirim_nilai($nama_kelas, $rombongan_belajar_id, $sekolah_id, $npsn, $semester_id){
         $insert = 0;
