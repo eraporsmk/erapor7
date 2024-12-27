@@ -65,15 +65,16 @@ class KirimNilai extends Command
                     $query->where('sekolah_id', $user->sekolah_id);
                 })->orderBy('nama')->get();
                 if($rombongan_belajar->count()){
-                    $getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.$semester->semester_id);
+                    $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, $semester->semester_id, $user->email);
+                    //$getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.$semester->semester_id);
                     //dd($response);
-                    if($getPengguna->successful()){
-                        $users = $getPengguna->object();
+                    if($updater_id){
+                        /*$users = $getPengguna->object();
                         $pengguna = collect($users->rows);
                         $user_id = $pengguna->first(function ($value, $key) use ($user){
                             return $value->username == $user->email;
                         });
-                        $updater_id = $user_id->pengguna_id;
+                        $updater_id = $user_id->pengguna_id;*/
                         $this->info('Memulai kirim nilai ke Dapodik Tahun Pelajaran '.$semester->nama.' dari '.$rombongan_belajar->count().' Rombel');
                         foreach ($rombongan_belajar as $rombel) {
                             $this->info('Mengirim nilai dari kelas '.$rombel->nama);

@@ -531,3 +531,22 @@ function get_string_between($string, $start, $end){
     $len = strpos($string, $end, $ini) - $ini;
     return substr($string, $ini, $len);
 }
+function getUpdaterID($sekolah_id, $npsn, $semester_id, $email){
+    $updater_id = NULL;
+    try {
+        $getPengguna = Http::withToken(get_setting('token_dapodik', $sekolah_id))->get(get_setting('url_dapodik', $sekolah_id).'/WebService/getPengguna?npsn='.$npsn.'&semester_id='.$semester_id);
+        if($getPengguna->successful()){
+            $users = $getPengguna->object();
+            if($users){
+                $pengguna = collect($users->rows);
+                $user_id = $pengguna->first(function ($value, $key) use ($email){
+                    return $value->username == $email;
+                });
+                $updater_id = $user_id->pengguna_id;
+            }
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
+    return $updater_id;
+}

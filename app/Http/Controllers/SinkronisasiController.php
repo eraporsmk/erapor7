@@ -529,7 +529,8 @@ class SinkronisasiController extends Controller
     }
     public function kirim_nilai(){
         $user = auth()->user();
-        $getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.request()->semester_id);
+        $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, request()->semester_id, $user->email);
+        /*$getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.request()->semester_id);
         if($getPengguna->successful()){
             $users = $getPengguna->object();
             $pengguna = collect($users->rows);
@@ -537,7 +538,7 @@ class SinkronisasiController extends Controller
                 return $value->username == $user->email;
             });
             $updater_id = $user_id->pengguna_id;
-        }
+        }*/
         $insert = 0;
         $nilai = 0;
         $all_response = [];
