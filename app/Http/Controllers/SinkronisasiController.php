@@ -528,6 +528,16 @@ class SinkronisasiController extends Controller
         return response()->json($data);
     }
     public function kirim_nilai(){
+        $user = auth()->user();
+        $getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.request()->semester_id);
+        if($getPengguna->successful()){
+            $users = $getPengguna->object();
+            $pengguna = collect($users->rows);
+            $user_id = $pengguna->first(function ($value, $key) use ($user){
+                return $value->username == $user->email;
+            });
+            $updater_id = $user_id->pengguna_id;
+        }
         $insert = 0;
         $nilai = 0;
         $all_response = [];
@@ -543,7 +553,7 @@ class SinkronisasiController extends Controller
                 unset($insert_matev['status'], $insert_matev['pembelajaran']);
                 $insert_matev['last_update'] = Carbon::now()->addHour(6);
                 $insert_matev['last_sync'] = Carbon::now()->addMinutes(330);
-                $insert_matev['updater_id'] = Str::uuid();
+                $insert_matev['updater_id'] = $updater_id;
                 $response = Http::withToken(request()->token_dapodik)->post(request()->url_dapodik.'/WebService/postMatevRapor?npsn='.request()->npsn.'&semester_id='.request()->semester_id, $insert_matev);
                 if($response->successful()){
                     $matev_dapo = $response->object();
@@ -563,7 +573,7 @@ class SinkronisasiController extends Controller
                                     'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
                                     'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
-                                    'updater_id' => Str::uuid(),
+                                    'updater_id' => $updater_id,
                                 ];
                             }
                         } else {
@@ -584,7 +594,7 @@ class SinkronisasiController extends Controller
                                     'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
                                     'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
-                                    'updater_id' => Str::uuid(),
+                                    'updater_id' => $updater_id,
                                 ];
                             }
                         }
@@ -605,7 +615,7 @@ class SinkronisasiController extends Controller
                 $all_response[] = $response;
             }
         } catch (\Exception $e){
-            Setting::where(function($query){
+            /*Setting::where(function($query){
                 $query->where('key', 'url_dapodik');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
@@ -614,7 +624,7 @@ class SinkronisasiController extends Controller
                 $query->where('key', 'token_dapodik');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
-            })->delete();
+            })->delete();*/
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
