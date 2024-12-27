@@ -339,14 +339,20 @@ class SinkronisasiController extends Controller
         return response()->json($data);
     }
     public function nilai_dapodik(){
-        $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
-        $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
-        $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
-        if($response->object()){
-            $body = $response->object();
-        } else {
-            $body = get_string_between($response->body(), '{', '}');
-            $body = json_decode('{'.$body.'}');
+        try {
+            $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
+            $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
+            $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
+            if($response->object()){
+                $body = $response->object();
+            } else {
+                $body = get_string_between($response->body(), '{', '}');
+                $body = json_decode('{'.$body.'}');
+            }
+        } catch (\Throwable $th) {
+            $url_dapodik = NULL;
+            $token_dapodik = NULL;
+            $body = NULL;
         }
         $data = [
             'url_dapodik' => $url_dapodik,
@@ -443,6 +449,7 @@ class SinkronisasiController extends Controller
         ])
         ->withCount([
             'pembelajaran' => function($query){
+                $query->with(['mata_pelajaran']);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
                 $query->whereNull('induk_pembelajaran_id');
@@ -478,7 +485,7 @@ class SinkronisasiController extends Controller
         })->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
     }
-    public function matev_rapor(){
+    public function matev_rapor($repeat = NULL){
         $pembelajaran = Pembelajaran::where(function($query){
             $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
             $query->whereNotNull('kelompok_id');
@@ -497,11 +504,13 @@ class SinkronisasiController extends Controller
                     'pembelajaran_id' => $mapel->pembelajaran_id,
                 ],
                 [
-                    'nm_mata_evaluasi' => $mapel->nama_mata_pelajaran,
+                    'nm_mata_evaluasi' => $mapel->mata_pelajaran->nama,
                     'a_dari_template' => 1,
                     'no_urut' => $mapel->no_urut,
+                    'create_date' => Carbon::now()->subHour(),
+                    'last_update' => Carbon::now(),
                     'soft_delete' => 0,
-                    'last_sync' => Carbon::now()->subDays(30),
+                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
                     'updater_id' => Str::uuid(),
                 ]
             );
@@ -513,6 +522,9 @@ class SinkronisasiController extends Controller
             'text' => $insert.' Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
             'request' => request()->all(),
         ];
+        if(!$repeat){
+            return $this->matev_rapor(1);
+        }
         return response()->json($data);
     }
     public function kirim_nilai(){
@@ -529,6 +541,9 @@ class SinkronisasiController extends Controller
                 $insert++;
                 $insert_matev = $matev->toArray();
                 unset($insert_matev['status'], $insert_matev['pembelajaran']);
+                $insert_matev['last_update'] = Carbon::now()->addHour(6);
+                $insert_matev['last_sync'] = Carbon::now()->addMinutes(330);
+                $insert_matev['updater_id'] = Str::uuid();
                 $response = Http::withToken(request()->token_dapodik)->post(request()->url_dapodik.'/WebService/postMatevRapor?npsn='.request()->npsn.'&semester_id='.request()->semester_id, $insert_matev);
                 if($response->successful()){
                     $matev_dapo = $response->object();
@@ -544,31 +559,31 @@ class SinkronisasiController extends Controller
                                     'anggota_rombel_id' => $nilai_akhir->anggota_rombel_id,
                                     'nilai_kognitif_angka' => $nilai_akhir->nilai,
                                     'a_beku' => 1,
-                                    'create_date' => now(),
-                                    'last_update' => now(),
+                                    'create_date' => Carbon::now()->timezone('UTC')->subHour(),
+                                    'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
-                                    'last_sync' => Carbon::now()->subDays(30),
+                                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
                                     'updater_id' => Str::uuid(),
                                 ];
                             }
                         } else {
                             foreach($matev->pembelajaran->all_nilai_akhir_kurmer as $nilai_akhir){
-                                $get_desc = $matev->pembelajaran->deskripsi_mata_pelajaran()->where('anggota_rombel_id', $nilai_akhir->anggota_rombel_id)->first();
+                                /*$get_desc = $matev->pembelajaran->deskripsi_mata_pelajaran()->where('anggota_rombel_id', $nilai_akhir->anggota_rombel_id)->first();
                                 $deskripsi = NULL;
                                 if($get_desc){
                                     $deskripsi = Str::of($get_desc->deskripsi_pengetahuan.' '.$get_desc->deskripsi_keterampilan)->limit(300);
-                                }
+                                }*/
                                 $params[] = [
                                     'nilai_id' => $nilai_akhir->nilai_akhir_id,
                                     'id_evaluasi' => $matev->id_evaluasi,
                                     'anggota_rombel_id' => $nilai_akhir->anggota_rombel_id,
                                     'nilai_kognitif_angka' => $nilai_akhir->nilai,
-                                    'ket_kognitif' => $deskripsi,
+                                    //'ket_kognitif' => $deskripsi,
                                     'a_beku' => 1,
-                                    'create_date' => now(),
-                                    'last_update' => now(),
+                                    'create_date' => Carbon::now()->timezone('UTC')->subHour(),
+                                    'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
-                                    'last_sync' => Carbon::now()->subDays(30),
+                                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
                                     'updater_id' => Str::uuid(),
                                 ];
                             }

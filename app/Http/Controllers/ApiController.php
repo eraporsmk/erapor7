@@ -53,8 +53,8 @@ class ApiController extends Controller
                 $query->whereIn('tingkat', [11, 12, 13]);
             })->select('rombongan_belajar_id', 'nama')->get(),
             'rombel_4_tahun' => $plucked->all(),
-            'url_dapodik' => get_setting('url_dapodik', request()->sekolah_id, request()->semester_id),
-            'token_dapodik' => get_setting('token_dapodik', request()->sekolah_id, request()->semester_id),
+            'url_dapodik' => get_setting('url_dapodik', request()->sekolah_id),
+            'token_dapodik' => get_setting('token_dapodik', request()->sekolah_id),
             //'logo_sekolah' => $sekolah->logo_sekolah,
             'logo_sekolah' => get_setting('logo_sekolah', request()->sekolah_id),
             'periode' => substr(request()->semester_id, -1),
@@ -166,7 +166,7 @@ class ApiController extends Controller
                 [
                     'key' => 'token_dapodik',
                     'sekolah_id' => request()->sekolah_id,
-                    'semester_id' => request()->semester_id,
+                    //'semester_id' => request()->semester_id,
                 ],
                 [
                     'value' => request()->token_dapodik,
@@ -178,7 +178,7 @@ class ApiController extends Controller
                 [
                     'key' => 'url_dapodik',
                     'sekolah_id' => request()->sekolah_id,
-                    'semester_id' => request()->semester_id,
+                    //'semester_id' => request()->semester_id,
                 ],
                 [
                     'value' => request()->url_dapodik,
