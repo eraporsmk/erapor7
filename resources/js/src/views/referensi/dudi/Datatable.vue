@@ -114,6 +114,7 @@
               <b-th class="text-center">Tempat, Tanggal Lahir</b-th>
               <b-th class="text-center">Agama</b-th>
               <b-th class="text-center">Kelas</b-th>
+              <b-th class="text-center">Aksi</b-th>
             </b-tr>
           </b-thead>
           <b-tbody>
@@ -125,6 +126,9 @@
               <b-td>{{anggota.tempat_lahir}}, {{anggota.tanggal_lahir_indo}}</b-td>
               <b-td>{{(anggota.agama) ? anggota.agama.nama : ''}}</b-td>
               <b-td>{{(anggota.kelas) ? anggota.kelas.nama : ''}}</b-td>
+              <b-td class="text-center">
+                <b-button variant="danger" size="sm" @click="keluarkan(anggota.anggota_akt_pd.anggota_akt_pd_id, anggota.anggota_akt_pd.akt_pd_id)">Keluarkan</b-button>
+              </b-td>
             </b-tr>
           </b-tbody>
         </b-table-simple>
@@ -225,6 +229,38 @@ export default {
         console.log(error);
       })
     },
+    keluarkan(anggota_akt_pd_id, akt_pd_id){
+      this.$swal({
+        title: 'Apakah Anda yakin?',
+        text: 'Tindakan ini tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yakin!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+        allowOutsideClick: false,
+      }).then(result => {
+        if (result.value) {
+          this.$http.delete(`/referensi/keluarkan-anggota-prakerin/${anggota_akt_pd_id}`).then(response => {
+            let data = response.data
+            this.$swal({
+              icon: data.icon,
+              title: data.title,
+              text: data.text,
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            }).then(re => {
+              //this.$emit('per_page', this.meta.per_page)
+              this.anggota(akt_pd_id)
+            })
+          });
+        }
+      })
+    },
     loadPerPage(val) {
       this.$emit('per_page', this.meta.per_page)
     },
@@ -237,3 +273,6 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+@import '~@resources/scss/vue/libs/vue-sweetalert.scss';
+</style>

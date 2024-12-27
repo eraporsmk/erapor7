@@ -143,6 +143,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/get-mapel', [ReferensiController::class, 'get_mapel']);
     Route::post('/pembelajaran', [ReferensiController::class, 'pembelajaran']);
     Route::post('/simpan-bobot-penilaian', [ReferensiController::class, 'simpan_bobot_penilaian']);
+    Route::delete('/keluarkan-anggota-prakerin/{id}', [ReferensiController::class, 'keluarkan_anggota_prakerin']);
   });
   Route::group(['prefix' => 'penilaian'], function () {
     Route::post('/status', [PenilaianController::class, 'status']);
