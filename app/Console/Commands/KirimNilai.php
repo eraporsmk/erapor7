@@ -50,7 +50,6 @@ class KirimNilai extends Command
                     $year-2 .'/'.$year-1,
                 ]
             );
-            //{{host}}/WebService/getPengguna?npsn={{npsn}}&semester_id={{semester_id}}
             $segments = Str::of($tahun)->split('/[\s\/]+/');
             $semester = [$segments->first().'2', $segments->first().'1'];
             foreach($semester as $smt){
@@ -85,7 +84,7 @@ class KirimNilai extends Command
                         $rombel_id[] = $rombongan_belajar_id;
                         $rombel = Rombongan_belajar::find($rombongan_belajar_id);
                         $this->info('Mengirim nilai dari kelas '.$rombel->nama);
-                        //$this->kirim_nilai($rombel->nama, $rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $smt);
+                        $this->kirim_nilai($rombel->nama, $rombongan_belajar_id, $user->sekolah_id, $user->sekolah->npsn, $smt);
                     }
                     $this->createMatev($semester, $user, $rombel_id);
                 } else {
