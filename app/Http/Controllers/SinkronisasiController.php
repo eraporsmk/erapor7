@@ -504,7 +504,7 @@ class SinkronisasiController extends Controller
                     'pembelajaran_id' => $mapel->pembelajaran_id,
                 ],
                 [
-                    'nm_mata_evaluasi' => $mapel->mata_pelajaran->nama,
+                    'nm_mata_evaluasi' => Str::of($mapel->mata_pelajaran->nama)->limit(47),
                     'a_dari_template' => 1,
                     'no_urut' => $mapel->no_urut,
                     'create_date' => Carbon::now()->subHour(),
