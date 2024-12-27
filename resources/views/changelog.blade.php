@@ -1,5 +1,17 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.7</h3>
+    </legend>
+    <ol>
+        <li><b class="text-success">[Pembaharuan]</b> Menambah tombol keluarkan pada DUDI</li>
+        <li><b class="text-success">[Pembaharuan]</b> Menghapus role Tata Usaha</li>
+        <li><b class="text-danger">[Perbaikan]</b> Tidak mengikutsertakan deskripsi nilai saat pengiriman nilai ke Dapodik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Nama Mata Pelajaran ambil dari referensi Mata Pelajaran Dapodik saat generate matev</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perubahan ordering menjadi ke created_at pada gelar belakang guru</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perbaikan urutan cetak rapor tingkat XI</li>
+        <li><b class="text-danger">[Perbaikan]</b> Melepas atribut semester_id di pengaturan URL & Token Dapodik</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.6</h3>
     </legend>
     <ol>

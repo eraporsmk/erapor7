@@ -65,6 +65,10 @@ class EraporUpdate extends Command
                 $this->call('storage:link');
             }
         }
+        $tu = Role::where('name', 'tu')->first();
+        if($tu){
+            $tu->delete();
+        }
         Role::updateOrCreate(
             [
                 'name' => 'pilihan',

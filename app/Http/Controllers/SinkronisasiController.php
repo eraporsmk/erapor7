@@ -339,14 +339,20 @@ class SinkronisasiController extends Controller
         return response()->json($data);
     }
     public function nilai_dapodik(){
-        $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
-        $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
-        $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
-        if($response->object()){
-            $body = $response->object();
-        } else {
-            $body = get_string_between($response->body(), '{', '}');
-            $body = json_decode('{'.$body.'}');
+        try {
+            $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
+            $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
+            $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
+            if($response->object()){
+                $body = $response->object();
+            } else {
+                $body = get_string_between($response->body(), '{', '}');
+                $body = json_decode('{'.$body.'}');
+            }
+        } catch (\Throwable $th) {
+            $url_dapodik = NULL;
+            $token_dapodik = NULL;
+            $body = NULL;
         }
         $data = [
             'url_dapodik' => $url_dapodik,
@@ -443,6 +449,7 @@ class SinkronisasiController extends Controller
         ])
         ->withCount([
             'pembelajaran' => function($query){
+                $query->with(['mata_pelajaran']);
                 $query->whereNotNull('kelompok_id');
                 $query->whereNotNull('no_urut');
                 $query->whereNull('induk_pembelajaran_id');
@@ -478,12 +485,100 @@ class SinkronisasiController extends Controller
         })->paginate(request()->per_page);
         return response()->json(['status' => 'success', 'data' => $data]);
     }
-    public function matev_rapor(){
-        $pembelajaran = Pembelajaran::where(function($query){
-            $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+    public function matev_rapor($repeat = NULL){
+        //{{host}}/WebService/getMatevNilai?npsn={{npsn}}&semester_id={{semester_id}}&a_dari_template=1
+        $rombel = Rombongan_belajar::find(request()->rombongan_belajar_id);
+        $getMatev = getMatev($rombel->sekolah_id, $rombel->sekolah->npsn, $rombel->semester_id);
+        if($getMatev){
+            $jml_pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
+            })->count();
+            $filtered = $getMatev->filter(function ($value, $key) {
+                return $value->rombongan_belajar_id == request()->rombongan_belajar_id;
+            });
+            if($filtered->count()){
+                Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->delete();
+                foreach($filtered->all() as $matev){
+                    DB::table('dapodik.matev_rapor')->updateOrInsert(
+                        ['id_evaluasi' => $matev->id_evaluasi],
+                        [
+                            'rombongan_belajar_id' => $matev->rombongan_belajar_id,
+                            'mata_pelajaran_id' => $matev->mata_pelajaran_id,
+                            'pembelajaran_id' => $matev->pembelajaran_id,
+                            'nm_mata_evaluasi' => $matev->nm_mata_evaluasi,
+                            'a_dari_template' => $matev->a_dari_template,
+                            'no_urut' => $matev->no_urut,
+                            'create_date' => $matev->create_date,
+                            'last_update' => $matev->last_update,
+                            'soft_delete' => $matev->soft_delete,
+                            'last_sync' => $matev->last_sync,
+                            'updater_id' => $matev->updater_id,
+                        ]
+                    );
+                }
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => $filtered->count().' Mata Evaluasi berhasil di ambil dari Dapodik',
+                    'request' => request()->all(),
+                ];
+            }
+            if($jml_pembelajaran > $filtered->count()){
+                $this->createMatev(request()->rombongan_belajar_id);
+            }
+        } else {
+            $pembelajaran = Pembelajaran::where(function($query){
+                $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                $query->whereNotNull('kelompok_id');
+                $query->whereNotNull('no_urut');
+                $query->whereNull('induk_pembelajaran_id');
+            })->orderBy('mata_pelajaran_id')->get();
+            $insert = 0;
+            $pembelajaran_id = [];
+            foreach($pembelajaran as $mapel){
+                $insert++;
+                $pembelajaran_id[] = $mapel->pembelajaran_id;
+                Matev_rapor::updateOrCreate(
+                    [
+                        'rombongan_belajar_id' => $mapel->rombongan_belajar_id,
+                        'mata_pelajaran_id' => $mapel->mata_pelajaran_id,
+                        'pembelajaran_id' => $mapel->pembelajaran_id,
+                    ],
+                    [
+                        'nm_mata_evaluasi' => Str::of($mapel->mata_pelajaran->nama)->limit(40),
+                        'a_dari_template' => 1,
+                        'no_urut' => $mapel->no_urut,
+                        'create_date' => Carbon::now()->subHour(),
+                        'last_update' => Carbon::now(),
+                        'soft_delete' => 0,
+                        'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                        'updater_id' => Str::uuid(),
+                    ]
+                );
+            }
+            Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
+            $data = [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => $insert.' Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
+                'request' => request()->all(),
+            ];
+            if(!$repeat){
+                return $this->matev_rapor(1);
+            }
+        }
+        return response()->json($data);
+    }
+    private function createMatev($rombongan_belajar_id){
+        $pembelajaran = Pembelajaran::where(function($query) use ($rombongan_belajar_id){
+            $query->where('rombongan_belajar_id', $rombongan_belajar_id);
             $query->whereNotNull('kelompok_id');
             $query->whereNotNull('no_urut');
             $query->whereNull('induk_pembelajaran_id');
+            $query->doesntHave('matev_rapor');
         })->orderBy('mata_pelajaran_id')->get();
         $insert = 0;
         $pembelajaran_id = [];
@@ -497,25 +592,30 @@ class SinkronisasiController extends Controller
                     'pembelajaran_id' => $mapel->pembelajaran_id,
                 ],
                 [
-                    'nm_mata_evaluasi' => $mapel->nama_mata_pelajaran,
+                    'nm_mata_evaluasi' => Str::of($mapel->mata_pelajaran->nama)->limit(40),
                     'a_dari_template' => 1,
                     'no_urut' => $mapel->no_urut,
+                    'create_date' => Carbon::now()->subHour(),
+                    'last_update' => Carbon::now(),
                     'soft_delete' => 0,
-                    'last_sync' => Carbon::now()->subDays(30),
+                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
                     'updater_id' => Str::uuid(),
                 ]
             );
         }
-        Matev_rapor::where('rombongan_belajar_id', request()->rombongan_belajar_id)->whereNotIn('pembelajaran_id', $pembelajaran_id)->update(['soft_delete' => 0]);
-        $data = [
-            'icon' => 'success',
-            'title' => 'Berhasil!',
-            'text' => $insert.' Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
-            'request' => request()->all(),
-        ];
-        return response()->json($data);
     }
     public function kirim_nilai(){
+        $user = auth()->user();
+        $updater_id = getUpdaterID($user->sekolah_id, $user->sekolah->npsn, request()->semester_id, $user->email);
+        /*$getPengguna = Http::withToken(get_setting('token_dapodik', $user->sekolah_id))->get(get_setting('url_dapodik', $user->sekolah_id).'/WebService/getPengguna?npsn='.$user->sekolah->npsn.'&semester_id='.request()->semester_id);
+        if($getPengguna->successful()){
+            $users = $getPengguna->object();
+            $pengguna = collect($users->rows);
+            $user_id = $pengguna->first(function ($value, $key) use ($user){
+                return $value->username == $user->email;
+            });
+            $updater_id = $user_id->pengguna_id;
+        }*/
         $insert = 0;
         $nilai = 0;
         $all_response = [];
@@ -529,6 +629,10 @@ class SinkronisasiController extends Controller
                 $insert++;
                 $insert_matev = $matev->toArray();
                 unset($insert_matev['status'], $insert_matev['pembelajaran']);
+                $insert_matev['last_update'] = Carbon::now()->addHour(6);
+                $insert_matev['last_sync'] = Carbon::now()->addMinutes(330);
+                $insert_matev['updater_id'] = $updater_id;
+                $insert_matev['nm_mata_evaluasi'] = Str::limit($matev->nm_mata_evaluasi, 40);
                 $response = Http::withToken(request()->token_dapodik)->post(request()->url_dapodik.'/WebService/postMatevRapor?npsn='.request()->npsn.'&semester_id='.request()->semester_id, $insert_matev);
                 if($response->successful()){
                     $matev_dapo = $response->object();
@@ -543,33 +647,33 @@ class SinkronisasiController extends Controller
                                     'id_evaluasi' => $matev->id_evaluasi,
                                     'anggota_rombel_id' => $nilai_akhir->anggota_rombel_id,
                                     'nilai_kognitif_angka' => $nilai_akhir->nilai,
-                                    'a_beku' => 1,
-                                    'create_date' => now(),
-                                    'last_update' => now(),
+                                    //'a_beku' => 1,
+                                    'create_date' => Carbon::now()->timezone('UTC')->subHour(),
+                                    'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
-                                    'last_sync' => Carbon::now()->subDays(30),
-                                    'updater_id' => Str::uuid(),
+                                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                                    'updater_id' => $updater_id,
                                 ];
                             }
                         } else {
                             foreach($matev->pembelajaran->all_nilai_akhir_kurmer as $nilai_akhir){
-                                $get_desc = $matev->pembelajaran->deskripsi_mata_pelajaran()->where('anggota_rombel_id', $nilai_akhir->anggota_rombel_id)->first();
+                                /*$get_desc = $matev->pembelajaran->deskripsi_mata_pelajaran()->where('anggota_rombel_id', $nilai_akhir->anggota_rombel_id)->first();
                                 $deskripsi = NULL;
                                 if($get_desc){
                                     $deskripsi = Str::of($get_desc->deskripsi_pengetahuan.' '.$get_desc->deskripsi_keterampilan)->limit(300);
-                                }
+                                }*/
                                 $params[] = [
                                     'nilai_id' => $nilai_akhir->nilai_akhir_id,
                                     'id_evaluasi' => $matev->id_evaluasi,
                                     'anggota_rombel_id' => $nilai_akhir->anggota_rombel_id,
                                     'nilai_kognitif_angka' => $nilai_akhir->nilai,
-                                    'ket_kognitif' => $deskripsi,
-                                    'a_beku' => 1,
-                                    'create_date' => now(),
-                                    'last_update' => now(),
+                                    //'ket_kognitif' => $deskripsi,
+                                    //'a_beku' => 1,
+                                    'create_date' => Carbon::now()->timezone('UTC')->subHour(),
+                                    'last_update' => Carbon::now()->timezone('UTC'),
                                     'soft_delete' => 0,
-                                    'last_sync' => Carbon::now()->subDays(30),
-                                    'updater_id' => Str::uuid(),
+                                    'last_sync' => Carbon::now()->timezone('UTC')->subMinutes(30),
+                                    'updater_id' => $updater_id,
                                 ];
                             }
                         }
@@ -590,7 +694,7 @@ class SinkronisasiController extends Controller
                 $all_response[] = $response;
             }
         } catch (\Exception $e){
-            Setting::where(function($query){
+            /*Setting::where(function($query){
                 $query->where('key', 'url_dapodik');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
@@ -599,7 +703,7 @@ class SinkronisasiController extends Controller
                 $query->where('key', 'token_dapodik');
                 $query->where('sekolah_id', request()->sekolah_id);
                 $query->where('semester_id', request()->semester_id);
-            })->delete();
+            })->delete();*/
             $data = [
                 'icon' => 'error',
                 'title' => 'Gagal!',
