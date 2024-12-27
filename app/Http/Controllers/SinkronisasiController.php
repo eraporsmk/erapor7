@@ -555,6 +555,7 @@ class SinkronisasiController extends Controller
                 $insert_matev['last_update'] = Carbon::now()->addHour(6);
                 $insert_matev['last_sync'] = Carbon::now()->addMinutes(330);
                 $insert_matev['updater_id'] = $updater_id;
+                $insert_matev['nm_mata_evaluasi'] = Str::limit($matev->nm_mata_evaluasi, 40);
                 $response = Http::withToken(request()->token_dapodik)->post(request()->url_dapodik.'/WebService/postMatevRapor?npsn='.request()->npsn.'&semester_id='.request()->semester_id, $insert_matev);
                 if($response->successful()){
                     $matev_dapo = $response->object();

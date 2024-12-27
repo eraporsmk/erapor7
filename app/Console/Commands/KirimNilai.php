@@ -131,6 +131,7 @@ class KirimNilai extends Command
                 unset($insert_matev['status'], $insert_matev['pembelajaran']);
                 $insert_matev['last_update'] = Carbon::now()->addHour(6);
                 $insert_matev['last_sync'] = Carbon::now()->addMinutes(330);
+                $insert_matev['nm_mata_evaluasi'] = Str::limit($matev->nm_mata_evaluasi, 40);
                 //$insert_matev['updater_id'] = Str::uuid();
                 $response = Http::withToken(get_setting('token_dapodik', $sekolah_id))->post(get_setting('url_dapodik', $sekolah_id).'/WebService/postMatevRapor?npsn='.$npsn.'&semester_id='.$semester_id, $insert_matev);
                 if($response->successful()){
