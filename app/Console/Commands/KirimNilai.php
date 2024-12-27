@@ -90,7 +90,7 @@ class KirimNilai extends Command
                                         'pembelajaran_id' => $mapel->pembelajaran_id,
                                     ],
                                     [
-                                        'nm_mata_evaluasi' => Str::limit($mapel->mata_pelajaran->nama, 47),
+                                        'nm_mata_evaluasi' => Str::limit($mapel->mata_pelajaran->nama, 40),
                                         'a_dari_template' => 1,
                                         'no_urut' => $mapel->no_urut,
                                         'create_date' => Carbon::now()->subHour(),
