@@ -525,9 +525,22 @@ class SinkronisasiController extends Controller
                     'text' => $filtered->count().' Mata Evaluasi berhasil di ambil dari Dapodik',
                     'request' => request()->all(),
                 ];
-            }
-            if($jml_pembelajaran > $filtered->count()){
+            } elseif($jml_pembelajaran > $filtered->count()){
                 $this->createMatev(request()->rombongan_belajar_id);
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
+                    'request' => request()->all(),
+                ];
+            } else {
+                $this->createMatev(request()->rombongan_belajar_id);
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
+                    'request' => request()->all(),
+                ];
             }
         } else {
             $pembelajaran = Pembelajaran::where(function($query){
