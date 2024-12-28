@@ -19,5 +19,5 @@ class TrustProxies extends Middleware
      *
      * @var int
      */
-    protected $headers = \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_ALL;
+    protected $headers = HEADER_X_FORWARDED_ALL;
 }
