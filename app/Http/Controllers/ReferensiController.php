@@ -18,6 +18,7 @@ use App\Models\Kompetensi_dasar;
 use App\Models\Capaian_pembelajaran;
 use App\Models\Tujuan_pembelajaran;
 use App\Models\Tp_mapel;
+use App\Models\Anggota_akt_pd;
 use Storage;
 
 class ReferensiController extends Controller
@@ -1039,6 +1040,31 @@ class ReferensiController extends Controller
                 'icon' => 'error',
                 'title' => 'Gagal!',
                 'text' => 'Data Mapping Tujuan Pembelajaran gagal di hapus. Silahkan coba beberapa saat lagi!',
+            ];
+        }
+        return response()->json($data);
+    }
+    public function keluarkan_anggota_prakerin($id){
+        $find = Anggota_akt_pd::find($id);
+        if($find){
+            if($find->delete()){
+                $data = [
+                    'icon' => 'success',
+                    'title' => 'Berhasil!',
+                    'text' => 'Data Peserta Prakerin berhasil di hapus',
+                ];
+            } else {
+                $data = [
+                    'icon' => 'error',
+                    'title' => 'Gagal!',
+                    'text' => 'Data Peserta Prakerin tidak ditemukan. Silahkan coba beberapa saat lagi!',
+                ];
+            }
+        } else {
+            $data = [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Data Peserta Prakerin di hapus. Silahkan coba beberapa saat lagi!',
             ];
         }
         return response()->json($data);
