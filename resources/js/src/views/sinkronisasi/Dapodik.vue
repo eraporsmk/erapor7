@@ -38,6 +38,12 @@
         <template v-else>
           <template v-if="dapodik">
             <template v-if="dapodik.results">
+              <b-alert show variant="danger">
+                <div class="alert-body">
+                  <h1>Informasi Penting</h1>
+                  <p>Prioritaskan pengiriman nilai semester pada tingkat akhir, nilai rapor 5 semester untuk siswa kelas 12 dan 7 semester untuk siswa kelas 13 ke Dapodik</p>
+                </div>
+              </b-alert>
               <b-tabs justified>
                 <b-tab title="Rombongan Belajar">
                   <b-card-text>

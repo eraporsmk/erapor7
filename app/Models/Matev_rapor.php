@@ -22,4 +22,8 @@ class Matev_rapor extends Model
     {
         return $this->hasOne(Pembelajaran::class, 'pembelajaran_id', 'pembelajaran_id');
     }
+    public function rombongan_belajar()
+    {
+        return $this->hasOne(Rombongan_belajar::class, 'rombongan_belajar_id', 'rombongan_belajar_id');
+    }
 }

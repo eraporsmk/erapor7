@@ -44,13 +44,13 @@ export default [
     meta: {
       resource: 'Administrator',
       action: 'read',
-      pageTitle: 'Nilai Dapodik',
+      pageTitle: 'Kirim Nilai ke Dapodik',
       breadcrumb: [
         {
           text: 'Sinkronisasi',
         },
         {
-          text: 'Kirim Nilai Dapodik',
+          text: 'Kirim Nilai ke Dapodik',
           active: true,
         },
       ],

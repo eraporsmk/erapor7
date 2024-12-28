@@ -531,3 +531,55 @@ function get_string_between($string, $start, $end){
     $len = strpos($string, $end, $ini) - $ini;
     return substr($string, $ini, $len);
 }
+function getUpdaterID($sekolah_id, $npsn, $semester_id, $email){
+    $updater_id = NULL;
+    try {
+        $getPengguna = Http::withToken(get_setting('token_dapodik', $sekolah_id))->get(get_setting('url_dapodik', $sekolah_id).'/WebService/getPengguna?npsn='.$npsn.'&semester_id='.$semester_id);
+        if($getPengguna->successful()){
+            $users = $getPengguna->object();
+            if($users){
+                $pengguna = collect($users->rows);
+                $user_id = $pengguna->first(function ($value, $key) use ($email){
+                    return $value->username == $email;
+                });
+                $updater_id = $user_id->pengguna_id;
+            }
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
+    return $updater_id;
+}
+function getMatev($sekolah_id, $npsn, $semester_id){
+    $matev_rapor = [];
+    $response = Http::withToken(get_setting('token_dapodik', $sekolah_id))->get(get_setting('url_dapodik', $sekolah_id).'/WebService/getMatevNilai?npsn='.$npsn.'&semester_id='.$semester_id.'&a_dari_template=1');
+    if($response->successful()){
+        $result = $response->object();
+        if($result){
+            $matev_rapor = collect($result->rows);
+            /*$count = $matev_rapor->count();
+            if($matev_rapor->count()){
+                DB::table('dapodik.matev_rapor')->truncate();
+                foreach($matev_rapor as $matev){
+                    DB::table('dapodik.matev_rapor')->updateOrInsert(
+                        ['id_evaluasi' => $matev->id_evaluasi],
+                        [
+                            'rombongan_belajar_id' => $matev->rombongan_belajar_id,
+                            'mata_pelajaran_id' => $matev->mata_pelajaran_id,
+                            'pembelajaran_id' => $matev->pembelajaran_id,
+                            'nm_mata_evaluasi' => $matev->nm_mata_evaluasi,
+                            'a_dari_template' => $matev->a_dari_template,
+                            'no_urut' => $matev->no_urut,
+                            'create_date' => $matev->create_date,
+                            'last_update' => $matev->last_update,
+                            'soft_delete' => $matev->soft_delete,
+                            'last_sync' => $matev->last_sync,
+                            'updater_id' => $matev->updater_id,
+                        ]
+                    );
+                }
+            }*/
+        }
+    }
+    return $matev_rapor;
+}
