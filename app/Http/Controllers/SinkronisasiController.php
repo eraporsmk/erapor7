@@ -340,8 +340,8 @@ class SinkronisasiController extends Controller
     }
     public function nilai_dapodik(){
         try {
-            $url_dapodik = get_setting('url_dapodik', request()->sekolah_id, request()->semester_id);
-            $token_dapodik = get_setting('token_dapodik', request()->sekolah_id, request()->semester_id);
+            $url_dapodik = get_setting('url_dapodik', request()->sekolah_id);
+            $token_dapodik = get_setting('token_dapodik', request()->sekolah_id);
             $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
             if($response->object()){
                 $body = $response->object();
@@ -409,11 +409,11 @@ class SinkronisasiController extends Controller
             ];
             return response()->json($data);
         }
+        Setting::whereIn('key', ['url_dapodik', 'token_dapodik'])->delete();
         Setting::updateOrCreate(
             [
                 'key' => 'url_dapodik',
                 'sekolah_id' => request()->sekolah_id,
-                'semester_id' => request()->semester_id,
             ],
             [
                 'value' => request()->url_dapodik,
@@ -423,7 +423,6 @@ class SinkronisasiController extends Controller
             [
                 'key' => 'token_dapodik',
                 'sekolah_id' => request()->sekolah_id,
-                'semester_id' => request()->semester_id,
             ],
             [
                 'value' => request()->token_dapodik,
@@ -519,18 +518,13 @@ class SinkronisasiController extends Controller
                         ]
                     );
                 }
+                if($jml_pembelajaran > $filtered->count()){
+                    $this->createMatev(request()->rombongan_belajar_id);
+                }
                 $data = [
                     'icon' => 'success',
                     'title' => 'Berhasil!',
-                    'text' => $filtered->count().' Mata Evaluasi berhasil di ambil dari Dapodik',
-                    'request' => request()->all(),
-                ];
-            } elseif($jml_pembelajaran > $filtered->count()){
-                $this->createMatev(request()->rombongan_belajar_id);
-                $data = [
-                    'icon' => 'success',
-                    'title' => 'Berhasil!',
-                    'text' => 'Mata Evaluasi berhasil di generate dari kelas '.request()->nama_kelas.'!',
+                    'text' => $jml_pembelajaran.' Mata Evaluasi berhasil di ambil dari Dapodik',
                     'request' => request()->all(),
                 ];
             } else {
