@@ -339,10 +339,10 @@ class SinkronisasiController extends Controller
         return response()->json($data);
     }
     public function nilai_dapodik(){
+        $url_dapodik = get_setting('url_dapodik', request()->sekolah_id);
+        $token_dapodik = get_setting('token_dapodik', request()->sekolah_id);
         try {
-            $url_dapodik = get_setting('url_dapodik', request()->sekolah_id);
-            $token_dapodik = get_setting('token_dapodik', request()->sekolah_id);
-            $response = Http::withToken($token_dapodik)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
+            $response = Http::withToken($token_dapodik)->retry(3, 100)->get($url_dapodik.'/WebService/getSekolah?npsn='.request()->npsn.'&semester_id='.request()->semester_id);
             if($response->object()){
                 $body = $response->object();
             } else {
@@ -350,9 +350,7 @@ class SinkronisasiController extends Controller
                 $body = json_decode('{'.$body.'}');
             }
         } catch (\Throwable $th) {
-            $url_dapodik = NULL;
-            $token_dapodik = NULL;
-            $body = NULL;
+            $body = ['message' => $th->getMessage()];
         }
         $data = [
             'url_dapodik' => $url_dapodik,
