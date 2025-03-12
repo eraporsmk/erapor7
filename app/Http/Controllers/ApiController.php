@@ -161,8 +161,9 @@ class ApiController extends Controller
         } else {
             Rombel_empat_tahun::where('sekolah_id', $request->sekolah_id)->where('semester_id', $request->semester_aktif)->delete();
         }
+        Setting::where('key', 'token_dapodik')->where('sekolah_id',  request()->sekolah_id)->delete();
+        Setting::where('key', 'url_dapodik')->where('sekolah_id',  request()->sekolah_id)->delete();
         if($request->token_dapodik){
-            Setting::where('key', 'token_dapodik')->whereNotNull('semester_id')->delete();
             Setting::updateOrCreate(
                 [
                     'key' => 'token_dapodik',
@@ -175,7 +176,6 @@ class ApiController extends Controller
             );
         }
         if($request->url_dapodik){
-            Setting::where('key', 'url_dapodik')->whereNotNull('semester_id')->delete();
             Setting::updateOrCreate(
                 [
                     'key' => 'url_dapodik',

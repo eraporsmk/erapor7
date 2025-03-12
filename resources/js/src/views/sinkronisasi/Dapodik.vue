@@ -7,6 +7,13 @@
       </div>
       <div v-else>
         <template v-if="!lengkap">
+          <b-alert show variant="danger">
+            <div class="alert-body">
+              <h1>Informasi Penting</h1>
+              <p>Prioritaskan pengiriman nilai semester pada tingkat akhir, nilai rapor 5 semester untuk siswa kelas 12
+                dan 7 semester untuk siswa kelas 13 ke Dapodik</p>
+            </div>
+          </b-alert>
           <b-alert show variant="info">
             <div class="alert-body text-center">
               <h2>Pengaturan Web Services Dapodik</h2>
@@ -17,13 +24,16 @@
             <b-form @submit.prevent="handleSubmit">
               <b-row>
                 <b-col cols="12">
-                  <b-form-group label="URL Dapodik" label-for="url_dapodik" label-cols-md="3" :invalid-feedback="url_dapodik_feedback" :state="url_dapodik_state">
-                    <b-form-input id="url_dapodik" v-model="form.url_dapodik" :state="url_dapodik_state" placeholder="Contoh: http://localhost:5774 (tanpa garis miring di akhir!)"/>
+                  <b-form-group label="URL Dapodik" label-for="url_dapodik" label-cols-md="3"
+                    :invalid-feedback="url_dapodik_feedback" :state="url_dapodik_state">
+                    <b-form-input id="url_dapodik" v-model="form.url_dapodik" :state="url_dapodik_state"
+                      placeholder="Contoh: http://localhost:5774 (tanpa garis miring di akhir!)" />
                   </b-form-group>
                 </b-col>
                 <b-col cols="12">
-                  <b-form-group label="Token Dapodik" label-for="token_dapodik" label-cols-md="3" :invalid-feedback="token_dapodik_feedback" :state="token_dapodik_state">
-                    <b-form-input id="token_dapodik" v-model="form.token_dapodik" :state="token_dapodik_state"/>
+                  <b-form-group label="Token Dapodik" label-for="token_dapodik" label-cols-md="3"
+                    :invalid-feedback="token_dapodik_feedback" :state="token_dapodik_state">
+                    <b-form-input id="token_dapodik" v-model="form.token_dapodik" :state="token_dapodik_state" />
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -41,7 +51,8 @@
               <b-alert show variant="danger">
                 <div class="alert-body">
                   <h1>Informasi Penting</h1>
-                  <p>Prioritaskan pengiriman nilai semester pada tingkat akhir, nilai rapor 5 semester untuk siswa kelas 12 dan 7 semester untuk siswa kelas 13 ke Dapodik</p>
+                  <p>Prioritaskan pengiriman nilai semester pada tingkat akhir, nilai rapor 5 semester untuk siswa kelas
+                    12 dan 7 semester untuk siswa kelas 13 ke Dapodik</p>
                 </div>
               </b-alert>
               <b-tabs justified>
@@ -51,7 +62,9 @@
                   </b-card-text>
                 </b-tab>
                 <b-tab title="Mata Evaluasi Rapor" @click="getMatev">
-                  <matev-rapor :form="form" :loading="loading" :isBusy="false" :items="items" :fields="fields" :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch" @sort="handleSort"  />
+                  <matev-rapor :form="form" :loading="loading" :isBusy="false" :items="items" :fields="fields"
+                    :meta="meta" @per_page="handlePerPage" @pagination="handlePagination" @search="handleSearch"
+                    @sort="handleSort" />
                 </b-tab>
               </b-tabs>
             </template>
@@ -59,7 +72,7 @@
               <b-alert show variant="danger">
                 <div class="alert-body text-center">
                   <h2>Koneksi ke Dapodik Gagal!</h2>
-                  <p>{{dapodik.message}}</p>
+                  <p>{{ dapodik.message }}</p>
                   <p>Silahkan periksa kembali pengaturan Web Service Dapodik</p>
                 </div>
               </b-alert>
@@ -82,23 +95,23 @@ export default {
     BCard,
     BCardBody,
     BSpinner,
-    BRow, 
-    BCol, 
+    BRow,
+    BCol,
     BOverlay,
     BForm,
-    BFormGroup, 
+    BFormGroup,
     BFormInput,
     BButton,
     BAlert,
-    BTabs, 
+    BTabs,
     BTab,
     BCardText,
-    BTableSimple, 
-    BThead, 
-    BTbody, 
-    BTfoot, 
-    BTr, 
-    BTh, 
+    BTableSimple,
+    BThead,
+    BTbody,
+    BTfoot,
+    BTr,
+    BTh,
     BTd,
   },
   data() {
@@ -170,7 +183,7 @@ export default {
     this.loadPostsData()
   },
   methods: {
-    loadPostsData(){
+    loadPostsData() {
       this.isBusy = true
       this.$http.post('/sinkronisasi/nilai-dapodik', this.form).then(response => {
         this.isBusy = false
@@ -181,7 +194,7 @@ export default {
         this.dapodik = getData.dapodik
       })
     },
-    getMatevRapor(){
+    getMatevRapor() {
       this.loading = true
       let current_page = this.current_page
       this.$http.get('/sinkronisasi/get-matev-rapor', {
@@ -212,12 +225,12 @@ export default {
         }
       })
     },
-    handleSubmit(){
+    handleSubmit() {
       this.loading = true
       this.$http.post('/sinkronisasi/cek-koneksi', this.form).then(response => {
         this.loading = false
         let getData = response.data
-        if(getData.errors){
+        if (getData.errors) {
           this.url_dapodik_feedback = (getData.errors.url_dapodik) ? getData.errors.url_dapodik.join(', ') : ''
           this.url_dapodik_state = (getData.errors.url_dapodik) ? false : null
           this.token_dapodik_feedback = (getData.errors.token_dapodik) ? getData.errors.token_dapodik.join(', ') : ''
@@ -236,7 +249,7 @@ export default {
         }
       })
     },
-    getMatev(){
+    getMatev() {
       this.getMatevRapor()
     },
     handlePerPage(val) {

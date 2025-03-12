@@ -72,12 +72,20 @@ class User extends Authenticatable
     {
         return ($date) ? Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d/m/Y H:i:s') : '';
     }
-    public function getLoginTerakhirAttribute()
+    /*public function getLoginTerakhirAttribute()
 	{
         if($this->attributes['last_login_at']){
             return Carbon::parse($this->attributes['last_login_at'])->translatedFormat('d F Y').' Pukul '.Carbon::parse($this->attributes['last_login_at'])->format('H:i:s');
         } else {
             return '-';
         }
+	}*/
+    public function access_token()
+    {
+        return $this->hasOne(AccessToken::class, 'tokenable_id');
+    }
+    public function getLoginTerakhirAttribute()
+	{
+        return ($this->access_token) ? Carbon::parse($this->access_token->last_used_at)->format('d/m/Y H:i:s') : NULL;
 	}
 }

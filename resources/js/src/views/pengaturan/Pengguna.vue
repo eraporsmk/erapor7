@@ -36,9 +36,9 @@ export default {
           thClass: 'text-center',
         },
         {
-          key: 'last_login_at',
+          key: 'login_terakhir',
           label: 'Terakhir Login',
-          sortable: true,
+          sortable: false,
           thClass: 'text-center',
           tdClass: 'text-center'
         },
