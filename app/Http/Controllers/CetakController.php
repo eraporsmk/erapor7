@@ -616,7 +616,9 @@ class CetakController extends Controller
 		$data['sekolah_id'] = $anggota_rombel->sekolah_id;
 		$data['rencana_ukk'] = $rencana_ukk;
 		$data['count_penilaian_ukk'] = $count_penilaian_ukk;
-		$data['paket'] = Paket_ukk::with('jurusan')->with('unit_ukk')->find($rencana_ukk->paket_ukk_id);
+		$data['paket'] = Paket_ukk::with('jurusan')->with(['unit_ukk' => function($query){
+			$query->orderBy('kode_unit');
+		}])->find($rencana_ukk->paket_ukk_id);
 		$data['asesor'] = Guru::with('dudi')->find($rencana_ukk->eksternal);
 		$data['sekolah'] = Sekolah::with(['kasek' => function($query) use ($anggota_rombel){
 			$query->where('semester_id', $anggota_rombel->semester_id);

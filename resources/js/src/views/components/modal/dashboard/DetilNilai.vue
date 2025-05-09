@@ -171,6 +171,7 @@ export default {
         }).then(result => {
           this.$emit('detil', {
             pembelajaran_id: this.form.pembelajaran_id,
+            rombongan_belajar_id: this.form.rombongan_belajar_id,
             kkm: 0,
             kelompok_id: 0,
             semester_id: this.user.semester.semester_id,

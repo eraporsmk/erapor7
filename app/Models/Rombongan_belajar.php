@@ -44,6 +44,10 @@ class Rombongan_belajar extends Model
          	$query->has('tema');
 		});
 	}
+	public function pkl()
+	{
+		return $this->hasMany(Praktik_kerja_lapangan::class, 'rombongan_belajar_id', 'rombongan_belajar_id');
+	}
 	public function nilai_pengetahuan(){
 		return $this->hasManyThrough(
             Nilai_akhir::class,

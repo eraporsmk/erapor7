@@ -137,10 +137,10 @@ class DashboardController extends Controller
             ],
             [
                'nama' => 'Bambang Hermanto',
-               'hp' => '6282149880883',
+               'hp' => '6281356723484',
                'instansi' => 'SMK Budi Luhur Sintang',
             ],
-            /*[
+            [
                'nama' => 'Djoko Poernomo',
                'hp' => '628119890509',
                'instansi' => 'SMKN 51 Jakarta',
@@ -159,7 +159,7 @@ class DashboardController extends Controller
                'nama' => 'Iwan Sutisna',
                'hp' => '6285258636767',
                'instansi' => 'SMKN 1 Lemahabang'
-            ],*/
+            ],
          ],
       ];
       return $data;
@@ -275,6 +275,7 @@ class DashboardController extends Controller
                      'deskripsi_mapel' => function($query){
                         $query->where('pembelajaran_id', request()->pembelajaran_id);
                         $query->where('rombongan_belajar_id', request()->rombongan_belajar_id);
+                        $query->where('asal', 0);
                      },
                      'agama',
                   ]);
@@ -666,6 +667,7 @@ class DashboardController extends Controller
                   },
                   'deskripsi_mapel' => function($query){
                      $query->where('pembelajaran_id', request()->pembelajaran_id);
+                     $query->where('asal', 0);
                   },
                ]);
             }]);
@@ -746,9 +748,31 @@ class DashboardController extends Controller
          foreach($pembelajaran->rombongan_belajar->pd as $pd){
             $nilai_akhir = [];
             $deskripsi = [];
-            $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_induk) ? $pd->nilai_akhir_induk->nilai : 0;
-            $deskripsi_pengetahuan_induk[$pd->peserta_didik_id] = ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_pengetahuan : NULL;
-            $deskripsi_keterampilan_induk[$pd->peserta_didik_id] = ($pd->deskripsi_mapel) ? $pd->deskripsi_mapel->deskripsi_keterampilan : NULL;
+            $nilai_akhir_induk[$pd->peserta_didik_id] = 0;
+            if($pd->nilai_akhir_induk){
+               if(!$pd->nilai_akhir_induk->where('kompetensi_id', 99)->first()){
+                  $pd->nilai_akhir_induk->kompetensi_id = 99;
+                  $pd->nilai_akhir_induk->nilai = $pd->nilai_akhir_induk->nilai;
+                  $pd->nilai_akhir_induk->save();
+                  $nilai_akhir_induk[$pd->peserta_didik_id] = ($pd->nilai_akhir_induk) ? $pd->nilai_akhir_induk->nilai : 0;
+               } else {
+                  $nilai_akhir_induk[$pd->peserta_didik_id] = $pd->nilai_akhir_induk->where('kompetensi_id', 99)->first()?->nilai;
+               }
+            }
+            $deskripsi_pengetahuan_induk[$pd->peserta_didik_id] = NULL;
+            $deskripsi_keterampilan_induk[$pd->peserta_didik_id] = NULL;
+            if($pd->deskripsi_mapel){
+               $first = $pd->deskripsi_mapel->where('asal', 1)->first();
+               if(!$first){
+                  $pd->deskripsi_mapel->asal = 1;
+                  $pd->deskripsi_mapel->save();
+                  $deskripsi_pengetahuan_induk[$pd->peserta_didik_id] = $pd->deskripsi_mapel->deskripsi_pengetahuan;
+                  $deskripsi_keterampilan_induk[$pd->peserta_didik_id] = $pd->deskripsi_mapel->deskripsi_keterampilan;
+               } else {
+                  $deskripsi_pengetahuan_induk[$pd->peserta_didik_id] = $pd->deskripsi_mapel->where('asal', 1)->first()?->deskripsi_pengetahuan;
+                  $deskripsi_keterampilan_induk[$pd->peserta_didik_id] = $pd->deskripsi_mapel->where('asal', 1)->first()?->deskripsi_keterampilan;
+               }
+            }
          }
          $nilai_akhir_sub = [];
          $deskripsi_sub = [];
@@ -806,6 +830,7 @@ class DashboardController extends Controller
                         'sekolah_id' => $anggota->sekolah_id,
                         'anggota_rombel_id' => $anggota->anggota_rombel_id,
                         'pembelajaran_id' => request()->pembelajaran_id,
+                        'asal' => 0,
                      ],
                      [
                         'deskripsi_pengetahuan' => str_replace('. ,', '', $akhir['deskripsi_pengetahuan']),

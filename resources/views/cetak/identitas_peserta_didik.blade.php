@@ -58,7 +58,7 @@
 		<td style="width: 5%;">9.</td>
 		<td style="width: 35%;padding:5px;">Nomor Telepon Rumah</td>
 		<td style="width: 1%;">:</td>
-		<td style="width: 58%">{{($get_siswa->peserta_didik->no_telp) ? $get_siswa->peserta_didik->no_telp : '-'}}</td>
+		<td style="width: 58%">{{($get_siswa->peserta_didik->no_hp) ? $get_siswa->peserta_didik->no_hp : '-'}}</td>
 	</tr>
 	<tr>
 		<td style="width: 5%;">10.</td>
@@ -176,7 +176,7 @@
 		<td style="width: 50%;padding:5px;">&nbsp;</td>
 	</tr>
 	<tr>
-		<td style="width: 50%;padding:5px;">{{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nama_lengkap : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}<br />NIP. {{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nip : $get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}</td>
+		<td style="width: 50%;padding:5px;">{{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nama_lengkap : $get_siswa->peserta_didik->sekolah->kepala_sekolah?->nama_lengkap}}<br />NIP. {{($get_siswa->peserta_didik->sekolah->kasek) ? $get_siswa->peserta_didik->sekolah->kasek->nip : $get_siswa->peserta_didik->sekolah->kepala_sekolah?->nip}}</td>
 	</tr>
 </table>
 @endsection

@@ -33,10 +33,10 @@ class Guru extends Model
 		$gelar_depan = '';
 		$gelar_belakang = '';
 		if($this->gelar_depan()->exists()){
-			$gelar_depan = $this->gelar_depan()->get()->unique()->implode('kode', '. ') . '. ';
+			$gelar_depan = $this->gelar_depan()->orderBy('no_urut')->get()->unique()->implode('kode', '. ') . '. ';
 		}
 		if($this->gelar_belakang()->exists()){
-			$gelar_belakang = ', ' . $this->gelar_belakang()->get()->unique()->implode('kode', '., ') . '.';
+			$gelar_belakang = ', ' . $this->gelar_belakang()->orderBy('no_urut')->get()->unique()->implode('kode', '., ') . '.';
 		}
 		return $gelar_depan . strtoupper($this->attributes['nama']). $gelar_belakang;
 	}
@@ -48,7 +48,7 @@ class Guru extends Model
             'gelar_akademik_id',
             'guru_id',
             'gelar_akademik_id'
-        )->where('posisi_gelar', 1)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999])->orderBy('kode', 'desc');
+        )->where('posisi_gelar', 1)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999])->orderBy('no_urut');
 	}
 	public function gelar_belakang(){
 		return $this->hasManyThrough(
@@ -58,7 +58,7 @@ class Guru extends Model
             'gelar_akademik_id',
             'guru_id',
             'gelar_akademik_id'
-        )->where('posisi_gelar', 2)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999])->orderBy('gelar_akademik.created_at');
+        )->where('posisi_gelar', 2)->whereNotIn('gelar_ptk.gelar_akademik_id', [9999, 99999])->orderBy('no_urut');
 	}
 	public function pengguna(){
 		return $this->hasOne(User::class, 'guru_id', 'guru_id');

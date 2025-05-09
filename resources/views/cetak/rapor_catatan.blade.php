@@ -270,7 +270,7 @@ $extend = str_replace(' ', '', $extend);
 				@if ($get_siswa->peserta_didik->sekolah->kasek)
 					{{$get_siswa->peserta_didik->sekolah->kasek->nama_lengkap}}
 				@elseif($get_siswa->peserta_didik->sekolah->kepala_sekolah)
-					{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nama_lengkap}}
+					{{$get_siswa->peserta_didik->sekolah->kepala_sekolah?->nama_lengkap}}
 				@endif
 				</u></strong></p>
 		</td>
@@ -282,7 +282,7 @@ $extend = str_replace(' ', '', $extend);
 			@if ($get_siswa->peserta_didik->sekolah->kasek)
 				{{$get_siswa->peserta_didik->sekolah->kasek->nip}}
 			@elseif($get_siswa->peserta_didik->sekolah->kepala_sekolah)
-				{{$get_siswa->peserta_didik->sekolah->kepala_sekolah->nip}}
+				{{$get_siswa->peserta_didik->sekolah->kepala_sekolah?->nip}}
 			@endif
 		</td>
 	</tr>

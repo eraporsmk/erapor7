@@ -1,5 +1,16 @@
 <div id="form">
     <legend>
+        <h3>Versi 7.0.8</h3>
+    </legend>
+    <ol>
+        <li><b class="text-danger">[Perbaikan]</b> Gelar Akademik</li>
+        <li><b class="text-danger">[Perbaikan]</b> Bug nama Kepala Sekolah ketika cetak dokumen</li>
+        <li><b class="text-danger">[Perbaikan]</b> Generate Nilai Pembelajaran yang memiliki Sub Mapel</li>
+        <li><b class="text-danger">[Perbaikan]</b> Perubahan predikat UKK sesuai panduan terbaru nomor 0035/D2/DV.00.01/2025 tanggal 02 Januari 2025</li>
+        <li><b class="text-danger">[Perbaikan]</b> Ordering Unit UKK berdasar Kode Unit di laman cetak sertifikat UKK</li>
+        <li><b class="text-danger">[Perbaikan]</b> Aksi simpan Ketidakhadiran Praktik Kerja Lapangan</li>
+    </ol>
+    <legend>
         <h3>Versi 7.0.7</h3>
     </legend>
     <ol>

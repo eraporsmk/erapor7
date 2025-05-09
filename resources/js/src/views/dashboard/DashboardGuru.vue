@@ -118,6 +118,8 @@ export default {
       })
     },
     detil(item){
+      console.log(item);
+      
       this.pembelajaran_id = item.pembelajaran_id
       this.rombongan_belajar_id = item.rombongan_belajar_id
       this.meta = {

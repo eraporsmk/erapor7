@@ -176,7 +176,7 @@
 		<td style="width: 50%;padding:5px;">&nbsp;</td>
 	</tr>
 	<tr>
-		<td style="width: 50%;padding:5px;">{{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nama_lengkap : $pd->sekolah->kepala_sekolah->nama_lengkap}}<br />NIP. {{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nip : $pd->sekolah->kepala_sekolah->nip}}</td>
+		<td style="width: 50%;padding:5px;">{{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nama_lengkap : $pd->sekolah->kepala_sekolah?->nama_lengkap}}<br />NIP. {{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nip : $pd->sekolah->kepala_sekolah?->nip}}</td>
 	</tr>
 </table>
 @endsection

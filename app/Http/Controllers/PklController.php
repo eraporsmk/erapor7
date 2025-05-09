@@ -202,19 +202,6 @@ class PklController extends Controller
         }
         return response()->json($data);
     }
-    public function get_rombel(){
-        $data = [
-            'data' => Rombongan_belajar::where(function($query){
-                $query->where('tingkat', request()->tingkat);
-                $query->whereHas('pembelajaran', function($query){
-                    $query->where('guru_id', request()->guru_id);
-                    $query->where('mata_pelajaran_id', 800001000);
-                    $query->where('semester_id', request()->semester_id);
-                });
-            })->orderBy('nama')->get(),
-        ];
-        return response()->json($data);
-    }
     public function get_dudi(){
         $data = [
             'data' => Dudi::where(function($query){
@@ -327,6 +314,22 @@ class PklController extends Controller
         ];
         return response()->json($data);
     }
+    public function get_rombel(){
+        $data = [
+            'data' => Rombongan_belajar::where(function($query){
+                $query->where('tingkat', request()->tingkat);
+                $query->whereHas('pembelajaran', function($query){
+                    $query->where('guru_id', request()->guru_id);
+                    $query->where('mata_pelajaran_id', 800001000);
+                    $query->where('semester_id', request()->semester_id);
+                });
+                $query->whereHas('pkl', function($query){
+                    $query->where('guru_id', request()->guru_id);
+                });
+            })->orderBy('nama')->get(),
+        ];
+        return response()->json($data);
+    }
     public function get_pkl(){
         $data = [
             'data' => Praktik_kerja_lapangan::where(function($query){
@@ -404,6 +407,14 @@ class PklController extends Controller
         );
         $insert = 0;
         foreach(request()->sakit as $peserta_didik_id => $sakit){
+            $izin = NULL;
+            $alpa = NULL;
+            if(isset(request()->izin[$peserta_didik_id])){
+                $izin = request()->izin[$peserta_didik_id];
+            }
+            if(isset(request()->alpa[$peserta_didik_id])){
+                $alpa = request()->alpa[$peserta_didik_id];
+            }
             Absensi_pkl::updateOrCreate(
                 [
                     'peserta_didik_id' => $peserta_didik_id,
@@ -411,8 +422,8 @@ class PklController extends Controller
                 ],
                 [
                     'sakit' => $sakit,
-                    'izin' => request()->izin[$peserta_didik_id],
-                    'alpa' => request()->alpa[$peserta_didik_id],
+                    'izin' => $izin,
+                    'alpa' => $alpa,
                 ]
             );
             $insert++;

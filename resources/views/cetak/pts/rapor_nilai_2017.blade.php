@@ -81,8 +81,8 @@ body{font-size:11px !important;}
 <br>
 <br>
 <br>
-<p><u>{{ $sekolah->kepala_sekolah->nama_lengkap }}</u><br>
-NIP. {{$sekolah->kepala_sekolah->nip}}
+<p><u>{{ $sekolah->kepala_sekolah?->nama_lengkap }}</u><br>
+NIP. {{$sekolah->kepala_sekolah?->nip}}
 </p>
 	</td>
 	<td style="width:20%"></td>

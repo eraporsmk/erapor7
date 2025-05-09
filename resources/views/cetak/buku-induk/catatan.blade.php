@@ -244,8 +244,8 @@ if($rombongan_belajar->semester->semester == 2){
 			<br>
 			<br>
 			<br>
-			<p><u>{{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nama_lengkap : $pd->sekolah->kepala_sekolah->nama_lengkap}}</u><br />
-				NIP. {{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nip : $pd->sekolah->kepala_sekolah->nip}}
+			<p><u>{{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nama_lengkap : $pd->sekolah->kepala_sekolah?->nama_lengkap}}</u><br />
+				NIP. {{($pd->sekolah->kasek) ? $pd->sekolah->kasek->nip : $pd->sekolah->kepala_sekolah?->nip}}
 			</p>
 		</td>
 	</tr>

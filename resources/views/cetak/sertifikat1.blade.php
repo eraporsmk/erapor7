@@ -58,7 +58,7 @@ Sertifikat ini berlaku untuk : 3 (tiga) Tahun<br />
 <br>
 <br>
 <br>
-		<p><b>{{($sekolah->kasek) ? $sekolah->kasek->nama_lengkap : $sekolah->kepala_sekolah->nama_lengkap}}</b></p>
+		<p><b>{{($sekolah->kasek) ? $sekolah->kasek->nama_lengkap : $sekolah->kepala_sekolah?->nama_lengkap}}</b></p>
 		<p>Kepala Sekolah</p>
 		<p><i>School Principal</i></p>
 	</td>

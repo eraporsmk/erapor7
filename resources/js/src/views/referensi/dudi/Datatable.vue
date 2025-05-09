@@ -118,18 +118,25 @@
             </b-tr>
           </b-thead>
           <b-tbody>
-            <b-tr v-for="(anggota, index) in list_anggota" :key="anggota.peserta_didik_id">
-              <b-td class="text-center">{{index + 1}}</b-td>
-              <b-td>{{anggota.nama}}</b-td>
-              <b-td class="text-center">{{anggota.nisn}}</b-td>
-              <b-td class="text-center">{{anggota.jenis_kelamin}}</b-td>
-              <b-td>{{anggota.tempat_lahir}}, {{anggota.tanggal_lahir_indo}}</b-td>
-              <b-td>{{(anggota.agama) ? anggota.agama.nama : ''}}</b-td>
-              <b-td>{{(anggota.kelas) ? anggota.kelas.nama : ''}}</b-td>
-              <b-td class="text-center">
-                <b-button variant="danger" size="sm" @click="keluarkan(anggota.anggota_akt_pd.anggota_akt_pd_id, anggota.anggota_akt_pd.akt_pd_id)">Keluarkan</b-button>
-              </b-td>
-            </b-tr>
+            <template v-if="list_anggota.length">
+              <b-tr v-for="(anggota, index) in list_anggota" :key="anggota.peserta_didik_id">
+                <b-td class="text-center">{{index + 1}}</b-td>
+                <b-td>{{anggota.nama}}</b-td>
+                <b-td class="text-center">{{anggota.nisn}}</b-td>
+                <b-td class="text-center">{{anggota.jenis_kelamin}}</b-td>
+                <b-td>{{anggota.tempat_lahir}}, {{anggota.tanggal_lahir_indo}}</b-td>
+                <b-td>{{(anggota.agama) ? anggota.agama.nama : ''}}</b-td>
+                <b-td>{{(anggota.kelas) ? anggota.kelas.nama : ''}}</b-td>
+                <b-td class="text-center">
+                  <b-button variant="danger" size="sm" @click="keluarkan(anggota.anggota_akt_pd.anggota_akt_pd_id, anggota.anggota_akt_pd.akt_pd_id)">Keluarkan</b-button>
+                </b-td>
+              </b-tr>
+            </template>
+            <template v-else>
+              <b-tr>
+                <b-td class="text-center" colspan="8">Tidak ada data untuk ditampilkan</b-td>
+              </b-tr>
+            </template>
           </b-tbody>
         </b-table-simple>
       </b-overlay>

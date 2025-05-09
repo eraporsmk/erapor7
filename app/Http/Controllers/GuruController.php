@@ -57,13 +57,13 @@ class GuruController extends Controller
             $query->whereNotIn('gelar_akademik_id', request()->gelar_belakang);
         })->delete();
         if(request()->gelar_depan){
-            foreach(request()->gelar_depan as $depan){
-                $this->updateGelar($depan);
+            foreach(request()->gelar_depan as $urut => $depan){
+                $this->updateGelar($urut, $depan);
             }
         }
         if(request()->gelar_belakang){
-            foreach(request()->gelar_belakang as $belakang){
-                $this->updateGelar($belakang);
+            foreach(request()->gelar_belakang as $urut => $belakang){
+                $this->updateGelar($urut, $belakang);
             }
         }
         if(request()->asesor){
@@ -85,12 +85,14 @@ class GuruController extends Controller
         ];
         return response()->json($data);
     }
-    private function updateGelar($data){
+    private function updateGelar($urut, $data){
         $find = Gelar_ptk::where(function($query) use ($data){
             $query->where('guru_id', request()->guru_id);
             $query->where('gelar_akademik_id', $data);
         })->first();
-        if(!$find){
+        if($find){
+            $find->no_urut = $urut;
+        } else {
             Gelar_ptk::create(
                 [
                     'gelar_ptk_id' => Str::uuid(),
@@ -99,6 +101,7 @@ class GuruController extends Controller
                     'gelar_akademik_id' => $data,
                     'ptk_id' => request()->guru_id,
                     'last_sync' => now(),
+                    'no_urut' => $urut,
                 ]
             );
         }

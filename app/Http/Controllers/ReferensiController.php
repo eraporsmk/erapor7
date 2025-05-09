@@ -143,7 +143,11 @@ class ReferensiController extends Controller
                         $query->orderBy('urutan_pembimbing');
                     }
                 ]);
-                $query->withCount(['anggota_akt_pd']);
+                $query->withCount(['anggota_akt_pd' => function($query){
+                    $query->whereHas('anggota_rombel', function($query){
+                        $query->where('semester_id', semester_id());
+                    });
+                }]);
             }]);
         }])->find(request()->dudi_id);
         return response()->json($data);
@@ -151,9 +155,15 @@ class ReferensiController extends Controller
     public function anggota_prakerin(){
         $data = Peserta_didik::whereHas('anggota_akt_pd', function($query){
             $query->where('akt_pd_id', request()->akt_pd_id);
+            $query->whereHas('anggota_rombel', function($query){
+                $query->where('semester_id', semester_id());
+            });
         })->with([
             'anggota_akt_pd' => function($query){
                 $query->where('akt_pd_id', request()->akt_pd_id);
+                $query->whereHas('anggota_rombel', function($query){
+                    $query->where('semester_id', semester_id());
+                });
             },
             'agama',
             'kelas' => function($query){
