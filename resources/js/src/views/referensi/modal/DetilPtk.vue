@@ -18,7 +18,7 @@
         </b-col>
         <b-col cols="12">
           <b-form-group label="Gelar Belakang" label-cols-md="3">
-            <v-select v-model="form.gelar_belakang" multiple :options="ref_gelar_belakang" :reduce="kode => kode.gelar_akademik_id" label="kode" placeholder="== Pilih Gelar Depan ==">
+            <v-select v-model="form.gelar_belakang" multiple :options="ref_gelar_belakang" :reduce="kode => kode.gelar_akademik_id" label="kode" placeholder="== Pilih Gelar Belakang ==">
               <template #no-options="{ search, searching, loading }">
                 Tidak ada data untuk ditampilkan
               </template>
