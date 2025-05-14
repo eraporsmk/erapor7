@@ -323,9 +323,9 @@ class PklController extends Controller
                     $query->where('mata_pelajaran_id', 800001000);
                     $query->where('semester_id', request()->semester_id);
                 });
-                $query->whereHas('pkl', function($query){
+                /*$query->whereHas('pkl', function($query){
                     $query->where('guru_id', request()->guru_id);
-                });
+                });*/
             })->orderBy('nama')->get(),
         ];
         return response()->json($data);
