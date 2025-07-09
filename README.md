@@ -1,3 +1,4 @@
+## PENGEMBANGAN DIHENTIKAN DAN AKAN DILANJUTKAN KE VERSI BARU
 <p align="center"><img src="http://app.erapor-smk.net/logo.png" width="600"></p>
 
 ## Server Requirements
